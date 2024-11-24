@@ -139,7 +139,7 @@
                       year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
                       year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
                     },
-                    remainingMonths: v.remainingMonths || 0,
+                    remainingMonths: propertyData.salesTable?.remainingMonths || 0,
                     totalStoreProfit: {
                       year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
                       year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
