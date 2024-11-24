@@ -132,7 +132,7 @@
                     rent: propertyData.rent / 1000 || "",
                     equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
                     general: propertyData.generalData?.singleYear3 || 0,
-                    totalSelling3Value: (propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
+                    totalSelling3Value: parseFloat((propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
                     monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
                     dailySale: propertyData.salesTable?.daily3Sales || 0,
                     aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
