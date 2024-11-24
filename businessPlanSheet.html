@@ -23,10 +23,11 @@
     </style>
 </head>
 <body>
-    <h1>経営計画書作成 │ <span id="name"></span></h1>    
+    <h1>経営計画書作成 │ <span id="name"></span></h1>
 
+    <input type="file" id="fileInput" accept=".xlsx" />
     <br><br>
-    <button id="exportButton">Excelをダウンロード</button>
+    <button id="exportButton">Excelをインポート</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -239,8 +240,18 @@
         // Excelにデータを書き込む関数
         function exportToExcel(data) {
           try {
-            // 1. 既存のExcelファイル（Book1.xlsx）を読み込む
-            const existingWorkbook = XLSX.readFile("https://github.com/ysato33028/invest-ver4/file/Book1.xlsx");
+            // 1. ユーザーが選択したファイルを取得
+            const fileInput = document.getElementById("fileInput");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("ファイルが選択されていません。");
+                return;
+            }
+            // 2. ファイルを読み込む
+          　const reader = new FileReader();
+          　reader.onload = function(event) {
+            　const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
 
               const worksheetData = [
                 ["項目", "内容"],
@@ -343,6 +354,10 @@
               link.href = URL.createObjectURL(blob);
               link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
               link.click();
+          };
+          // 9. ファイルを読み込む
+          reader.readAsBinaryString(file);
+          
           } catch (error) {
               console.error("エクスポートエラー:", error);
               alert(`エクスポート中にエラーが発生しました: ${error.message}`);
