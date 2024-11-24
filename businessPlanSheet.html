@@ -23,11 +23,10 @@
     </style>
 </head>
 <body>
-    <h1>経営計画書作成 │ <span id="name"></span></h1>
+    <h1>経営計画書作成 │ <span id="name"></span></h1>    
 
-    <input type="file" id="fileInput" accept=".xlsx" />
     <br><br>
-    <button id="exportButton">Excelをインポート</button>
+    <button id="exportButton">Excelをダウンロード</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -240,18 +239,8 @@
         // Excelにデータを書き込む関数
         function exportToExcel(data) {
           try {
-            // 1. ユーザーが選択したファイルを取得
-            const fileInput = document.getElementById("fileInput");
-            const file = fileInput.files[0];
-
-            if (!file) {
-                alert("ファイルが選択されていません。");
-                return;
-            }
-            // 2. ファイルを読み込む
-          　const reader = new FileReader();
-          　reader.onload = function(event) {
-            　const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
+              // 1. 新しいワークブックの作成
+              const wb = XLSX.utils.book_new();
 
               const worksheetData = [
                 ["項目", "内容"],
@@ -341,10 +330,10 @@
               const ws = XLSX.utils.aoa_to_sheet(worksheetData);
 
               // 4. ワークブックにワークシートを追加
-              XLSX.utils.book_append_sheet(existingWorkbook, ws, "Data");
+              XLSX.utils.book_append_sheet(wb, ws, "経営計画書");
 
               // 4. ワークブックをバイナリ形式でエクスポート
-              const binaryArray = XLSX.write(existingWorkbook, { bookType: "xlsx", type: "array" });
+              const binaryArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
               // 5. バイナリデータからBlobを作成
               const blob = new Blob([binaryArray], { type: "application/octet-stream" });
@@ -354,25 +343,11 @@
               link.href = URL.createObjectURL(blob);
               link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
               link.click();
-          };
-          // 9. ファイルを読み込む
-          reader.readAsBinaryString(file);
-
           } catch (error) {
               console.error("エクスポートエラー:", error);
               alert(`エクスポート中にエラーが発生しました: ${error.message}`);
           }
       }
-
-      document.getElementById("exportButton").addEventListener("click", function(data) {
-        // エクスポートするためのデータを定義
-          const exportData = {
-            name: data.name || "",
-            
-          };
-        exportToExcel(exportData);
-      });
-
 
       // ページ読み込み時にデータを表示
       displayData();
