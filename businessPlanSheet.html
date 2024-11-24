@@ -46,6 +46,100 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // グローバル関数
+    let name = 0;
+    let manager = 0;
+
+    let overview = 0;
+    let consumerCharacteristics = 0;
+
+    let household = 0;
+    let population = 0;
+    let averagePopulation = 0;
+
+    let delivery = 0;
+    let openSelect = 0;
+    let endSelect = 0;
+
+    let contractArea = 0;
+    let shopArea = 0;
+
+    let sales = 0;
+    let profit = 0;
+    let labor = 0;
+    let selling = 0;
+    let rent = 0;
+    let equipment = 0;
+    let general = 0;
+    let totalSelling3Value = 0;
+    let monthlyStoreProfit = 0;
+
+    let dailySale = 0;
+    let aiForecastSales = 0;
+    let logisticsCosts = 0;
+
+    let totalLaborCosts1 = 0;
+    let employeeLaborCosts1 = 0;
+    let coEmployeeLaborCosts1 = 0;
+    let avgSalaryData1 = 0;
+    let dailyWorkingHours1 = 0;
+    let averagetotalLabor = 0;
+    let averageEmployeeLabor = 0;
+    let averageCoEmployeeLabor = 0;
+    let averageAvgSalary = 0;
+    let averageDailyWorkingHours = 0;
+
+    let lastNegativeMonth = 0;
+    let layoutPattern = 0;
+    let locationPattern = 0;
+
+    let parkingSpacesSelect = 0;
+    let numberofParkingSpaces = 0;
+
+    let buildingCost = 0;
+    let generalConstructionCost = 0;
+    let refrigerationEquipmentConstructionTotal = 0;
+    let buildingsEquipment = 0;
+    let displayFixtures = 0;
+    let signboard = 0;
+    let other = 0;
+    let nonstandard = 0;
+    let total = 0;
+
+    let addRegisters = 0;
+    let addSelfRegisters = 0;
+
+    let consultingValue = 0;
+    let keyMoneyValue = 0;
+    let deposit = 0;
+
+    let keyMoneyValue = 0;
+    let deposit = 0;
+
+    let constructionCooperationFunds = 0;
+    let paymentFrequencySelect = 0;
+
+    let remainingMonths = 0;
+
+    let year = 0;
+    let year1Sales = 0;
+    let year2Sales = 0;
+    let year3Sales = 0;
+    let year4Sales = 0;
+    let year5Sales = 0;
+    let totalStoreProfit1 = 0;
+    let totalStoreProfit2 = 0;
+    let totalStoreProfit3 = 0;
+    let totalStoreProfit4 = 0;
+    let totalStoreProfit5 = 0;
+    let daily1Sales = 0;
+    let daily2Sales = 0;
+    let daily3Sales = 0;
+    let daily4Sales = 0;
+    let daily5Sales = 0;
+
+    let contractPeriodSelect = 0;
+
     // URLからidパラメータを取得
     function getQueryParam(name) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -261,7 +355,7 @@
     }
 
     // セルに値を設定する際、セルが未定義の場合は初期化する
-    function setCellValue(cellAddress, value) {
+    function setCellValue(sheet, cellAddress, value) {
       if (!sheet[cellAddress]) {
         sheet[cellAddress] = {}; // セルが未定義の場合はオブジェクトを初期化
       }
@@ -269,98 +363,98 @@
     }
 
     // 3. セルにデータを書き込む
-    setCellValue("I2", name);
-    setCellValue("P4", manager);
+    setCellValue(sheet, "I2", name);
+    setCellValue(sheet, "P4", manager);
 
-    setCellValue("D6", overview);
-    setCellValue("D8", consumerCharacteristics);
+    setCellValue(sheet, "D6", overview);
+    setCellValue(sheet, "D8", consumerCharacteristics);
 
-    setCellValue("E12", household);
-    setCellValue("G12", population);
-    setCellValue("I12", averagePopulation);
+    setCellValue(sheet, "E12", household);
+    setCellValue(sheet, "G12", population);
+    setCellValue(sheet, "I12", averagePopulation);
 
-    setCellValue("D15", delivery);
-    setCellValue("G15", openSelect);
-    setCellValue("J15", endSelect);
+    setCellValue(sheet, "D15", delivery);
+    setCellValue(sheet, "G15", openSelect);
+    setCellValue(sheet, "J15", endSelect);
 
-    setCellValue("F18", contractArea);
-    setCellValue("K18", shopArea);
+    setCellValue(sheet, "F18", contractArea);
+    setCellValue(sheet, "K18", shopArea);
 
-    setCellValue("F22", sales);
-    setCellValue("F23", profit);
-    setCellValue("F24", labor);
-    setCellValue("F25", selling);
-    setCellValue("F26", rent);
-    setCellValue("F27", equipment);
-    setCellValue("F28", general);
-    setCellValue("F29", totalSelling3Value);
-    setCellValue("F30", monthlyStoreProfit);
+    setCellValue(sheet, "F22", sales);
+    setCellValue(sheet, "F23", profit);
+    setCellValue(sheet, "F24", labor);
+    setCellValue(sheet, "F25", selling);
+    setCellValue(sheet, "F26", rent);
+    setCellValue(sheet, "F27", equipment);
+    setCellValue(sheet, "F28", general);
+    setCellValue(sheet, "F29", totalSelling3Value);
+    setCellValue(sheet, "F30", monthlyStoreProfit);
 
-    setCellValue("K22", dailySale);
-    setCellValue("K23", aiForecastSales);
-    setCellValue("J27", logisticsCosts);
+    setCellValue(sheet, "K22", dailySale);
+    setCellValue(sheet, "K23", aiForecastSales);
+    setCellValue(sheet, "J27", logisticsCosts);
 
-    setCellValue("P23", totalLaborCosts1);
-    setCellValue("P24", employeeLaborCosts1);
-    setCellValue("P25", coEmployeeLaborCosts1);
-    setCellValue("P26", avgSalaryData1);
-    setCellValue("P27", dailyWorkingHours1);
-    setCellValue("Q23", averagetotalLabor);
-    setCellValue("Q24", averageEmployeeLabor);
-    setCellValue("Q25", averageCoEmployeeLabor);
-    setCellValue("Q26", averageAvgSalary);
-    setCellValue("Q27", averageDailyWorkingHours);
+    setCellValue(sheet, "P23", totalLaborCosts1);
+    setCellValue(sheet, "P24", employeeLaborCosts1);
+    setCellValue(sheet, "P25", coEmployeeLaborCosts1);
+    setCellValue(sheet, "P26", avgSalaryData1);
+    setCellValue(sheet, "P27", dailyWorkingHours1);
+    setCellValue(sheet, "Q23", averagetotalLabor);
+    setCellValue(sheet, "Q24", averageEmployeeLabor);
+    setCellValue(sheet, "Q25", averageCoEmployeeLabor);
+    setCellValue(sheet, "Q26", averageAvgSalary);
+    setCellValue(sheet, "Q27", averageDailyWorkingHours);
 
-    setCellValue("H34", lastNegativeMonth);
-    setCellValue("L34", layoutPattern);
-    setCellValue("Q34", locationPattern);
+    setCellValue(sheet, "H34", lastNegativeMonth);
+    setCellValue(sheet, "L34", layoutPattern);
+    setCellValue(sheet, "Q34", locationPattern);
 
-    setCellValue("L35", parkingSpacesSelect);
-    setCellValue("Q35", numberofParkingSpaces);
+    setCellValue(sheet, "L35", parkingSpacesSelect);
+    setCellValue(sheet, "Q35", numberofParkingSpaces);
 
-    setCellValue("G37", buildingCost);
-    setCellValue("G38", generalConstructionCost);
-    setCellValue("G39", refrigerationEquipmentConstructionTotal);
-    setCellValue("G40", buildingsEquipment);
-    setCellValue("G41", displayFixtures);
-    setCellValue("G42", signboard);
-    setCellValue("G43", other);
-    setCellValue("G44", nonstandard);
-    setCellValue("G47", total);
+    setCellValue(sheet, "G37", buildingCost);
+    setCellValue(sheet, "G38", generalConstructionCost);
+    setCellValue(sheet, "G39", refrigerationEquipmentConstructionTotal);
+    setCellValue(sheet, "G40", buildingsEquipment);
+    setCellValue(sheet, "G41", displayFixtures);
+    setCellValue(sheet, "G42", signboard);
+    setCellValue(sheet, "G43", other);
+    setCellValue(sheet, "G44", nonstandard);
+    setCellValue(sheet, "G47", total);
 
-    setCellValue("G47", addRegisters);
-    setCellValue("G47", addSelfRegisters);
+    setCellValue(sheet, "G47", addRegisters);
+    setCellValue(sheet, "G47", addSelfRegisters);
 
-    setCellValue("K48", consultingValue);
-    setCellValue("N48", keyMoneyValue);
-    setCellValue("K49", deposit);
+    setCellValue(sheet, "K48", consultingValue);
+    setCellValue(sheet, "N48", keyMoneyValue);
+    setCellValue(sheet, "K49", deposit);
 
-    setCellValue("N48", keyMoneyValue);
-    setCellValue("K49", deposit);
+    setCellValue(sheet, "N48", keyMoneyValue);
+    setCellValue(sheet, "K49", deposit);
 
-    setCellValue("K50", constructionCooperationFunds);
-    setCellValue("N50", paymentFrequencySelect);
+    setCellValue(sheet, "K50", constructionCooperationFunds);
+    setCellValue(sheet, "N50", paymentFrequencySelect);
 
-    setCellValue("I54", remainingMonths);
+    setCellValue(sheet, "I54", remainingMonths);
 
-    setCellValue("F55", year);
-    setCellValue("F56", year1Sales);
-    setCellValue("H56", year2Sales);
-    setCellValue("J56", year3Sales);
-    setCellValue("L56", year4Sales);
-    setCellValue("N56", year5Sales);
-    setCellValue("F57", totalStoreProfit1);
-    setCellValue("H57", totalStoreProfit2);
-    setCellValue("J57", totalStoreProfit3);
-    setCellValue("L57", totalStoreProfit4);
-    setCellValue("N57", totalStoreProfit5);
-    setCellValue("F58", daily1Sales);
-    setCellValue("H58", daily2Sales);
-    setCellValue("J58", daily3Sales);
-    setCellValue("L58", daily4Sales);
-    setCellValue("N58", daily5Sales);
+    setCellValue(sheet, "F55", year);
+    setCellValue(sheet, "F56", year1Sales);
+    setCellValue(sheet, "H56", year2Sales);
+    setCellValue(sheet, "J56", year3Sales);
+    setCellValue(sheet, "L56", year4Sales);
+    setCellValue(sheet, "N56", year5Sales);
+    setCellValue(sheet, "F57", totalStoreProfit1);
+    setCellValue(sheet, "H57", totalStoreProfit2);
+    setCellValue(sheet, "J57", totalStoreProfit3);
+    setCellValue(sheet, "L57", totalStoreProfit4);
+    setCellValue(sheet, "N57", totalStoreProfit5);
+    setCellValue(sheet, "F58", daily1Sales);
+    setCellValue(sheet, "H58", daily2Sales);
+    setCellValue(sheet, "J58", daily3Sales);
+    setCellValue(sheet, "L58", daily4Sales);
+    setCellValue(sheet, "N58", daily5Sales);
 
-    setCellValue("G61", contractPeriodSelect);
+    setCellValue(sheet, "G61", contractPeriodSelect);
 
     // 4. ファイルをエクスポート
     const updatedFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
