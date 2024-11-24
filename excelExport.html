@@ -75,9 +75,14 @@
                     // Firebaseからのデータ取得
                     const name = propertyData.name || "";
                     document.getElementById("name").textContent = name || "";
+                    const manager = propertyData.manager || "";
+
+                    const businessPlanData = propertyData.businessPlanData || {};
+                    const overview = businessPlanData.overview || "";
+                    const consumerCharacteristics = businessPlanData.consumerCharacteristics || "";
 
                     // Excelファイルを作成
-                    exportToExcel(name);  // nameをExcelに書き込む
+                    exportToExcel(data);
                 } else {
                     console.error("データが見つかりません");
                 }
@@ -86,14 +91,29 @@
             }
         }
 
+        // Excelファイルを作成
+        exportToExcel({
+            name,
+            manager,
+            overview,
+            consumerCharacteristics,
+            // 他の項目もここに追加可能
+        });
+
         // Excelにデータを書き込む関数
-        function exportToExcel(name) {
+        function exportToExcel(data) {
           try {
               // 1. 新しいワークブックの作成
               const wb = XLSX.utils.book_new();
 
-              // 2. ワークシートの作成
-              const ws = XLSX.utils.aoa_to_sheet([["店舗名", name]]); // Excelシートに「店舗名」と取得したnameを書き込む
+              // 2. ワークシートのデータ構造
+              const worksheetData = [
+                  ["店舗名", data.name || ""],
+                  ["作成者", data.manager || ""],
+                  ["概要", data.overview || ""],
+                  ["生活者特性", data.consumerCharacteristics || ""],
+                  // 必要に応じて他の項目をここに追加可能
+              ];
 
               // 3. ワークブックにワークシートを追加
               XLSX.utils.book_append_sheet(wb, ws, "経営計画書");
