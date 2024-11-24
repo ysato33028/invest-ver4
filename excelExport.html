@@ -82,7 +82,13 @@
                     const consumerCharacteristics = businessPlanData.consumerCharacteristics || "";
 
                     // Excelファイルを作成
-                    exportToExcel(data);
+                    exportToExcel({
+                        name,
+                        manager,
+                        overview,
+                        consumerCharacteristics,
+                        // 他の項目もここに追加可能
+                    });
                 } else {
                     console.error("データが見つかりません");
                 }
@@ -91,14 +97,7 @@
             }
         }
 
-        // Excelファイルを作成
-        exportToExcel({
-            name,
-            manager,
-            overview,
-            consumerCharacteristics,
-            // 他の項目もここに追加可能
-        });
+        
 
         // Excelにデータを書き込む関数
         function exportToExcel(data) {
