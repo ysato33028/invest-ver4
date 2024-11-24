@@ -57,44 +57,47 @@
 
         // Firestoreから指定IDのデータを取得して表示
         async function displayData() {
-            if (!propertyId) {
-                document.getElementById("name").textContent = "IDが指定されていません";
-                return;
-            }
+          if (!propertyId) {
+              document.getElementById("name").textContent = "IDが指定されていません";
+              return;
+          }
 
-            try {
-                const docRef = doc(db, "properties", propertyId);
-                const docSnap = await getDoc(docRef);
+          try {
+              const docRef = doc(db, "properties", propertyId);
+              const docSnap = await getDoc(docRef);
 
-                const dbRef = doc(db, "laborCostRatio", docId);
-                const dbSnap = await getDoc(dbRef);
+              const dbRef = doc(db, "laborCostRatio", docId);
+              const dbSnap = await getDoc(dbRef);
 
-                if (docSnap.exists() && dbSnap.exists()) {
-                    const propertyData = docSnap.data();
+              if (docSnap.exists() && dbSnap.exists()) {
+                  const propertyData = docSnap.data();
 
-                    // Firebaseからのデータ取得
-                    const name = propertyData.name || "";
-                    document.getElementById("name").textContent = name || "";
-                    const manager = propertyData.manager || "";
+                  // Firebaseからのデータ取得
+                  const name = propertyData.name || "";
+                  document.getElementById("name").textContent = name || "";
+                  const manager = propertyData.manager || "";
 
-                    const businessPlanData = propertyData.businessPlanData || {};
-                    const overview = businessPlanData.overview || "";
-                    const consumerCharacteristics = businessPlanData.consumerCharacteristics || "";
+                  const businessPlanData = propertyData.businessPlanData || {};
 
-                    // Excelファイルを作成
-                    exportToExcel({
-                        name,
-                        manager,
-                        overview,
-                        consumerCharacteristics,
-                        // 他の項目もここに追加可能
-                    });
-                } else {
-                    console.error("データが見つかりません");
-                }
-            } catch (error) {
-                console.error("エラーが発生しました:", error);
-            }
+                  // 必要なデータを抽出
+                  const data = {
+                      name: propertyData.name || "",
+                      manager: propertyData.manager || "",
+                      overview: propertyData.businessPlanData?.overview || "",
+                      consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
+                  };
+
+              // HTMLにデータを表示
+              document.getElementById("name").textContent = data.name;
+
+              // Excelファイルを作成
+              exportToExcel(data);
+              } else {
+                  console.error("データが見つかりません");
+              }
+          } catch (error) {
+              console.error("エラーが発生しました:", error);
+          }
         }
 
         
@@ -107,14 +110,18 @@
 
               // 2. ワークシートのデータ構造
               const worksheetData = [
-                  ["店舗名", data.name || ""],
-                  ["作成者", data.manager || ""],
-                  ["概要", data.overview || ""],
-                  ["生活者特性", data.consumerCharacteristics || ""],
+                  ["項目", "内容"],
+                  ["店舗名", data.name],
+                  ["作成者", data.manager],
+                  ["概要", data.overview],
+                  ["生活者特性", data.consumerCharacteristics],
                   // 必要に応じて他の項目をここに追加可能
               ];
 
-              // 3. ワークブックにワークシートを追加
+              // 3. ワークシートの作成
+              const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+
+              // 4. ワークブックにワークシートを追加
               XLSX.utils.book_append_sheet(wb, ws, "経営計画書");
 
               // 4. ワークブックをバイナリ形式でエクスポート
