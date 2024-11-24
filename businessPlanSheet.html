@@ -77,7 +77,8 @@
         const ratioData = dbSnap.data();
 
         // Firestoreのデータを表示
-        document.getElementById("name").textContent = propertyData.name || "";
+        const name = propertyData.name || "";
+        document.getElementById("name").textContent = name || "";
         const manager = propertyData.manager || "";
 
         const businessPlanData = propertyData.businessPlanData || {};
