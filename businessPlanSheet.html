@@ -357,12 +357,17 @@
           };
           // 9. ファイルを読み込む
           reader.readAsBinaryString(file);
-          
+
           } catch (error) {
               console.error("エクスポートエラー:", error);
               alert(`エクスポート中にエラーが発生しました: ${error.message}`);
           }
       }
+
+      document.getElementById("exportButton").addEventListener("click", function() {
+        // ここでエクスポート処理を開始
+        exportToExcel(data);
+      });
 
       // ページ読み込み時にデータを表示
       displayData();
