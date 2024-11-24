@@ -260,99 +260,107 @@
       throw new Error("シートが見つかりません");
     }
 
+    // セルに値を設定する際、セルが未定義の場合は初期化する
+    function setCellValue(cellAddress, value) {
+      if (!sheet[cellAddress]) {
+        sheet[cellAddress] = {}; // セルが未定義の場合はオブジェクトを初期化
+      }
+      sheet[cellAddress].v = value || ""; // 値を設定（未定義なら空文字列）
+    }
+
     // 3. セルにデータを書き込む
-    sheet["I2"].v = name || "";
-    sheet["P4"].v = manager || "";
+    setCellValue("I2", name);
+    setCellValue("P4", manager);
 
-    sheet["D6"].v = overview || 0;
-    sheet["D8"].v = consumerCharacteristics || 0;
+    setCellValue("D6", overview);
+    setCellValue("D8", consumerCharacteristics);
 
-    sheet["E12"].v = household || 0;
-    sheet["G12"].v = population || 0;
-    sheet["I12"].v = averagePopulation || 0;
+    setCellValue("E12", household);
+    setCellValue("G12", population);
+    setCellValue("I12", averagePopulation);
 
-    sheet["D15"].v = delivery || 0;
-    sheet["G15"].v = openSelect || 0;
-    sheet["J15"].v = endSelect || 0;
+    setCellValue("D15", delivery);
+    setCellValue("G15", openSelect);
+    setCellValue("J15", endSelect);
 
-    sheet["F18"].v = contractArea || 0;
-    sheet["K18"].v = shopArea || 0;
+    setCellValue("F18", contractArea);
+    setCellValue("K18", shopArea);
 
-    sheet["F22"].v = sales || 0;
-    sheet["F23"].v = profit || 0;
-    sheet["F24"].v = labor || 0;
-    sheet["F25"].v = selling || 0;
-    sheet["F26"].v = rent || 0;
-    sheet["F27"].v = equipment || 0;
-    sheet["F28"].v = general || 0;
-    sheet["F29"].v = totalSelling3Value || 0;
-    sheet["F30"].v = monthlyStoreProfit || 0;
+    setCellValue("F22", sales);
+    setCellValue("F23", profit);
+    setCellValue("F24", labor);
+    setCellValue("F25", selling);
+    setCellValue("F26", rent);
+    setCellValue("F27", equipment);
+    setCellValue("F28", general);
+    setCellValue("F29", totalSelling3Value);
+    setCellValue("F30", monthlyStoreProfit);
 
-    sheet["K22"].v = dailySale || 0;
-    sheet["K23"].v = aiForecastSales || 0;
-    sheet["J27"].v = logisticsCosts || 0;
+    setCellValue("K22", dailySale);
+    setCellValue("K23", aiForecastSales);
+    setCellValue("J27", logisticsCosts);
 
-    sheet["P23"].v = totalLaborCosts1 || 0;
-    sheet["P24"].v = employeeLaborCosts1 || 0;
-    sheet["P25"].v = coEmployeeLaborCosts1 || 0;
-    sheet["P26"].v = avgSalaryData1 || 0;
-    sheet["P27"].v = dailyWorkingHours1 || 0;
-    sheet["Q23"].v = averagetotalLabor || 0;
-    sheet["Q24"].v = averageEmployeeLabor || 0;
-    sheet["Q25"].v = averageCoEmployeeLabor || 0;
-    sheet["Q26"].v = averageAvgSalary || 0;
-    sheet["Q27"].v = averageDailyWorkingHours || 0;
+    setCellValue("P23", totalLaborCosts1);
+    setCellValue("P24", employeeLaborCosts1);
+    setCellValue("P25", coEmployeeLaborCosts1);
+    setCellValue("P26", avgSalaryData1);
+    setCellValue("P27", dailyWorkingHours1);
+    setCellValue("Q23", averagetotalLabor);
+    setCellValue("Q24", averageEmployeeLabor);
+    setCellValue("Q25", averageCoEmployeeLabor);
+    setCellValue("Q26", averageAvgSalary);
+    setCellValue("Q27", averageDailyWorkingHours);
 
-    sheet["H34"].v = lastNegativeMonth || 0;
-    sheet["L34"].v = layoutPattern || 0;
-    sheet["Q34"].v = locationPattern || 0;
+    setCellValue("H34", lastNegativeMonth);
+    setCellValue("L34", layoutPattern);
+    setCellValue("Q34", locationPattern);
 
-    sheet["L35"].v = parkingSpacesSelect || 0;
-    sheet["Q35"].v = numberofParkingSpaces || 0;
+    setCellValue("L35", parkingSpacesSelect);
+    setCellValue("Q35", numberofParkingSpaces);
 
-    sheet["G37"].v = buildingCost || 0;
-    sheet["G38"].v = generalConstructionCost || 0;
-    sheet["G39"].v = refrigerationEquipmentConstructionTotal || 0;
-    sheet["G40"].v = buildingsEquipment || 0;
-    sheet["G41"].v = displayFixtures || 0;
-    sheet["G42"].v = signboard || 0;
-    sheet["G43"].v = other || 0;
-    sheet["G44"].v = nonstandard || 0;
-    sheet["G47"].v = total || 0;
+    setCellValue("G37", buildingCost);
+    setCellValue("G38", generalConstructionCost);
+    setCellValue("G39", refrigerationEquipmentConstructionTotal);
+    setCellValue("G40", buildingsEquipment);
+    setCellValue("G41", displayFixtures);
+    setCellValue("G42", signboard);
+    setCellValue("G43", other);
+    setCellValue("G44", nonstandard);
+    setCellValue("G47", total);
 
-    sheet["G47"].v = addRegisters || 0;
-    sheet["G47"].v = addSelfRegisters || 0;
+    setCellValue("G47", addRegisters);
+    setCellValue("G47", addSelfRegisters);
 
-    sheet["K48"].v = consultingValue || 0;
-    sheet["N48"].v = keyMoneyValue || 0;
-    sheet["K49"].v = deposit || 0;
+    setCellValue("K48", consultingValue);
+    setCellValue("N48", keyMoneyValue);
+    setCellValue("K49", deposit);
 
-    sheet["N48"].v = keyMoneyValue || 0;
-    sheet["K49"].v = deposit || 0;
+    setCellValue("N48", keyMoneyValue);
+    setCellValue("K49", deposit);
 
-    sheet["K50"].v = constructionCooperationFunds || 0;
-    sheet["N50"].v = paymentFrequencySelect || 0;
+    setCellValue("K50", constructionCooperationFunds);
+    setCellValue("N50", paymentFrequencySelect);
 
-    sheet["I54"].v = remainingMonths || 0;
+    setCellValue("I54", remainingMonths);
 
-    sheet["F55"].v = year || 0;
-    sheet["F56"].v = year1Sales || 0;
-    sheet["H56"].v = year2Sales || 0;
-    sheet["J56"].v = year3Sales || 0;
-    sheet["L56"].v = year4Sales || 0;
-    sheet["N56"].v = year5Sales || 0;
-    sheet["F57"].v = totalStoreProfit1 || 0;
-    sheet["H57"].v = totalStoreProfit2 || 0;
-    sheet["J57"].v = totalStoreProfit3 || 0;
-    sheet["L57"].v = totalStoreProfit4 || 0;
-    sheet["N57"].v = totalStoreProfit5 || 0;
-    sheet["F58"].v = daily1Sales || 0;
-    sheet["H58"].v = daily2Sales || 0;
-    sheet["J58"].v = daily3Sales || 0;
-    sheet["L58"].v = daily4Sales || 0;
-    sheet["N58"].v = daily5Sales || 0;
+    setCellValue("F55", year);
+    setCellValue("F56", year1Sales);
+    setCellValue("H56", year2Sales);
+    setCellValue("J56", year3Sales);
+    setCellValue("L56", year4Sales);
+    setCellValue("N56", year5Sales);
+    setCellValue("F57", totalStoreProfit1);
+    setCellValue("H57", totalStoreProfit2);
+    setCellValue("J57", totalStoreProfit3);
+    setCellValue("L57", totalStoreProfit4);
+    setCellValue("N57", totalStoreProfit5);
+    setCellValue("F58", daily1Sales);
+    setCellValue("H58", daily2Sales);
+    setCellValue("J58", daily3Sales);
+    setCellValue("L58", daily4Sales);
+    setCellValue("N58", daily5Sales);
 
-    sheet["G61"].v = contractPeriodSelect || 0;
+    setCellValue("G61", contractPeriodSelect);
 
     // 4. ファイルをエクスポート
     const updatedFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
