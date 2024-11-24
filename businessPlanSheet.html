@@ -240,121 +240,135 @@
   displayData();
 
   async function exportToExcel() {
+  try {
     // 1. フォーマット済みのExcelファイルを取得
     const response = await fetch("https://ysato33028.github.io/invest-ver4/file/【原本】経営計画書.xlsx");
+    if (!response.ok) {
+      throw new Error("Excelファイルが見つかりません");
+    }
     const arrayBuffer = await response.arrayBuffer();
     const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-    // 2. Firebaseデータを挿入
+    // 2. シートを取得
     const sheetName = workbook.SheetNames[0];
+    if (!sheetName) {
+      throw new Error("シート名が見つかりません");
+    }
     const sheet = workbook.Sheets[sheetName];
+    if (!sheet) {
+      throw new Error("シートが見つかりません");
+    }
 
-    // セルにデータを書き込む
-    sheet["I2"].v = { v: name };
-    sheet["P4"].v = { v: manager };
+    // 3. セルにデータを書き込む
+    sheet["I2"].v = name || "";
+    sheet["P4"].v = manager || "";
 
-    sheet["D6"].v = { v: overview };
-    sheet["D8"].v = { v: consumerCharacteristics };
+    sheet["D6"].v = overview || 0;
+    sheet["D8"].v = consumerCharacteristics || 0;
 
-    sheet["E12"].v = { v: household };
-    sheet["G12"].v = { v: population };
-    sheet["I12"].v = { v: averagePopulation };
+    sheet["E12"].v = household || 0;
+    sheet["G12"].v = population || 0;
+    sheet["I12"].v = averagePopulation || 0;
 
-    
-    sheet["D15"].v = { v: delivery };
-    sheet["G15"].v = { v: openSelect };
-    sheet["J15"].v = { v: endSelect };
+    sheet["D15"].v = delivery || 0;
+    sheet["G15"].v = openSelect || 0;
+    sheet["J15"].v = endSelect || 0;
 
-    sheet["F18"].v = { v: contractArea };
-    sheet["K18"].v = { v: shopArea };
+    sheet["F18"].v = contractArea || 0;
+    sheet["K18"].v = shopArea || 0;
 
-    sheet["F22"].v = { v: sales };
-    sheet["F23"].v = { v: profit };
-    sheet["F24"].v = { v: labor };
-    sheet["F25"].v = { v: selling };
-    sheet["F26"].v = { v: rent };
-    sheet["F27"].v = { v: equipment };
-    sheet["F28"].v = { v: general };
-    sheet["F29"].v = { v: totalSelling3Value };
-    sheet["F30"].v = { v: monthlyStoreProfit };
+    sheet["F22"].v = sales || 0;
+    sheet["F23"].v = profit || 0;
+    sheet["F24"].v = labor || 0;
+    sheet["F25"].v = selling || 0;
+    sheet["F26"].v = rent || 0;
+    sheet["F27"].v = equipment || 0;
+    sheet["F28"].v = general || 0;
+    sheet["F29"].v = totalSelling3Value || 0;
+    sheet["F30"].v = monthlyStoreProfit || 0;
 
-    sheet["K22"].v = { v: dailySale };
-    sheet["K23"].v = { v: aiForecastSales };
-    sheet["J27"].v = { v: logisticsCosts };
+    sheet["K22"].v = dailySale || 0;
+    sheet["K23"].v = aiForecastSales || 0;
+    sheet["J27"].v = logisticsCosts || 0;
 
-    sheet["P23"].v = { v: totalLaborCosts1 };
-    sheet["P24"].v = { v: employeeLaborCosts1 };
-    sheet["P25"].v = { v: coEmployeeLaborCosts1 };
-    sheet["P26"].v = { v: avgSalaryData1 };
-    sheet["P27"].v = { v: dailyWorkingHours1 };
-    sheet["Q23"].v = { v: averagetotalLabor };
-    sheet["Q24"].v = { v: averageEmployeeLabor };
-    sheet["Q25"].v = { v: averageCoEmployeeLabor };
-    sheet["Q26"].v = { v: averageAvgSalary };
-    sheet["Q27"].v = { v: averageDailyWorkingHours };
+    sheet["P23"].v = totalLaborCosts1 || 0;
+    sheet["P24"].v = employeeLaborCosts1 || 0;
+    sheet["P25"].v = coEmployeeLaborCosts1 || 0;
+    sheet["P26"].v = avgSalaryData1 || 0;
+    sheet["P27"].v = dailyWorkingHours1 || 0;
+    sheet["Q23"].v = averagetotalLabor || 0;
+    sheet["Q24"].v = averageEmployeeLabor || 0;
+    sheet["Q25"].v = averageCoEmployeeLabor || 0;
+    sheet["Q26"].v = averageAvgSalary || 0;
+    sheet["Q27"].v = averageDailyWorkingHours || 0;
 
-    sheet["H34"].v = { v: lastNegativeMonth };
-    sheet["L34"].v = { v: layoutPattern };
-    sheet["Q34"].v = { v: locationPattern };
+    sheet["H34"].v = lastNegativeMonth || 0;
+    sheet["L34"].v = layoutPattern || 0;
+    sheet["Q34"].v = locationPattern || 0;
 
-    sheet["L35"].v = { v: parkingSpacesSelect };
-    sheet["Q35"].v = { v: numberofParkingSpaces };
+    sheet["L35"].v = parkingSpacesSelect || 0;
+    sheet["Q35"].v = numberofParkingSpaces || 0;
 
-    sheet["G37"].v = { v: buildingCost };
-    sheet["G38"].v = { v: generalConstructionCost };
-    sheet["G39"].v = { v: refrigerationEquipmentConstructionTotal };
-    sheet["G40"].v = { v: buildingsEquipment };
-    sheet["G41"].v = { v: displayFixtures };
-    sheet["G42"].v = { v: signboard };
-    sheet["G43"].v = { v: other };
-    sheet["G44"].v = { v: nonstandard };
-    sheet["G47"].v = { v: total };
+    sheet["G37"].v = buildingCost || 0;
+    sheet["G38"].v = generalConstructionCost || 0;
+    sheet["G39"].v = refrigerationEquipmentConstructionTotal || 0;
+    sheet["G40"].v = buildingsEquipment || 0;
+    sheet["G41"].v = displayFixtures || 0;
+    sheet["G42"].v = signboard || 0;
+    sheet["G43"].v = other || 0;
+    sheet["G44"].v = nonstandard || 0;
+    sheet["G47"].v = total || 0;
 
-    sheet["G47"].v = { v: addRegisters };
-    sheet["G47"].v = { v: addSelfRegisters };
+    sheet["G47"].v = addRegisters || 0;
+    sheet["G47"].v = addSelfRegisters || 0;
 
-    sheet["K48"].v = { v: consultingValue };
-    sheet["N48"].v = { v: keyMoneyValue };
-    sheet["K49"].v = { v: deposit };
+    sheet["K48"].v = consultingValue || 0;
+    sheet["N48"].v = keyMoneyValue || 0;
+    sheet["K49"].v = deposit || 0;
 
-    sheet["N48"].v = { v: keyMoneyValue };
-    sheet["K49"].v = { v: deposit };
-    
-    sheet["K50"].v = { v: constructionCooperationFunds };
-    sheet["N50"].v = { v: paymentFrequencySelect };
+    sheet["N48"].v = keyMoneyValue || 0;
+    sheet["K49"].v = deposit || 0;
 
-    sheet["I54"].v = { v: remainingMonths };
+    sheet["K50"].v = constructionCooperationFunds || 0;
+    sheet["N50"].v = paymentFrequencySelect || 0;
 
-    sheet["F55"].v = { v: year };
-    sheet["F56"].v = { v: year1Sales };
-    sheet["H56"].v = { v: year2Sales };
-    sheet["J56"].v = { v: year3Sales };
-    sheet["L56"].v = { v: year4Sales };
-    sheet["N56"].v = { v: year5Sales };
-    sheet["F57"].v = { v: totalStoreProfit1 };
-    sheet["H57"].v = { v: totalStoreProfit2 };
-    sheet["J57"].v = { v: totalStoreProfit3 };
-    sheet["L57"].v = { v: totalStoreProfit4 };
-    sheet["N57"].v = { v: totalStoreProfit5 };
-    sheet["F58"].v = { v: daily1Sales };
-    sheet["H58"].v = { v: daily2Sales };
-    sheet["J58"].v = { v: daily3Sales };
-    sheet["L58"].v = { v: daily4Sales };
-    sheet["N58"].v = { v: daily5Sales };
+    sheet["I54"].v = remainingMonths || 0;
 
-    sheet["G61"].v = { v: contractPeriodSelect };
+    sheet["F55"].v = year || 0;
+    sheet["F56"].v = year1Sales || 0;
+    sheet["H56"].v = year2Sales || 0;
+    sheet["J56"].v = year3Sales || 0;
+    sheet["L56"].v = year4Sales || 0;
+    sheet["N56"].v = year5Sales || 0;
+    sheet["F57"].v = totalStoreProfit1 || 0;
+    sheet["H57"].v = totalStoreProfit2 || 0;
+    sheet["J57"].v = totalStoreProfit3 || 0;
+    sheet["L57"].v = totalStoreProfit4 || 0;
+    sheet["N57"].v = totalStoreProfit5 || 0;
+    sheet["F58"].v = daily1Sales || 0;
+    sheet["H58"].v = daily2Sales || 0;
+    sheet["J58"].v = daily3Sales || 0;
+    sheet["L58"].v = daily4Sales || 0;
+    sheet["N58"].v = daily5Sales || 0;
 
+    sheet["G61"].v = contractPeriodSelect || 0;
 
-    // 3. ファイルをエクスポート
+    // 4. ファイルをエクスポート
     const updatedFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([updatedFile], { type: "application/octet-stream" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `【${name}】経営計画書.xlsx`;
+    link.download = `【${name || "店舗名未定"}】経営計画書.xlsx`;
     link.click();
+  } catch (error) {
+    console.error("エクスポートエラー:", error);
+    alert(`エクスポート中にエラーが発生しました: ${error.message}`);
   }
-  // ボタンのクリックでExcelを生成する例
-  document.getElementById("exportButton").addEventListener("click", exportToExcel);
+}
+
+// ボタンのクリックでExcelを生成
+document.getElementById("exportButton").addEventListener("click", exportToExcel);
+
 </script>
 </body>
 </html>
