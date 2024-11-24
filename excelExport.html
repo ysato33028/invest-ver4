@@ -73,8 +73,6 @@
                   const propertyData = docSnap.data();
 
                   const businessPlanData = propertyData.businessPlanData || {};
-                  const salesTable = propertyData.salesTable || {};
-                  const incomeData = propertyData.incomeData || {};
 
 
                   // 必要なデータをFirestoreから抽出し、表示用に加工
@@ -128,26 +126,26 @@
                     paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
                     year: propertyData.deliveryDate || "",
                     dailySales: {
-                      daily1: salesTable.daily1Sales || 0,
-                      daily2: salesTable.daily2Sales || 0,
-                      daily3: salesTable.daily3Sales || 0,
-                      daily4: salesTable.daily4Sales || 0,
-                      daily5: salesTable.daily5Sales || 0,
+                      daily1: propertyData.salesTable?.daily1Sales || 0,
+                      daily2: propertyData.salesTable?.daily2Sales || 0,
+                      daily3: propertyData.salesTable?.daily3Sales || 0,
+                      daily4: propertyData.salesTable?.daily4Sales || 0,
+                      daily5: propertyData.salesTable?.daily5Sales || 0,
                     },
                     yearlySales: {
-                      year1: parseFloat((salesTable.year1Sales || "0").replace(/,/g, "")),
-                      year2: parseFloat((salesTable.year2Sales || "0").replace(/,/g, "")),
-                      year3: parseFloat((salesTable.year3Sales || "0").replace(/,/g, "")),
-                      year4: parseFloat((salesTable.year4Sales || "0").replace(/,/g, "")),
-                      year5: parseFloat((salesTable.year5Sales || "0").replace(/,/g, "")),
+                      year1: parseFloat((propertyData.salesTable?.year1Sales || "0").replace(/,/g, "")),
+                      year2: parseFloat((propertyData.salesTable?.year2Sales || "0").replace(/,/g, "")),
+                      year3: parseFloat((propertyData.salesTable?.year3Sales || "0").replace(/,/g, "")),
+                      year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
+                      year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
                     },
-                    remainingMonths: salesTable.remainingMonths || 0,
+                    remainingMonths: v.remainingMonths || 0,
                     totalStoreProfit: {
-                      year1: incomeData.monthlyStoreProfit1 * (salesTable.remainingMonths || 0),
-                      year2: incomeData.monthlyStoreProfit2 * 12,
-                      year3: incomeData.monthlyStoreProfit3 * 12,
-                      year4: incomeData.monthlyStoreProfit4 * 12,
-                      year5: incomeData.monthlyStoreProfit5 * 12,
+                      year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
+                      year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
+                      year3: propertyData.incomeData?.monthlyStoreProfit3 * 12,
+                      year4: propertyData.incomeData?.monthlyStoreProfit4 * 12,
+                      year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
                     },
                     contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
                   };
