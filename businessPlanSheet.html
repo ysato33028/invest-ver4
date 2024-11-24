@@ -23,9 +23,7 @@
     </style>
 </head>
 <body>
-    <h1>経営計画書作成 │ <span id="name"></span></h1>
-    
-    
+    <h1>経営計画書作成 │ <span id="name"></span></h1>    
 
     <br><br>
     <button id="exportButton">Excelをダウンロード</button>
@@ -47,8 +45,8 @@
     const db = getFirestore(app);
 
     // グローバル関数
-    let name = 0;
-    let manager = 0;
+    let name = "";
+    let manager = "";
 
     let overview = 0;
     let consumerCharacteristics = 0;
@@ -334,7 +332,7 @@
   async function exportToExcel() {
   try {
     // 1. フォーマット済みのExcelファイルを取得
-    const response = await fetch("https://ysato33028.github.io/invest-ver4/file/【原本】経営計画書.xlsx");
+    const response = await fetch("https://ysato33028.github.io/invest-ver4/file/Book1.xlsx");
     if (!response.ok) {
       throw new Error("Excelファイルが見つかりません");
     }
@@ -343,9 +341,6 @@
 
     // 2. シートを取得
     const sheetName = workbook.SheetNames[0];
-    if (!sheetName) {
-      throw new Error("シート名が見つかりません");
-    }
     const sheet = workbook.Sheets[sheetName];
     if (!sheet) {
       throw new Error("シートが見つかりません");
@@ -353,10 +348,6 @@
 
     // セルに値を設定する際、セルが未定義の場合は初期化する
     function setCellValue(sheet, cellAddress, value) {
-      if (typeof value !== "string" && typeof value !== "number" && value !== null) {
-        throw new Error(`無効な値: ${value}`);
-      }
-
       if (!sheet[cellAddress]) {
         sheet[cellAddress] = {}; // セルが未定義の場合は初期化
       }
