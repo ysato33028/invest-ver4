@@ -133,7 +133,7 @@
               // 6. Blobをダウンロードリンクとして処理
               const link = document.createElement("a");
               link.href = URL.createObjectURL(blob);
-              link.download = `【${name || "店舗名未定"}】経営計画書.xlsx`;
+              link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
               link.click();
           } catch (error) {
               console.error("エクスポートエラー:", error);
