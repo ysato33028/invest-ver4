@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>水道光熱費</title>
+  <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .year-header {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+  <h1>水道光熱費 │ <span id="name"></span></h1>
+
+  <table>
+    <tbody>
+        <tr id="row1">
+            <th>期間</th>
+        <!-- 月度データが追加される場所 -->
+        </tr>
+        <tr id="row2">
+            <th id="deliveryDate1"></th>
+          <!-- 売上データが追加される場所 -->
+        </tr>
+        <tr id="row3">
+            <th id="deliveryDate2"></th>
+        </tr>
+        <tr id="row4">
+            <th id="deliveryDate3"></th>
+        </tr>
+        <tr id="row5">
+            <th id="deliveryDate4"></th>
+        </tr>
+        <tr id="row6">
+            <th id="deliveryDate5"></th>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2>単年PL</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>年度</th>
+        <th>単年PL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>1年目</th>
+        <td id="singleYear1"></td>
+      </tr>
+      <tr>
+        <th>2年目</th>
+        <td id="singleYear2"></td>
+      </tr>
+      <tr>
+        <th>3年目</th>
+        <td id="singleYear3"></td>
+      </tr>
+      <tr>
+        <th>4年目</th>
+        <td id="singleYear4"></td>
+      </tr>
+      <tr>
+        <th>5年目</th>
+        <td id="singleYear5"></td>
+      </tr>
+      <tr>
+        <th>10年合計</th>
+        <td id="singleYear10"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <button id="save-button">データを保存</button>
+  <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+  <script type="module">
+    // Firebase App (必須)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+      authDomain: "mybas-61537.firebaseapp.com",
+      projectId: "mybas-61537",
+      storageBucket: "mybas-61537.firebasestorage.app",
+      messagingSenderId: "47149190856",
+      appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 月度指数と営業日
+    const monthIndices = [
+      { month: 3, index: 0.973253301, days: 31 },
+      { month: 4, index: 0.999759904, days: 30 },
+      { month: 5, index: 1.000912365, days: 31 },
+      { month: 6, index: 1.022232893, days: 30 },
+      { month: 7, index: 1.04182473, days: 31 },
+      { month: 8, index: 1.013589436, days: 31 },
+      { month: 9, index: 1.026266507, days: 30 },
+      { month: 10, index: 1.009555822, days: 31 },
+      { month: 11, index: 0.985354142, days: 30 },
+      { month: 12, index: 0.962304921, days: 31 },
+      { month: 1, index: 0.962304922, days: 31 },
+      { month: 2, index: 1.002641056, days: 28 }
+    ];
+
+    // URLからidパラメータを取得
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // URLから'id'パラメータを取得
+    const propertyId = getQueryParam('id');
+    const docId = "commonData";
+
+    // Firestoreから指定IDのデータを取得して表示
+    async function displayData() {
+      if (!propertyId) {
+        document.getElementById("name").textContent = "IDが指定されていません";
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "properties", propertyId);
+        const docSnap = await getDoc(docRef);
+
+        const dbRef = doc(db, "laborCostRatio", docId);
+        const dbSnap = await getDoc(dbRef);
+
+        if (docSnap.exists() && dbSnap.exists()) {
+          const propertyData = docSnap.data();
+          const ratioData = dbSnap.data();
+
+          // Firestoreのデータを表示
+          document.getElementById("name").textContent = propertyData.name || "";
+          const deliveryDate = propertyData.deliveryDate;
+          document.getElementById("deliveryDate1").textContent = `${deliveryDate}年`;
+          document.getElementById("deliveryDate2").textContent = `${deliveryDate + 1}年`;
+          document.getElementById("deliveryDate3").textContent = `${deliveryDate + 2}年`;
+          document.getElementById("deliveryDate4").textContent = `${deliveryDate + 3}年`;
+          document.getElementById("deliveryDate5").textContent = `${deliveryDate + 4}年`;
+
+          const plannedOpeningDate = propertyData.plannedOpeningDate || 0;
+          let startDate = plannedOpeningDate === 11 ? 12 : (plannedOpeningDate + 1) % 12;  // 11 -> 12月, それ以外は次の月に設定
+          if (startDate === 0) startDate = 1; // 0を1に調整（12月の場合）
+
+          // openingDataの値に応じた数字を設定
+          let plannedOpeningDateCount = 0; // 初期値
+
+          switch (plannedOpeningDate) {
+              case 2:
+                  plannedOpeningDateCount = 12;
+                  break;
+              case 1:
+                  plannedOpeningDateCount = 1;
+                  break;
+              case 12:
+                  plannedOpeningDateCount = 2;
+                  break;
+              case 11:
+                  plannedOpeningDateCount = 3;
+                  break;
+              case 10:
+                  plannedOpeningDateCount = 4;
+                  break;
+              case 9:
+                  plannedOpeningDateCount = 5;
+                  break;
+              case 8:
+                  plannedOpeningDateCount = 6;
+                  break;
+              case 7:
+                  plannedOpeningDateCount = 7;
+                  break;
+              case 6:
+                  plannedOpeningDateCount = 8;
+                  break;
+              case 5:
+                  plannedOpeningDateCount = 9;
+                  break;
+              case 4:
+                  plannedOpeningDateCount = 10;
+                  break;
+              case 3:
+                  plannedOpeningDateCount = 11;
+                  break;
+              default:
+                  plannedOpeningDateCount = 0;
+                  break;
+          }
+
+          // レイアウトデータを選択
+          let layoutData;
+
+          const t80UtilityRatio = {
+            utility1: parseFloat(ratioData.t80Utility1 || 0),
+            utility2: parseFloat(ratioData.t80Utility2 || 0),
+            utility3: parseFloat(ratioData.t80Utility3 || 0),
+            utility4: parseFloat(ratioData.t80Utility4 || 0),
+            utility5: parseFloat(ratioData.t80Utility5 || 0),
+            utility6: parseFloat(ratioData.t80Utility6 || 0),
+            utility7: parseFloat(ratioData.t80Utility7 || 0),
+            utility8: parseFloat(ratioData.t80Utility8 || 0),
+            utility9: parseFloat(ratioData.t80Utility9 || 0),
+            utility10: parseFloat(ratioData.t80Utility10 || 0),
+            utility11: parseFloat(ratioData.t80Utility11 || 0),
+            utility12: parseFloat(ratioData.t80Utility12 || 0)
+          };
+
+          const basicUtilityRatio = {
+            utility1: parseFloat(ratioData.basicUtility1 || 0),
+            utility2: parseFloat(ratioData.basicUtility2 || 0),
+            utility3: parseFloat(ratioData.basicUtility3 || 0),
+            utility4: parseFloat(ratioData.basicUtility4 || 0),
+            utility5: parseFloat(ratioData.basicUtility5 || 0),
+            utility6: parseFloat(ratioData.basicUtility6 || 0),
+            utility7: parseFloat(ratioData.basicUtility7 || 0),
+            utility8: parseFloat(ratioData.basicUtility8 || 0),
+            utility9: parseFloat(ratioData.basicUtility9 || 0),
+            utility10: parseFloat(ratioData.basicUtility10 || 0),
+            utility11: parseFloat(ratioData.basicUtility11 || 0),
+            utility12: parseFloat(ratioData.basicUtility12 || 0)
+          };
+
+          const smallUtilityRatio = {
+            utility1: parseFloat(ratioData.smallUtility1 || 0),
+            utility2: parseFloat(ratioData.smallUtility2 || 0),
+            utility3: parseFloat(ratioData.smallUtility3 || 0),
+            utility4: parseFloat(ratioData.smallUtility4 || 0),
+            utility5: parseFloat(ratioData.smallUtility5 || 0),
+            utility6: parseFloat(ratioData.smallUtility6 || 0),
+            utility7: parseFloat(ratioData.smallUtility7 || 0),
+            utility8: parseFloat(ratioData.smallUtility8 || 0),
+            utility9: parseFloat(ratioData.smallUtility9 || 0),
+            utility10: parseFloat(ratioData.smallUtility10 || 0),
+            utility11: parseFloat(ratioData.smallUtility11 || 0),
+            utility12: parseFloat(ratioData.smallUtility12 || 0)
+          };
+
+          let layoutCount;
+
+          const t80Utility = ratioData.t80UtilityData || 0;
+          const basicUtility = ratioData.basicinputValue || 0;
+          const smallUtility = ratioData.smallinputValue || 0;
+
+          switch (propertyData.layout) {
+            case "80坪パターン":
+              layoutData = t80UtilityRatio;
+              layoutCount = t80Utility;
+              break;
+            case "標準":
+              layoutData = basicUtilityRatio;
+              layoutCount = basicUtility;
+              break;
+            case "狭小":
+              layoutData = smallUtilityRatio;
+              layoutCount = smallUtility;
+              break;
+            default:
+              console.error("未対応のレイアウトです");
+              break;
+          }
+
+          // DOM要素に値を設定
+          const elementsToUpdate = [
+            "singleYear2",
+            "singleYear3",
+            "singleYear4",
+            "singleYear5"
+          ];
+
+          elementsToUpdate.forEach((id) => {
+            const element = document.getElementById(id);
+            if (element) {
+              element.textContent = layoutCount; // 値を設定
+            } else {
+              console.error(`ID '${id}' の要素が見つかりません`);
+            }
+          });
+
+
+          if (layoutData) {
+              // 年ごとのデータを5年間分生成
+              let yearData = [];
+              let singleYear1 = 0;  // 1年目の合計値を初期化
+              let singleYear2 = 0;
+              let singleYear3 = 0;
+              let singleYear4 = 0;
+              let singleYear5 = 0;
+
+              for (let year = 0; year < 5; year++) {
+                let yearArray = [];
+                let yearTotal = 0;
+
+                for (let i = 0; i < 12; i++) {
+                  // startDateを基に月を計算
+                  const month = (startDate + i - 1) % 12 + 1;  // 0月から11月で計算
+                  const adjustedMonth = month === 0 ? 12 : month;  // 0 -> 12月に調整
+                  const key = `utility${adjustedMonth}`;
+                  const value = layoutData[key];
+
+                  // valueがundefinedまたはnullの場合は0に設定
+                  const validValue = value != null ? value : 0;
+
+                  yearArray.push(validValue);
+                  yearTotal += validValue;  // 各年の合計値を加算
+                }
+
+                yearData.push(yearArray);
+
+                // 年ごとの合計を格納
+                if (year === 0) singleYear1 = yearTotal;
+                if (year === 1) singleYear2 = yearTotal;
+                if (year === 2) singleYear3 = yearTotal;
+                if (year === 3) singleYear4 = yearTotal;
+                if (year === 4) singleYear5 = yearTotal;
+              }
+
+              // 月次データを表示
+              displayMonthSales(yearData, startDate);
+
+              // 1年目の合計を計算
+              const firstYearTotal = calculateFirstYearTotal(layoutData, startDate, plannedOpeningDateCount);
+              singleYear1 = firstYearTotal;  // 1年目の合計を更新
+              displayFirstYearTotal(firstYearTotal);
+
+
+              const singleYear2Data = singleYear2 / 12;
+              const singleYear3Data = singleYear3 / 12;
+              const singleYear4Data = singleYear4 / 12;
+              const singleYear5Data = singleYear5 / 12;
+
+              // singleYear10を計算
+              const singleYear10 = ((singleYear1 + singleYear2Data + singleYear3Data + singleYear4Data) + (singleYear5Data * (10 - 4))) / 10;
+
+              // 結果をDOMに表示
+              const singleYear10Element = document.getElementById("singleYear10");
+              if (singleYear10Element) {
+                singleYear10Element.textContent = singleYear10.toFixed(0);  // 小数点0桁で表示
+              }
+            } else {
+              console.error("layoutDataがありません");
+            }
+
+        }
+      } catch (error) {
+        console.error("データ取得に失敗しました:", error);
+      }
+    }
+
+    function calculateFirstYearTotal(layoutData, startDate, plannedOpeningDateCount) {
+      let total = 0;
+
+      // plannedOpeningDateCount が 0 または未定義の場合、エラーを防ぐためデフォルトを設定
+      if (!plannedOpeningDateCount || plannedOpeningDateCount <= 0) {
+        console.warn("plannedOpeningDateCount が不正です。デフォルト値 1 を使用します。");
+        plannedOpeningDateCount = 1; // デフォルト値
+      }
+
+      // スタート月から翌年2月までを計算
+      const monthsToCalculate = [];
+      let month = startDate;
+
+      while (true) {
+        monthsToCalculate.push(month); // 対象月を配列に追加
+        if (month === 2) break; // 翌年2月でループ終了
+        month = month % 12 + 1; // 1～12の範囲で月を進める
+      }
+
+      // 合計を計算
+      for (const month of monthsToCalculate) {
+        const key = `utility${month}`;
+        total += parseFloat(layoutData[key] || 0); // 該当月の値を加算
+      }
+
+      // 合計を開業月数で割る
+      return total / plannedOpeningDateCount;
+    }
+
+    function displayFirstYearTotal(total) {
+      const totalElement = document.getElementById("singleYear1");
+
+      if (!totalElement) {
+        console.error("HTML要素 'singleYear1' が見つかりません。");
+        return;
+      }
+
+      // totalがNaNの場合は0に設定
+      const validTotal = isNaN(parseFloat(total)) ? 0 : parseFloat(total);
+
+      // 数値を小数点2桁で表示
+      totalElement.textContent = validTotal.toFixed(2);
+    }
+
+     // 月次データをテーブルに表示
+    function displayMonthSales(yearData, startDate) {
+      const row1 = document.getElementById("row1");
+      const row2 = document.getElementById("row2");
+      const row3 = document.getElementById("row3");
+      const row4 = document.getElementById("row4");
+      const row5 = document.getElementById("row5");
+      const row6 = document.getElementById("row6");
+
+      // 期間（月度）を表示
+      const months = [];
+      for (let i = 0; i < 12; i++) {
+        const month = (startDate + i - 1) % 12 + 1;
+        months.push(`${month}月`);
+      }
+      months.forEach(month => {
+        const th = document.createElement("th");
+        th.textContent = month;
+        row1.appendChild(th);
+      });
+
+      // 1年目から5年目のデータを表示
+      yearData.forEach((yearArray, yearIndex) => {
+        const row = document.getElementById(`row${yearIndex + 2}`);  // row2からrow6を選択
+
+        yearArray.forEach(value => {
+          const td = document.createElement("td");
+          td.textContent = value;
+          row.appendChild(td);
+        });
+      });
+    }
+
+    // ページがロードされた後にデータを表示
+    window.addEventListener("DOMContentLoaded", displayData);
+
+    // 保存ボタンの設定
+    const saveButton = document.getElementById("save-button");
+    if (saveButton) {
+      saveButton.addEventListener("click", function(event) {
+        event.preventDefault();  // ページ遷移を防ぐ
+        saveDataToFirestore();
+      });
+    } else {
+      console.error("保存ボタンが見つかりません");
+    }
+
+    // Firestoreにデータを保存する関数
+    async function saveDataToFirestore() {
+      // 新しいドキュメントを作成
+      try {
+        if (propertyId) {
+          const docRef = doc(db, "properties", propertyId);
+
+          const singleYear1 = parseFloat(document.getElementById("singleYear1").textContent).toFixed(2) || 0;
+          const singleYear2 = parseFloat(document.getElementById("singleYear2").textContent).toFixed(0) || 0;
+          const singleYear3 = parseFloat(document.getElementById("singleYear3").textContent).toFixed(0) || 0;
+          const singleYear4 = parseFloat(document.getElementById("singleYear4").textContent).toFixed(0) || 0;
+          const singleYear5 = parseFloat(document.getElementById("singleYear5").textContent).toFixed(0) || 0;
+          const singleYear10 = parseFloat(document.getElementById("singleYear10").textContent).toFixed(0) || 0;
+
+          // データを取得
+          const utilityData = {
+            singleYear1: singleYear1,  
+            singleYear2: singleYear2,          
+            singleYear3: singleYear3,
+            singleYear4: singleYear4,
+            singleYear5: singleYear5,
+            singleYear10: singleYear10,
+          };
+          await setDoc(docRef, { utilityData }, { merge: true });
+          alert("データが保存されました");
+        } else {
+          alert("物件IDが指定されていません");
+      }  
+      } catch (error) {
+        alert("データの保存中にエラーが発生しました");
+        console.error("データ保存エラー:", error);
+      }
+    }
+  </script>
+</body>
+</html>

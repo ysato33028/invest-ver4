@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カテゴリー別工事費用（詳細）</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            background-color: #f2f2f2; /* 淡い灰色 */
+            font-weight: bold;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>カテゴリー別工事費用（詳細） │ <span id="name"></span></h2>
+    <table>
+        <tr>
+            <th>建築工事</th>
+            <th>面積相当</th>
+            <th>条件分岐</th>
+            <th>直接入力</th>
+            <th>金額</th>
+        </tr>
+        <tr>
+            <td>仮設工事</td>
+            <td></td>
+            <td id="temporaryConstruction-cost">0</td>
+            <td><input type="text" name="temporaryConstruction-input" value="0" oninput="calculateTemporaryConstructionTotal()"></td>
+            <td id="temporaryConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>解体工事</td>
+            <td></td>
+            <td id="sashDismantling-cost">0</td>
+            <td><input type="text" name="demolitionWork-input" value="0" oninput="calculateDemolitionWorkTotal()"></td>
+            <td id="demolitionWork-total">0</td>
+        </tr>
+        <tr>
+            <td>土間工事</td>
+            <td id="floorConstructionCalculated-cost">0</td>
+            <td id="floorConstruction-cost">0</td>
+            <td><input type="text" name="floorConstruction-input" value="0"  oninput="calculatefloorConstructionTotal()"></td>
+            <td id="floorConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>防水工事</td>
+            <td id="waterproofCalculated-cost">0</td>
+            <td id="waterproof-cost">0</td>
+            <td><input type="text" name="waterproofingWork-input" value="0" oninput="calculatewaterproofTotal()"></td>
+            <td id="waterproof-total">0</td>
+        </tr>
+        <tr>
+            <td>タイル工事</td>
+            <td id="tileWorkCalculated-cost">0</td>
+            <td></td>
+            <td><input type="text" name="tileWork-input" value="0" oninput="calculatetileWorkTotal()"></td>
+            <td id="tileWork-total">0</td>
+        </tr>
+        <tr>
+            <td>金属工事</td>
+            <td></td>
+            <td><input type="text" name="metalwork-conditionalBranching" value="0" oninput="calculatemetalworkTotal()"></td>
+            <td><input type="text" name="metalwork-input" value="0" oninput="calculatemetalworkTotal()"></td>
+            <td id="metalwork-total">0</td>
+        </tr>
+        <tr>
+            <td>左官工事</td>
+            <td></td>
+            <td id="plasteringWork-cost">0</td>
+            <td><input type="text" name="plasteringWork-input" value="0" oninput="calculateplasteringWorkTotal()"></td>
+            <td id="plasteringWork-total">0</td>
+        </tr>
+        <tr>
+            <td>サッシ工事</td>
+            <td></td>
+            <td id="sashConstruction-cost">0</td>
+            <td><input type="text" name="sashConstruction-input" value="0" oninput="calculatesashConstructionTotal()"></td>
+            <td id="sashConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>塗装工事</td>
+            <td></td>
+            <td><input type="text" name="paintingWork-conditionalBranching" value="0" oninput="calculatepaintingWorkTotal()"></td>
+            <td><input type="text" name="paintingWork-input" value="0" oninput="calculatepaintingWorkTotal()"></td>
+            <td id="paintingWork-total">0</td>
+        </tr>
+        <tr>
+            <td>軽鉄ボード工事</td>
+            <td id="lightsteelboardConstructionCalculated-cost">0</td>
+            <td id="lightsteelboardConstruction-cost">0</td>
+            <td><input type="text" name="lightsteelboardConstruction-input" value="0" oninput="calculatelightsteelboardConstructionTotal()"></td>
+            <td id="lightsteelboardConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>内外装工事</td>
+            <td></td>
+            <td><input type="text" name="interiorAndExteriorConstruction-conditionalBranching" value="0" oninput="calculateinteriorAndExteriorConstructionTotal()"></td>
+            <td><input type="text" name="interiorAndExteriorConstruction-input" value="0" oninput="calculateinteriorAndExteriorConstructionTotal()"></td>
+            <td id="interiorAndExteriorConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>雑工事</td>
+            <td></td>
+            <td><input type="text" name="miscellaneousWork-conditionalBranching" value="0" oninput="calculatemiscellaneousWorkTotal()"></td>
+            <td><input type="text" name="miscellaneousWork-input" value="0" oninput="calculatemiscellaneousWorkTotal()"></td>
+            <td id="miscellaneousWork-total">0</td>
+        </tr>
+        <tr>
+            <td>外構工事</td>
+            <td></td>
+            <td id="exteriorConstruction-cost">0</td>
+            <td><input type="text" name="exteriorConstruction-input" value="0" oninput="calculateexteriorConstructionTotal()"></td>
+            <td id="exteriorConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>ﾆｭｰﾃﾞｻﾞｲﾝ工事</td>
+            <td></td>
+            <td id="newdesignConstruction-cost">0</td>
+            <td><input type="text" name="newdesignConstruction-input" value="0" oninput="calculatenewdesignConstructionTotal()"></td>
+            <td id="newdesignConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>電気設備</td>
+            <td></td>
+            <td id="electricalInstallation-cost">0</td>
+            <td><input type="text" name="electricalInstallation-input" value="0" oninput="calculateelectricalInstallationTotal()"></td>
+            <td id="electricalInstallation-total">0</td>
+        </tr>
+        <tr>
+            <td>給排水設備</td>
+            <td></td>
+            <td><input type="text" name="waterSupplyAndDrainageFacilities-conditionalBranching" value="0" oninput="calculatewaterSupplyAndDrainageFacilitiesTotal()"></td>
+            <td><input type="text" name="waterSupplyAndDrainageFacilities-input" value="0" oninput="calculatewaterSupplyAndDrainageFacilitiesTotal()"></td>
+            <td id="waterSupplyAndDrainageFacilities-total">0</td>
+        </tr>
+        <tr class="highlight">
+            <td>内装工事 合計</td>
+            <td id="interiorConstruction-total" colspan="4"></td>
+        </tr>
+        <tr class="highlight">
+            <td>内装工事経費込</td>
+            <td id="interiorConstructionWithExpense" colspan="4"></td>
+        </tr>
+        <tr>
+            <td>空調換気工事</td>
+            <td></td>
+            <td id="airconditioningAndVentilationWork-cost">0</td>
+            <td><input type="text" name="airconditioningAndVentilationWork-input" value="0" oninput="calculateairconditioningAndVentilationWorkTotal()"></td>
+            <td id="airconditioningAndVentilationWork-total">0</td>
+        </tr>
+        <tr>
+            <td>冷凍設備工事</td>
+            <td></td>
+            <td id="refrigerationEquipmentConstruction-cost">0</td>
+            <td><input type="text" name="refrigerationEquipmentConstruction-input" value="0" oninput="calculaterefrigerationEquipmentConstructionTotal()"></td>
+            <td id="refrigerationEquipmentConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>サイン工事</td>
+            <td></td>
+            <td id="signConstruction-cost">0</td>
+            <td><input type="text" name="signConstruction-input" value="0" oninput="calculatesignConstructionTotal()"></td>
+            <td id="signConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>什器工事</td>
+            <td></td>
+            <td id="fixtureConstruction-cost">0</td>
+            <td><input type="text" name="fixtureConstruction-input" value="0" oninput="calculatefixtureConstructionTotal()"></td>
+            <td id="fixtureConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>間仕切工事</td>
+            <td></td>
+            <td><input type="text" name="partitionConstruction-conditionalBranching" value="0" oninput="calculatepartitionConstructionTotal()"></td>
+            <td><input type="text" name="partitionConstruction-input" value="0" oninput="calculatepartitionConstructionTotal()"></td>
+            <td id="partitionConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>照明器具納品</td>
+            <td></td>
+            <td id="lightingFixtureDelivery-cost">0</td>
+            <td><input type="text" name="lightingFixtureDelivery-input" value="0" oninput="calculatelightingFixtureDeliveryTotal()"></td>
+            <td id="lightingFixtureDelivery-total">0</td>
+        </tr>
+        <tr>
+            <td>シャッター工事</td>
+            <td></td>
+            <td><input type="text" name="shutterConstruction-conditionalBranching" value="0" oninput="calculateshutterConstructionTotal()"></td>
+            <td><input type="text" name="shutterConstruction-input" value="0" oninput="calculateshutterConstructionTotal()"></td>
+            <td id="shutterConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>床材納品</td>
+            <td></td>
+            <td id="flooringDelivery-cost">0</td>
+            <td><input type="text" name="flooringDelivery-input" value="0" oninput="calculateflooringDeliveryTotal()"></td>
+            <td id="flooringDelivery-total">0</td>
+        </tr>
+        <tr>
+            <td>冷蔵内蔵ケース</td>
+            <td></td>
+            <td><input type="text" name="refrigeratedCase-conditionalBranching" value="0" oninput="calculaterefrigeratedCaseTotal()"></td>
+            <td><input type="text" name="refrigeratedCase-input" value="0" oninput="calculaterefrigeratedCaseTotal()"></td>
+            <td id="refrigeratedCase-total">0</td>
+        </tr>
+        <tr>
+            <td>備品納品１</td>
+            <td></td>
+            <td id="equipmentDelivery1-cost">0</td>
+            <td><input type="text" name="equipmentDelivery1-input" value="0" oninput="calculateequipmentDelivery1Total()"></td>
+            <td id="equipmentDelivery1-total">0</td>
+        </tr>
+        <tr>
+            <td>備品納品２</td>
+            <td></td>
+            <td><input type="text" name="equipmentDelivery2-conditionalBranching" value="0" oninput="calculateequipmentDelivery2Total()"></td>
+            <td><input type="text" name="equipmentDelivery2-input" value="0" oninput="calculateequipmentDelivery2Total()"></td>
+            <td id="equipmentDelivery2-total">0</td>
+        </tr>
+        <tr>
+            <td>ロッカー</td>
+            <td></td>
+            <td><input type="text" name="locker-conditionalBranching" value="0" oninput="calculatelockerTotal()"></td>
+            <td><input type="text" name="locker-input" value="0" oninput="calculatelockerTotal()"></td>
+            <td id="locker-total">0</td>
+        </tr>
+        <tr>
+            <td>ロールスクリーン</td>
+            <td></td>
+            <td><input type="text" name="rollerBlinds-conditionalBranching" value="0" oninput="calculaterollerBlindsTotal()"></td>
+            <td><input type="text" name="rollerBlinds-input" value="0" oninput="calculaterollerBlindsTotal()"></td>
+            <td id="rollerBlinds-total">0</td>
+        </tr>
+        <tr>
+            <td>光触媒施工</td>
+            <td></td>
+            <td><input type="text" name="photocatalystConstruction-conditionalBranching" value="0" oninput="calculatephotocatalystConstructionTotal()"></td>
+            <td><input type="text" name="photocatalystConstruction-input" value="0" oninput="calculatephotocatalystConstructionTotal()"></td>
+            <td id="photocatalystConstruction-total">0</td>
+        </tr>
+        <tr>
+            <td>※先行解体</td>
+            <td></td>
+            <td></td>
+            <td id="advanceDismantling-cost">0</td>
+            <td id="advanceDismantling-total">0</td>
+        </tr>
+        <tr>
+            <td>※用途変更</td>
+            <td id="changeOfUse-cost">0</td>
+            <td></td>
+            <td></td>
+            <td id="changeOfUse-total">0</td>
+        </tr>
+        <tr>
+            <td>※B工事</td>
+            <td></td>
+            <td></td>
+            <td id="bConstructionCost-cost">0</td>
+            <td id="bConstructionCost-total">0</td>
+        </tr>
+        <tr>
+            <td>※全館自火報 等</td>
+            <td></td>
+            <td></td>
+            <td id="automaticFireAlarmCost-cost">0</td>
+            <td id="automaticFireAlarmCost-total">0</td>
+        </tr>
+        <tr>
+            <td>※ﾎﾟｰﾙ看板</td>
+            <td></td>
+            <td></td>
+            <td id="poleSignboardCost-cost">0</td>
+            <td id="poleSignboardCost-total">0</td>
+        </tr>
+        <tr class="highlight">
+            <td>合計（税別）</td>
+            <td id="grand-total" colspan="4">0</td>
+        </tr>
+    </table><br>
+    <button class="btn-save" type="button" id="save-button">更新</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <script type="module">
+        // Firebase App (必須)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebaseの初期化
+        const firebaseConfig = {
+            apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+            authDomain: "mybas-61537.firebaseapp.com",
+            projectId: "mybas-61537",
+            storageBucket: "mybas-61537.firebasestorage.app",
+            messagingSenderId: "47149190856",
+            appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // URLから'd'パラメータを取得
+        const propertyId = getQueryParam('id');
+
+        // 各項目の合計値をFirestoreに保存する関数
+        async function saveTotalCostsToFirestore() {
+            try {
+                // 合計値を取得してオブジェクトにまとめる
+                const interiorInvestmentCostsTotals = {
+                    temporaryConstructionTotal: document.getElementById("temporaryConstruction-total").textContent,
+                    demolitionWorkTotal: document.getElementById("demolitionWork-total").textContent,
+                    floorConstructionTotal: document.getElementById("floorConstruction-total").textContent,
+                    waterproofTotal: document.getElementById("waterproof-total").textContent,
+                    tileWorkTotal: document.getElementById("tileWork-total").textContent,
+                    metalworkTotal: document.getElementById("metalwork-total").textContent,
+                    plasteringWorkTotal: document.getElementById("plasteringWork-total").textContent,
+                    sashConstructionTotal: document.getElementById("sashConstruction-total").textContent,
+                    paintingWorkTotal: document.getElementById("paintingWork-total").textContent,
+                    lightsteelboardConstructionTotal: document.getElementById("lightsteelboardConstruction-total").textContent,
+                    interiorAndExteriorConstructionTotal: document.getElementById("interiorAndExteriorConstruction-total").textContent,
+                    miscellaneousWorkTotal: document.getElementById("miscellaneousWork-total").textContent,
+                    exteriorConstructionTotal: document.getElementById("exteriorConstruction-total").textContent,
+                    newdesignConstructionTotal: document.getElementById("newdesignConstruction-total").textContent,
+                    electricalInstallationTotal: document.getElementById("electricalInstallation-total").textContent,
+                    waterSupplyAndDrainageFacilitiesTotal: document.getElementById("waterSupplyAndDrainageFacilities-total").textContent,
+                    airconditioningAndVentilationWorkTotal: document.getElementById("airconditioningAndVentilationWork-total").textContent,
+                    refrigerationEquipmentConstructionTotal: document.getElementById("refrigerationEquipmentConstruction-total").textContent,
+                    signConstructionTotal: document.getElementById("signConstruction-total").textContent,
+                    fixtureConstructionTotal: document.getElementById("fixtureConstruction-total").textContent,
+                    partitionConstructionTotal: document.getElementById("partitionConstruction-total").textContent,
+                    lightingFixtureDeliveryTotal: document.getElementById("lightingFixtureDelivery-total").textContent,
+                    shutterConstructionTotal: document.getElementById("shutterConstruction-total").textContent,
+                    flooringDeliveryTotal: document.getElementById("flooringDelivery-total").textContent,
+                    refrigeratedCaseTotal: document.getElementById("refrigeratedCase-total").textContent,
+                    equipmentDelivery1Total: document.getElementById("equipmentDelivery1-total").textContent,
+                    equipmentDelivery2Total: document.getElementById("equipmentDelivery2-total").textContent,
+                    lockerTotal: document.getElementById("locker-total").textContent,
+                    rollerBlindsTotal: document.getElementById("rollerBlinds-total").textContent,
+                    photocatalystConstructionTotal: document.getElementById("photocatalystConstruction-total").textContent,
+                    advanceDismantlingTotal: document.getElementById("advanceDismantling-total").textContent,
+                    changeOfUseTotal: document.getElementById("changeOfUse-total").textContent,
+                    bConstructionCostTotal: document.getElementById("bConstructionCost-total").textContent,
+                    automaticFireAlarmCostTotal: document.getElementById("automaticFireAlarmCost-total").textContent,
+                    poleSignboardCostTotal: document.getElementById("poleSignboardCost-total").textContent
+                };
+
+                // Firestoreに保存
+                await setDoc(doc(db, "properties", propertyId), { interiorInvestmentCostsTotals }, { merge: true });
+                console.log("合計値が保存されました");
+            } catch (error) {
+                console.error("合計値の保存中にエラーが発生しました: ", error);
+            }
+        }
+
+        // 各項目の合計値をFirestoreに保存する関数
+        async function saveInputToFirestore() {
+            if (!propertyId) {
+                alert("IDが見つかりませんでした");
+                return;
+            }
+
+            // 各フィールドの名前と値をオブジェクトにまとめて保存
+            const inputData = {};
+            const inputFields = document.querySelectorAll("input[type='text']");
+
+            inputFields.forEach((input) => {
+                const fieldName = input.name; // name属性からフィールド名を取得
+                const value = parseFloat(input.value) || 0; // 入力値を数値として取得
+                inputData[fieldName] = value; // オブジェクトにフィールド名と値を追加
+            });
+
+            try {
+                // Firestoreの参照
+                const docRef = doc(db, "properties", propertyId);
+                // FirestoreにinputDataオブジェクト全体を保存
+                await setDoc(docRef, { inputData }, { merge: true });
+
+                console.log("合計値が保存されました");
+            } catch (error) {
+                console.error("合計値の保存中にエラーが発生しました: ", error);
+            }
+        }
+
+        // 更新ボタンのクリックイベントリスナー
+        document.getElementById("save-button").addEventListener("click", async () => {
+            try {
+                await saveTotalCostsToFirestore(); // 合計値をFirebaseに保存
+                await saveInputToFirestore(); // 合計値をFirebaseに保存
+                alert("データが更新されました"); // 成功メッセージ
+            } catch (error) {
+                console.error("データの更新中にエラーが発生しました: ", error);
+                alert("データの更新中にエラーが発生しました"); // エラーメッセージ
+            }
+        });
+
+        async function loadInputsFromFirestore() {
+            if (!propertyId) {
+                console.error("IDが見つかりませんでした");
+                return;
+            }
+
+            try {
+                // Firestoreの参照
+                const docRef = doc(db, "properties", propertyId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    // 保存されたinputDataから各フィールドの値を取得し表示
+                    if (data.inputData) {
+                        const inputData = data.inputData;
+                        for (const [fieldName, value] of Object.entries(inputData)) {
+                            const inputField = document.querySelector(`input[name="${fieldName}"]`);
+                            if (inputField) {
+                                inputField.value = value;
+                            }
+                        }
+                    }
+
+
+                    // 他のデータも取得し、各フィールドに設定
+                    displayConstructionCostsData();
+
+                    calculatemetalworkTotal();
+                    calculateDemolitionWorkTotal();
+                    calculatefloorConstructionTotal();
+                    calculatewaterproofTotal();
+                    calculatetileWorkTotal();
+                    calculatemetalworkTotal();
+                    calculateplasteringWorkTotal();
+                    calculatesashConstructionTotal();
+                    calculatepaintingWorkTotal();
+                    calculatelightsteelboardConstructionTotal();
+                    calculateinteriorAndExteriorConstructionTotal();
+                    calculatemiscellaneousWorkTotal();
+                    calculateexteriorConstructionTotal();
+                    calculatenewdesignConstructionTotal();
+                    calculateelectricalInstallationTotal();
+                    calculatewaterSupplyAndDrainageFacilitiesTotal();
+                    calculateairconditioningAndVentilationWorkTotal();
+                    calculaterefrigerationEquipmentConstructionTotal();
+                    calculatesignConstructionTotal();
+                    calculatefixtureConstructionTotal();
+                    calculatepartitionConstructionTotal();
+                    calculateshutterConstructionTotal();
+                    calculaterefrigeratedCaseTotal();
+                    calculateequipmentDelivery2Total();
+                    calculatelockerTotal();
+                    calculaterollerBlindsTotal();
+                    calculatephotocatalystConstructionTotal();
+                    calculatelightingFixtureDeliveryTotal();
+                    calculateflooringDeliveryTotal();
+                    calculateequipmentDelivery1Total();
+                    calculateadvanceDismantlingTotal();
+                    calculatechangeOfUseTotal();
+                    calculatebConstructionCostTotal();
+                    calculateautomaticFireAlarmCostTotal();
+                    calculatepoleSignboardCostTotal();
+
+                } else {
+                    console.log("ドキュメントが見つかりませんでした");
+                }
+            } catch (error) {
+                console.error("データの読み込み中にエラーが発生しました: ", error);
+            }
+        }
+
+        // ページ読み込み時にデータを読み込む
+        window.addEventListener("load", loadInputsFromFirestore);
+
+        // Firestoreから指定したIDのnameフィールドを取得して表示
+        async function displayConstructionCostsData() {
+            try {
+                // 取得したいドキュメントのIDを指定
+                if (propertyId) {
+                    const docRef = doc(db, "properties", propertyId); // "properties" を実際のコレクション名に置き換えます
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        // Firebaseデータが存在する場合、フォームに値を設定
+                        const propertyData = docSnap.data()
+                        document.getElementById("name").textContent = propertyData.name || "";
+                        const contractArea = propertyData.contractArea || 0;
+
+                        // InputData内の情報取得
+                        const data = docSnap.data().interiorInvestmentCostsData;
+
+                        const contractAreaCost = contractArea * 3.3025;
+                        const contractAreaCost1 = data.contractAreaCost1 || 0;
+
+                        const siteStatusCost = data.siteStatusCost || 0;
+                        const outdoorUnitCost = data.outdoorUnitCost || 0;
+                        
+                        const temporaryConstruction = contractAreaCost1 + siteStatusCost + outdoorUnitCost;
+                        document.getElementById("temporaryConstruction-cost").textContent = temporaryConstruction;
+
+                        const sashDismantlingCost = data.sashDismantlingCost || 0;
+                        document.getElementById("sashDismantling-cost").textContent = sashDismantlingCost;
+
+                        const floorConstructionCost = data.floorConstructionCost || 0;
+                        const floorConstructionCalculatedCost = data.floorConstructionCalculatedCost || 0;
+                        document.getElementById("floorConstruction-cost").textContent = floorConstructionCost;
+                        document.getElementById("floorConstructionCalculated-cost").textContent = floorConstructionCalculatedCost;
+
+                        const waterproofCost = data.waterproofCost || 0;
+                        const waterproofCalculatedCost = data.waterproofCalculatedCost || 0;
+                        document.getElementById("waterproof-cost").textContent = waterproofCost;
+                        document.getElementById("waterproofCalculated-cost").textContent = waterproofCalculatedCost;
+
+                        const drainageCalculatedCost = data.drainageCalculatedCost || 0;
+                        document.getElementById("tileWorkCalculated-cost").textContent = drainageCalculatedCost;
+
+                        const dogRunningCost = data.dogRunningCost || 0;
+                        document.getElementById("plasteringWork-cost").textContent = dogRunningCost;
+
+                        const entranceCost = data.entranceCost || 0;
+                        document.getElementById("sashConstruction-cost").textContent = entranceCost;
+
+                        const ceilingCost = data.ceilingCost || 0;
+                        const ceilingCalculatedCost = data.ceilingCalculatedCost || 0;
+                        document.getElementById("lightsteelboardConstructionCalculated-cost").textContent = ceilingCalculatedCost;
+                        
+                        const lightsteelboardConstructionCost = ceilingCost + contractAreaCost * 2.3;
+                        document.getElementById("lightsteelboardConstruction-cost").textContent = lightsteelboardConstructionCost.toFixed(0);
+                        
+                        const parkingCost = data.parkingCost || 0;
+                        document.getElementById("exteriorConstruction-cost").textContent = parkingCost;
+
+                        // contractAreaとの計算
+                        let newdesignConstruction = (contractAreaCost <= 165) ? 600 : (contractAreaCost <= 230) ? 800 : 100;
+                        document.getElementById("newdesignConstruction-cost").textContent = newdesignConstruction;
+
+                        const drainageType = data.drainageType || 0;
+                        let drainageTypeCost = (drainageType === "新築フリスタ") ? 1900 : 
+                                               (drainageType === "新築ビルイン 鉄骨") ? 1900 : 
+                                               (drainageType === "新築ビルイン RC") ? 1900 : 
+                                               2200;
+                        document.getElementById("electricalInstallation-cost").textContent = drainageTypeCost;
+
+                        const airConditioningCost = data.airConditioningCost || 0;
+                        document.getElementById("airconditioningAndVentilationWork-cost").textContent = airConditioningCost;
+
+                        const frozenCost = data.frozenCost || 0;
+                        const vegetablesCost = data.vegetablesCost || 0;
+                        const meatsCost = data.meatsCost || 0;
+                        const delicaCost = data.delicaCost || 0;
+                        const walkInCost = data.walkInCost || 0;
+                        const machineRoomCost = data.machineRoomCost || 0;
+                        const refrigerationEquipmentConstruction = frozenCost + vegetablesCost + meatsCost + delicaCost + walkInCost + machineRoomCost;
+                        document.getElementById("refrigerationEquipmentConstruction-cost").textContent = refrigerationEquipmentConstruction;
+
+                        const numberofSignEntrancesCost = data.numberofSignEntrancesCost || 0;
+                        const tentCost = data.tentCost || 0;
+                        const signBaseCost = data.signBaseCost || 0;
+                        const aeonChannelsCost = data.aeonChannelsCost || 0;
+                        const graphicCost = data.graphicCost || 0;
+                        const signConstruction = numberofSignEntrancesCost + tentCost + signBaseCost + aeonChannelsCost + graphicCost;
+                        document.getElementById("signConstruction-cost").textContent = signConstruction;
+
+                        const contractAreaCost2 = data.contractAreaCost2 || 0;
+                        document.getElementById("fixtureConstruction-cost").textContent = contractAreaCost2;
+
+                        const lightingFixtureDelivery = contractAreaCost * 0.3025 * 11;
+                        document.getElementById("lightingFixtureDelivery-cost").textContent = lightingFixtureDelivery.toFixed(0);
+
+                        const flooringDelivery = contractAreaCost * 1800 * 0.9 * 0.001;
+                        document.getElementById("flooringDelivery-cost").textContent = flooringDelivery.toFixed(0);
+
+                        const equipmentDelivery1 = contractAreaCost2 * 0.9;
+                        document.getElementById("equipmentDelivery1-cost").textContent = equipmentDelivery1;
+
+                        const demolitionCost = data.demolitionCost || 0;
+                        document.getElementById("advanceDismantling-cost").textContent = demolitionCost;
+
+                        const changeOfUse = data.problemsofUseCost || 0;
+                        document.getElementById("changeOfUse-cost").textContent = changeOfUse;
+
+                        const bConstructionCost = data.BConstruction || 0;
+                        document.getElementById("bConstructionCost-cost").textContent = bConstructionCost;
+
+                        const AutomaticFireAlarm = data.AutomaticFireAlarm || 0;
+                        document.getElementById("automaticFireAlarmCost-cost").textContent = AutomaticFireAlarm;
+
+                        const meetingRoom = data.meetingRoom || 0;
+                        const eliminateSteps = data.eliminateSteps || 0;
+                        const poleSignCost = data.poleSignCost || 0;
+                        const poleSignboardCost = meetingRoom + eliminateSteps + poleSignCost;
+                        document.getElementById("poleSignboardCost-cost").textContent = poleSignboardCost;
+
+                        // Firestoreからのデータ読み込み後に合計を再計算
+                        calculateTemporaryConstructionTotal();
+                        calculateDemolitionWorkTotal();
+                        calculatefloorConstructionTotal();
+                        calculatewaterproofTotal();
+                        calculatetileWorkTotal();
+                        calculateplasteringWorkTotal();
+                        calculatesashConstructionTotal();
+                        calculatelightsteelboardConstructionTotal();
+                        calculateexteriorConstructionTotal();
+                        calculatenewdesignConstructionTotal();
+                        calculateelectricalInstallationTotal();
+                        calculateairconditioningAndVentilationWorkTotal();
+                        calculaterefrigerationEquipmentConstructionTotal();
+                        calculatesignConstructionTotal();
+                        calculatefixtureConstructionTotal();
+                        calculatelightingFixtureDeliveryTotal();
+                        calculateflooringDeliveryTotal();
+                        calculateequipmentDelivery1Total();
+                        calculateadvanceDismantlingTotal();
+                        calculatechangeOfUseTotal();
+                        calculatebConstructionCostTotal();
+                        calculateautomaticFireAlarmCostTotal();
+                        calculatepoleSignboardCostTotal();
+
+                        // Firestoreからのデータ読み込み後に合計を再計算
+                        calculateFinalTotal();
+
+                    } else {
+                        alert("データが見つかりませんでした");
+                    }
+                } 
+            } catch (error) {
+                console.error("データの読み込み中にエラーが発生しました: ", error);
+                alert("データの読み込み中にエラーが発生しました");
+                
+            }
+        }
+
+        // 合計を計算
+        function calculateTemporaryConstructionTotal() {
+            const costElement = document.getElementById("temporaryConstruction-cost");
+            const inputElement = document.querySelector("input[name='temporaryConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("temporaryConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculateDemolitionWorkTotal() {
+            const costElement = document.getElementById("sashDismantling-cost");
+            const inputElement = document.querySelector("input[name='demolitionWork-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("demolitionWork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatefloorConstructionTotal() {
+            const costElement = document.getElementById("floorConstruction-cost");
+            const calculatedcostElement = document.getElementById("floorConstructionCalculated-cost");
+            const inputElement = document.querySelector("input[name='floorConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const calculatedcostValue = parseFloat(calculatedcostElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + calculatedcostValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("floorConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatewaterproofTotal() {
+            const costElement = document.getElementById("waterproof-cost");
+            const calculatedcostElement = document.getElementById("waterproofCalculated-cost");
+            const inputElement = document.querySelector("input[name='waterproofingWork-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const calculatedcostValue = parseFloat(calculatedcostElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + calculatedcostValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("waterproof-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatetileWorkTotal() {
+            const calculatedcostElement = document.getElementById("tileWorkCalculated-cost");
+            const inputElement = document.querySelector("input[name='tileWork-input']");
+            
+            const calculatedcostValue = parseFloat(calculatedcostElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = calculatedcostValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("tileWork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        // ２つの入力フォームをあわせた合計値
+         function calculatemetalworkTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='metalwork-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='metalwork-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("metalwork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculateplasteringWorkTotal() {
+            const costElement = document.getElementById("plasteringWork-cost");
+            const inputElement = document.querySelector("input[name='plasteringWork-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("plasteringWork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatesashConstructionTotal() {
+            const costElement = document.getElementById("sashConstruction-cost");
+            const inputElement = document.querySelector("input[name='sashConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("sashConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        // ２つの入力フォームをあわせた合計値
+         function calculatepaintingWorkTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='paintingWork-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='paintingWork-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("paintingWork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatelightsteelboardConstructionTotal() {
+            const costElement = document.getElementById("lightsteelboardConstruction-cost");
+            const calculatedcostElement = document.getElementById("lightsteelboardConstructionCalculated-cost");
+            const inputElement = document.querySelector("input[name='lightsteelboardConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const calculatedcostValue = parseFloat(calculatedcostElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + calculatedcostValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("lightsteelboardConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        // ２つの入力フォームをあわせた合計値
+         function calculateinteriorAndExteriorConstructionTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='interiorAndExteriorConstruction-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='interiorAndExteriorConstruction-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("interiorAndExteriorConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        // ２つの入力フォームをあわせた合計値
+         function calculatemiscellaneousWorkTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='miscellaneousWork-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='miscellaneousWork-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("miscellaneousWork-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculateexteriorConstructionTotal() {
+            const costElement = document.getElementById("exteriorConstruction-cost");
+            const inputElement = document.querySelector("input[name='exteriorConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("exteriorConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculatenewdesignConstructionTotal() {
+            const costElement = document.getElementById("newdesignConstruction-cost");
+            const inputElement = document.querySelector("input[name='newdesignConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("newdesignConstruction-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+        }
+
+        function calculateelectricalInstallationTotal() {
+            const costElement = document.getElementById("electricalInstallation-cost");
+            const inputElement = document.querySelector("input[name='electricalInstallation-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("electricalInstallation-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+         function calculatewaterSupplyAndDrainageFacilitiesTotal() {
+            const conditionalBranchingElement = document.querySelector("input[name='waterSupplyAndDrainageFacilities-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='waterSupplyAndDrainageFacilities-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("waterSupplyAndDrainageFacilities-total").textContent = total;
+
+            calculateOverallTotal(); // 総計を更新
+
+        }
+
+        function calculateairconditioningAndVentilationWorkTotal() {
+            const costElement = document.getElementById("airconditioningAndVentilationWork-cost");
+            const inputElement = document.querySelector("input[name='airconditioningAndVentilationWork-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("airconditioningAndVentilationWork-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculaterefrigerationEquipmentConstructionTotal() {
+            const costElement = document.getElementById("refrigerationEquipmentConstruction-cost");
+            const inputElement = document.querySelector("input[name='refrigerationEquipmentConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("refrigerationEquipmentConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatesignConstructionTotal() {
+            const costElement = document.getElementById("signConstruction-cost");
+            const inputElement = document.querySelector("input[name='signConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("signConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatefixtureConstructionTotal() {
+            const costElement = document.getElementById("fixtureConstruction-cost");
+            const inputElement = document.querySelector("input[name='fixtureConstruction-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("fixtureConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculatepartitionConstructionTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='partitionConstruction-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='partitionConstruction-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("partitionConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatelightingFixtureDeliveryTotal() {
+            const costElement = document.getElementById("lightingFixtureDelivery-cost");
+            const inputElement = document.querySelector("input[name='lightingFixtureDelivery-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("lightingFixtureDelivery-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculateshutterConstructionTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='shutterConstruction-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='shutterConstruction-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("shutterConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculateflooringDeliveryTotal() {
+            const costElement = document.getElementById("flooringDelivery-cost");
+            const inputElement = document.querySelector("input[name='flooringDelivery-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("flooringDelivery-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculaterefrigeratedCaseTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='refrigeratedCase-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='refrigeratedCase-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("refrigeratedCase-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculateequipmentDelivery1Total() {
+            const costElement = document.getElementById("equipmentDelivery1-cost");
+            const inputElement = document.querySelector("input[name='equipmentDelivery1-input']");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = costValue + (inputValue || 0);
+
+            // 合計値の表示
+            document.getElementById("equipmentDelivery1-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculateequipmentDelivery2Total() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='equipmentDelivery2-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='equipmentDelivery2-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("equipmentDelivery2-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculatelockerTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='locker-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='locker-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("locker-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculaterollerBlindsTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='rollerBlinds-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='rollerBlinds-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("rollerBlinds-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // ２つの入力フォームをあわせた合計値
+        function calculatephotocatalystConstructionTotal() {
+            // 条件分岐入力と金属工事入力の要素を取得
+            const conditionalBranchingElement = document.querySelector("input[name='photocatalystConstruction-conditionalBranching']");
+            const inputElement = document.querySelector("input[name='photocatalystConstruction-input']");
+
+            // 入力値を取得、数値に変換
+            const conditionalBranchingValue = parseFloat(conditionalBranchingElement.value) || 0;
+            const inputValue = parseFloat(inputElement.value) || 0;
+
+            // 合計値の計算
+            const total = conditionalBranchingValue + inputValue;
+
+            // 合計値の表示
+            document.getElementById("photocatalystConstruction-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculateadvanceDismantlingTotal() {
+            const costElement = document.getElementById("advanceDismantling-cost");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+
+            // 合計値の計算
+            const total = costValue;
+
+            // 合計値の表示
+            document.getElementById("advanceDismantling-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatechangeOfUseTotal() {
+            const costElement = document.getElementById("changeOfUse-cost");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+
+            // 合計値の計算
+            const total = costValue;
+
+            // 合計値の表示
+            document.getElementById("changeOfUse-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatebConstructionCostTotal() {
+            const costElement = document.getElementById("bConstructionCost-cost");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+
+            // 合計値の計算
+            const total = costValue;
+
+            // 合計値の表示
+            document.getElementById("bConstructionCost-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculateautomaticFireAlarmCostTotal() {
+            const costElement = document.getElementById("automaticFireAlarmCost-cost");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+
+            // 合計値の計算
+            const total = costValue;
+
+            // 合計値の表示
+            document.getElementById("automaticFireAlarmCost-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        function calculatepoleSignboardCostTotal() {
+            const costElement = document.getElementById("poleSignboardCost-cost");
+            
+            const costValue = parseFloat(costElement.textContent) || 0;
+
+            // 合計値の計算
+            const total = costValue;
+
+            // 合計値の表示
+            document.getElementById("poleSignboardCost-total").textContent = total;
+
+            calculateGrandTotal();
+
+        }
+
+        // 内装工事の合計を計算する関数
+        function calculateOverallTotal() {
+            const totalElements = [
+                document.getElementById("temporaryConstruction-total"),
+                document.getElementById("demolitionWork-total"),
+                document.getElementById("floorConstruction-total"),
+                document.getElementById("waterproof-total"),
+                document.getElementById("tileWork-total"),
+                document.getElementById("metalwork-total"),
+                document.getElementById("plasteringWork-total"),
+                document.getElementById("sashConstruction-total"),
+                document.getElementById("paintingWork-total"),
+                document.getElementById("lightsteelboardConstruction-total"),
+                document.getElementById("interiorAndExteriorConstruction-total"),
+                document.getElementById("miscellaneousWork-total"),
+                document.getElementById("exteriorConstruction-total"),
+                document.getElementById("newdesignConstruction-total"),
+                document.getElementById("electricalInstallation-total"),
+                document.getElementById("waterSupplyAndDrainageFacilities-total")
+            ];
+
+            let overallTotal = 0;
+
+            // 各 total 要素の値を合計
+            totalElements.forEach(element => {
+                const value = parseFloat(element?.textContent || "0");
+                overallTotal += value;
+            });
+
+            // 合計値をに反映
+            document.getElementById("interiorConstruction-total").textContent = overallTotal;
+
+            // 合計値の1.1倍（経費込）を計算して反映
+            const overallTotalWithExpense = overallTotal * 1.1;
+            document.getElementById("interiorConstructionWithExpense").textContent = overallTotalWithExpense.toFixed(0); 
+
+            return overallTotalWithExpense; // 戻り値として経費込み合計を返す
+
+            // 各入力フィールドの値も含めて計算
+            const inputFields = document.querySelectorAll("input[type='text']");
+            inputFields.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                overallTotal += value;
+            });
+
+        }
+
+        function calculateGrandTotal() {
+            const totalElements = [
+                document.getElementById("airconditioningAndVentilationWork-total"),
+                document.getElementById("refrigerationEquipmentConstruction-total"),
+                document.getElementById("signConstruction-total"),
+                document.getElementById("fixtureConstruction-total"),
+                document.getElementById("partitionConstruction-total"),
+                document.getElementById("lightingFixtureDelivery-total"),
+                document.getElementById("shutterConstruction-total"),
+                document.getElementById("flooringDelivery-total"),
+                document.getElementById("refrigeratedCase-total"),
+                document.getElementById("equipmentDelivery1-total"),
+                document.getElementById("equipmentDelivery2-total"),
+                document.getElementById("locker-total"),
+                document.getElementById("rollerBlinds-total"),
+                document.getElementById("photocatalystConstruction-total"),
+                document.getElementById("advanceDismantling-total"),
+                document.getElementById("changeOfUse-total"),
+                document.getElementById("bConstructionCost-total"),
+                document.getElementById("automaticFireAlarmCost-total"),
+                document.getElementById("poleSignboardCost-total")
+            ];
+
+            let grandTotal = 0;
+
+            // 各 total 要素の値を合計
+            totalElements.forEach(element => {
+                const value = parseFloat(element?.textContent || "0");
+                grandTotal += value;
+            });
+
+            return grandTotal; // 戻り値として総合計を返す
+
+
+            // 各入力フィールドの値も含めて計算
+            const inputFields = document.querySelectorAll("input[type='text']");
+            inputFields.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                grandTotal += value;
+            });
+        }
+
+        // 総合計（税別）を表示する関数
+        function calculateFinalTotal() {
+            const overallTotalWithExpense = calculateOverallTotal();
+            const grandTotal = calculateGrandTotal();
+            const finalTotal = overallTotalWithExpense + grandTotal;
+
+            // 合計（税別）を HTML に反映
+            document.getElementById("grand-total").textContent = finalTotal.toFixed(0);
+        }
+
+        // ページ読み込み時や数値変更時に計算を実行
+        document.addEventListener("DOMContentLoaded", function() {
+
+            displayConstructionCostsData();
+
+            // グローバルに公開
+            window.calculateTemporaryConstructionTotal = calculateTemporaryConstructionTotal;
+            window.calculateDemolitionWorkTotal = calculateDemolitionWorkTotal;
+            window.calculatefloorConstructionTotal = calculatefloorConstructionTotal;
+            window.calculatewaterproofTotal = calculatewaterproofTotal;
+            window.calculatetileWorkTotal = calculatetileWorkTotal;
+            window.calculatemetalworkTotal = calculatemetalworkTotal;
+            window.calculateplasteringWorkTotal = calculateplasteringWorkTotal;
+            window.calculatesashConstructionTotal = calculatesashConstructionTotal;
+            window.calculatepaintingWorkTotal = calculatepaintingWorkTotal;
+            window.calculatelightsteelboardConstructionTotal = calculatelightsteelboardConstructionTotal;
+            window.calculateinteriorAndExteriorConstructionTotal = calculateinteriorAndExteriorConstructionTotal;
+            window.calculatemiscellaneousWorkTotal = calculatemiscellaneousWorkTotal;
+            window.calculateexteriorConstructionTotal = calculateexteriorConstructionTotal;
+            window.calculatenewdesignConstructionTotal = calculatenewdesignConstructionTotal;
+            window.calculateelectricalInstallationTotal = calculateelectricalInstallationTotal;
+            window.calculatewaterSupplyAndDrainageFacilitiesTotal = calculatewaterSupplyAndDrainageFacilitiesTotal;
+            window.calculateairconditioningAndVentilationWorkTotal = calculateairconditioningAndVentilationWorkTotal;
+            window.calculaterefrigerationEquipmentConstructionTotal = calculaterefrigerationEquipmentConstructionTotal;
+            window.calculatesignConstructionTotal = calculatesignConstructionTotal;
+            window.calculatefixtureConstructionTotal = calculatefixtureConstructionTotal;
+            window.calculatepartitionConstructionTotal = calculatepartitionConstructionTotal;
+            window.calculateshutterConstructionTotal = calculateshutterConstructionTotal;
+            window.calculaterefrigeratedCaseTotal = calculaterefrigeratedCaseTotal;
+            window.calculateequipmentDelivery2Total = calculateequipmentDelivery2Total;
+            window.calculatelockerTotal = calculatelockerTotal;
+            window.calculaterollerBlindsTotal = calculaterollerBlindsTotal;
+            window.calculatephotocatalystConstructionTotal = calculatephotocatalystConstructionTotal;
+            window.calculatelightingFixtureDeliveryTotal = calculatelightingFixtureDeliveryTotal;
+            window.calculateflooringDeliveryTotal = calculateflooringDeliveryTotal;
+            window.calculateequipmentDelivery1Total = calculateequipmentDelivery1Total;
+            window.calculateadvanceDismantlingTotal = calculateadvanceDismantlingTotal;
+            window.calculatechangeOfUseTotal = calculatechangeOfUseTotal;
+            window.calculatebConstructionCostTotal = calculatebConstructionCostTotal;
+            window.calculateautomaticFireAlarmCostTotal = calculateautomaticFireAlarmCostTotal;
+            window.calculatepoleSignboardCostTotal = calculatepoleSignboardCostTotal;
+
+            // 初回ロード時に計算を実行
+            calculateFinalTotal();
+
+            // 各入力フィールドの変更時にリアルタイムで合計を再計算
+            document.querySelectorAll("input[type='text']").forEach(input => {
+                input.addEventListener("input", calculateFinalTotal);
+            });
+        });
+        </script>
+</body>
+</html>

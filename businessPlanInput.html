@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>経営計画書入力</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+</head>
+<body>
+    <h1>経営計画書入力</h1>
+    <table>
+        <tr>
+            <th>入力項目</th>
+            <th>入力 or リスト</th>
+            <th colspan="2">入力内容</th>
+            <th>入力例</th>
+        </tr>
+        <tr>
+            <td>店舗名（住所）：都市選択、住所：記載</td>
+            <td>エントリーシート</td>
+            <td class="required">
+                <select id="citySelect">
+                    <option value="東京都">東京都</option>
+                    <option value="横浜市">横浜市</option>
+                    <option value="川崎市">川崎市</option>
+                    <option value="神奈川県">神奈川県</option>
+                    <option value="埼玉県">埼玉県</option>
+                    <option value="千葉県">千葉県</option>
+                </select>
+            </td>
+            <td class="required" id="name"></td>
+            <td>六本木1丁目</td>
+        </tr>
+        <tr>
+            <td>作成者</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="manager"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>類似店舗</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="similarStores"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>１．物件地周辺の概要</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="text" id="overview-input" placeholder=""></td>
+            <td>（半径５００ｍ内の競争ＳＭ：ライフ●●店、西友●●店、ビッグエー●●店）</td>
+        </tr>
+        <tr>
+            <td>（１）狙い：商圏世帯と生活者の特徴</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="text" id="consumerCharacteristics-input" placeholder=""></td>
+            <td>横浜駅至近でマンションの多い高密度住宅立地、競争関係薄く高シェアを狙う</td>
+        </tr>
+        <tr>
+            <td>（２）世帯数状況→3分住居数</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="residences-input" placeholder=""></td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>（２）世帯数状況→3分世帯数</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="household-input" placeholder=""></td>
+            <td>単位：世帯</td>
+        </tr>
+        <tr>
+            <td>（２）世帯数状況→3分人口総数</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="population-input" placeholder=""></td>
+            <td>単位：人</td>
+        </tr>
+        <tr>
+            <td>（２）世帯数状況→1世帯当たり平均人口</td>
+            <td>計算</td>
+            <td class="required" colspan="2">
+                <input type="number" id="averagePopulation" placeholder="" readonly>
+            </td>
+            <td>単位：人/世帯</td>
+        </tr>
+        <tr>
+            <td>（４）建物計画→①床面積内訳→賃貸借面積</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="contractArea"></span></td>
+            <td>単位：坪</td>
+        </tr>
+        <tr>
+            <td>（４）建物計画→①床面積内訳→売場面積</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="shopArea"></span></td>
+            <td>単位：坪</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→建築モデル：</td>
+            <td>リスト</td>
+            <td class="required" colspan="2"><span id="layout"></span><span id="propertyType"></span></td>
+            <td>（例）80坪 新築</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→駐車場あり　なし：</td>
+            <td>リスト</td>
+            <td>駐車場有無</td>
+            <td class="required">
+                <select id="parkingSpacesSelect">
+                    <option value="あり">あり</option>
+                    <option value="なし">なし</option>
+                </select>
+            </td>
+            <td>なし or あり</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→駐車場あり　なし：</td>
+            <td>エントリーシート</td>
+            <td>駐車場台数</td>
+            <td class="required"><span id="numberofParkingSpaces"></span></td>
+            <td>台数</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→システム費用→システム機器（固定）</td>
+            <td>固定</td>
+            <td class="required" colspan="2">2990</td>
+            <td>2990 ※固定</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→レジ増設費用→通常レジ</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="regularRegister-input" placeholder=""></td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→レジ増設費用→セルフレジ</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="cashier"></span></td>
+            <td>オールセルフレジは6、有人2台・セルフ1台は1、有人2台・セルフ2台は2、有人3台・セルフ3台は3</td>
+        </tr>
+        <tr>
+            <td>開店時間</td>
+            <td>リスト</td>
+            <td class="required" colspan="2">
+                <select id="openSelect">
+                    <option>7:00:00</option>
+                    <option>8:00:00</option>
+                    <option>9:00:00</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>閉店時間</td>
+            <td>リスト</td>
+            <td class="required" colspan="2">
+                <select id="endSelect">
+                    <option>22:00:00</option>
+                    <option>23:00:00</option>
+                    <option>24:00:00</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>契約期間</td>
+            <td>リスト</td>
+            <td class="required" colspan="2">
+                <select id="contractPeriodSelect">
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>契約形態</td>
+            <td>リスト</td>
+            <td class="required" colspan="2">
+                <select id="contractTypeSelect">
+                    <option>普通契約</option>
+                    <option>定期借家</option>
+                    <option>借地</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>建物建築費</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="buildingConstructionCosts"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>地代家賃　※借地の場合もこちらに入力</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="rent"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>物流費</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="logisticsCosts-input" placeholder=""></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>固定資産税</td>
+            <td>自動計算</td>
+            <td class="required" colspan="2">-</td>
+            <td>年4回支払、計上月：4月、7月、12月、2月</td>
+        </tr>
+        <tr>
+            <td>損害保険料</td>
+            <td>入力</td>
+            <td class="required" colspan="2"><input type="number" id="insurance-input" placeholder=""></td>
+            <td>開店年度：初月、2年目以降：3月</td>
+        </tr>
+        <tr>
+            <td>登録免許税、不動産取得税、不動産売買契約書収入印紙（10千円）　※その他経費</td>
+            <td>自動計算</td>
+            <td class="required" colspan="2">-</td>
+            <td>固定資産税評価額×税率4％＝不動産取得税　※3%は2024年3月末までの特例税率</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→仲介手数料</td>
+            <td>エントリーシート</td>
+            <td class="required"><span id="totalbrokerageFeeValue"></span></td>
+            <td class="required"><span id="brokerageFee"></span></td>
+            <td>地代家賃 ◯ヵ月分を入力</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→コンサル料</td>
+            <td>エントリーシート</td>
+            <td class="required"><span id="totalconsultingFeesValue"></span></td>
+            <td class="required"><span id="consultingFees"></span></td>
+            <td>地代家賃 ◯ヵ月分を入力</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→礼金</td>
+            <td>エントリーシート</td>
+            <td class="required"><span id="totalkeyMoneyValue"></span></td>
+            <td class="required"><span id="keyMoney"></span></td>
+            <td>地代家賃 ◯ヵ月分を入力</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→保証金</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="deposit"></span></td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→保証金、償却金額</td>
+            <td>エントリーシート</td>
+            <td class="required" colspan="2"><span id="constructionCooperationFunds"></span></td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）→仲介手数料・礼金・コンサル→リロケート元残存簿価</td>
+            <td>エントリーシート</td>
+            <td class="required"><input type="number" id="relocationProposedStore-input" placeholder=""></td>
+            <td class="required"><span id="relocationProposedStoreName"></span></td>
+            <td>右は入力・左は店舗名</td>
+        </tr>
+        <tr>
+            <td>Cash Flow、ベースの投資効率→閉店時　原状回復費用</td>
+            <td>エントリーシート</td>
+            <td class="required"><span id="evacuation"></span></td>
+            <td class="required"><span id="evacuationCount"></span></td>
+            <td>費用 3,500</td>
+        </tr>
+        <tr>
+            <td>コード入力：契約年数＋残月（税金関連以外の経費）</td>
+            <td>契約年数＋残月</td>
+            <td class="required" colspan="2"><span id="contractCode"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>コード入力：契約年数＋残月（税金関連の経費）※建物所有、借地以外は契約年数＋00</td>
+            <td>契約年数＋残月　or　00</td>
+            <td class="required" colspan="2"><input type="number" id="contractCode-input" placeholder=""></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>コード入力：(都市計画税) ▼市街化区域判定(該当の場合は「１」、非該当の場合は「０」</td>
+            <td>0　or　1</td>
+            <td class="required" colspan="2">
+                <select id="cityPlanningTaxSelect">
+                    <option>0</option>
+                    <option>1</option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）</td>
+            <td>建設協力金</td>
+            <td class="required" colspan="2"><input type="number" id="constructionCooperationFunds-input" placeholder="" value="0"></td>
+            <td>建設協力金の既定値は0</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）</td>
+            <td>支払回数</td>
+            <td class="required" colspan="2">
+                <select id="paymentFrequencySelect">
+                    <option>0.1</option>
+                    <option>12</option>
+                    <option>24</option>
+                    <option>36</option>
+                    <option>48</option>
+                    <option>60</option>
+                    <option>72</option>
+                    <option>84</option>
+                    <option>96</option>
+                    <option>108</option>
+                    <option>120</option>
+                    <option>180</option>
+                    <option>240</option>
+                    <option>300</option>
+                    <option>360</option>
+                </select>
+            </td>
+            <td>支払回数は1年単位、支払い回数は0.1</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）</td>
+            <td>支払回数＋残月</td>
+            <td class="required" colspan="2"><span id="numberPaymentFrequency">0</span></td>
+            <td>例）支払回数＋残月１２１２は、支払回数：１２回、残月：１２か月</td>
+        </tr>
+        <tr>
+            <td>２．投資計画（単位千円）</td>
+            <td>月額</td>
+            <td class="required" colspan="2" id="monthlyAmount">0</td>
+            <td></td>
+        </tr>
+    </table><br>
+    <button class="btn-save" type="button" id="save-button">更新</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+    <script type="module">
+        // Firebase App (必須)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebaseの初期化
+        const firebaseConfig = {
+            apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+            authDomain: "mybas-61537.firebaseapp.com",
+            projectId: "mybas-61537",
+            storageBucket: "mybas-61537.firebasestorage.app",
+            messagingSenderId: "47149190856",
+            appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // URLから'd'パラメータを取得
+        const propertyId = getQueryParam('id');
+
+        // Firestoreから指定したIDのnameフィールドを取得して表示
+        async function displayBusinessPlanData() {
+            if (!propertyId) {
+                displayError("IDが指定されていません");
+                return;
+            }
+            try {
+                // 取得したいドキュメントのIDを指定
+                if (propertyId) {
+                    const docRef = doc(db, "properties", propertyId); // "properties" を実際のコレクション名に置き換えます
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        // Firestoreドキュメントから各フィールドのデータを取得
+                        const name = docSnap.data().name || ""; 
+                        const propertyType = docSnap.data().propertyType || ""; 
+                        const manager = docSnap.data().manager || ""; 
+                        const similarStores = docSnap.data().similarStores || ""; 
+                        const plannedOpeningDate = docSnap.data().plannedOpeningDate || ""; 
+                        
+                        // openingDataの値に応じた数字を設定
+                        let plannedOpeningDateCount = 0; // 初期値
+
+                        switch (plannedOpeningDate) {
+                            case 2:
+                                plannedOpeningDateCount = 12;
+                                break;
+                            case 1:
+                                plannedOpeningDateCount = 1;
+                                break;
+                            case 12:
+                                plannedOpeningDateCount = 2;
+                                break;
+                            case 11:
+                                plannedOpeningDateCount = 3;
+                                break;
+                            case 10:
+                                plannedOpeningDateCount = 4;
+                                break;
+                            case 9:
+                                plannedOpeningDateCount = 5;
+                                break;
+                            case 8:
+                                plannedOpeningDateCount = 6;
+                                break;
+                            case 7:
+                                plannedOpeningDateCount = 7;
+                                break;
+                            case 6:
+                                plannedOpeningDateCount = 8;
+                                break;
+                            case 5:
+                                plannedOpeningDateCount = 9;
+                                break;
+                            case 4:
+                                plannedOpeningDateCount = 10;
+                                break;
+                            case 3:
+                                plannedOpeningDateCount = 11;
+                                break;
+                            default:
+                                plannedOpeningDateCount = 0;
+                                break;
+                        }
+
+                        const contractPeriodSelect = document.getElementById("contractPeriodSelect");
+                        const resultElement = document.getElementById("contractCode");
+
+                        // 契約期間が変更されたときに4桁のコードを表示
+                        contractPeriodSelect.addEventListener("change", () => {
+                            const contractPeriod = contractPeriodSelect.value;
+
+                            // 4桁のコードを生成
+                            const code = contractPeriod + plannedOpeningDateCount.toString().padStart(2, "0");
+
+                            // HTMLに反映
+                            resultElement.textContent = code;
+                        });
+
+                        // 初期表示用コードの設定
+                        const initialCode = contractPeriodSelect.value + plannedOpeningDateCount.toString().padStart(2, "0");
+                        resultElement.textContent = initialCode;
+
+
+
+                        const evacuation = docSnap.data().evacuation || ""; 
+
+                        // evacuationの値に応じた費用を設定
+                        let evacuationCount = 0; // 初期値
+                        const evacuationCountElement = document.getElementById("evacuationCount");
+
+                        if (evacuation === "現況渡し") {
+                            // evacuationが"現況渡し"の場合は、input要素を表示してユーザーが入力可能にする
+                            evacuationCountElement.innerHTML = '<input type="number" id="evacuationInput" placeholder="費用を入力">';
+                        } else {
+                            // 他の選択肢は自動で設定された値を表示
+                            switch (evacuation) {
+                                case "動産撤去":
+                                    evacuationCount = 1500;
+                                    break;
+                                case "スケルトン":
+                                    evacuationCount = 3500;
+                                    break;
+                                case "事務所仕様":
+                                    evacuationCount = 15000;
+                                    break;
+                                case "建物解体、更地":
+                                    evacuationCount = 5000;
+                                    break;
+                                default:
+                                    evacuationCount = 0;
+                                    break;
+                            }
+                            // input要素を非表示にし、テキストで表示
+                            evacuationCountElement.textContent = evacuationCount;
+                        }
+
+                        const contractArea = docSnap.data().contractArea || ""; 
+                        const shopArea = docSnap.data().shopArea || ""; 
+                        const layout = docSnap.data().layout || ""; 
+                        const cashier = docSnap.data().cashier || ""; 
+
+                        // cashierの値に応じた数字を設定
+                        let cashierCount = 0; // 初期値
+
+                        switch (cashier) {
+                            case "オールセルフレジ":
+                                cashierCount = 6;
+                                break;
+                            case "有人2台・セルフ1台":
+                                cashierCount = 1;
+                                break;
+                            case "有人2台・セルフ2台":
+                                cashierCount = 2;
+                                break;
+                            case "有人3台・セルフ3台":
+                                cashierCount = 3;
+                                break;
+                            default:
+                                cashierCount = 0;
+                                break;
+                        }
+
+                        const numberofParkingSpaces = docSnap.data().numberofParkingSpaces || ""; 
+                        const rent = docSnap.data().rent || ""; 
+                        const deposit = docSnap.data().deposit || ""; 
+                        const keyMoney = docSnap.data().keyMoney || ""; 
+                        const brokerageFee = docSnap.data().brokerageFee || ""; 
+                        const consultingFees = docSnap.data().consultingFees || ""; 
+
+                        // "か月"を除外して数字のみを抽出
+                        const keyMoneyValue = parseFloat(keyMoney.replace("か月", ""));
+                        const brokerageFeeValue = parseFloat(brokerageFee.replace("か月", ""));
+                        const consultingFeesValue = parseFloat(consultingFees.replace("か月", ""));
+                        const rentValue = parseFloat(rent);
+
+                        // rent を掛け合わせる
+                        const totalkeyMoneyValue = keyMoneyValue * rentValue;
+                        const totalbrokerageFeeValue = brokerageFeeValue * rentValue;
+                        const totalconsultingFeesValue = consultingFeesValue * rentValue;
+
+                        const constructionCooperationFunds = docSnap.data().constructionCooperationFunds || ""; 
+                        const buildingConstructionCosts = docSnap.data().buildingConstructionCosts || ""; 
+                        const relocationProposedStoreName = docSnap.data().relocationProposedStoreName || ""; 
+
+                        // HTMLに反映
+                        document.getElementById("name").textContent = name;
+                        document.getElementById("propertyType").textContent = propertyType;
+                        document.getElementById("manager").textContent = manager;
+                        document.getElementById("similarStores").textContent = similarStores;
+                        document.getElementById("evacuation").textContent = evacuation;
+                        document.getElementById("contractArea").textContent = contractArea;
+                        document.getElementById("shopArea").textContent = shopArea;
+                        document.getElementById("layout").textContent = layout;
+                        document.getElementById("cashier").textContent = `${cashierCount}`;
+                        document.getElementById("numberofParkingSpaces").textContent = numberofParkingSpaces;
+                        document.getElementById("rent").textContent = (rent / 1000).toFixed(0);
+                        document.getElementById("deposit").textContent = (deposit / 1000).toFixed(0);
+                        document.getElementById("keyMoney").textContent = keyMoneyValue;
+                        document.getElementById("brokerageFee").textContent = brokerageFeeValue;
+                        document.getElementById("totalkeyMoneyValue").textContent = (totalkeyMoneyValue / 1000).toFixed(0);
+                        document.getElementById("totalbrokerageFeeValue").textContent = (totalbrokerageFeeValue / 1000).toFixed(0);
+                        document.getElementById("totalconsultingFeesValue").textContent = (totalconsultingFeesValue / 1000).toFixed(0);
+                        document.getElementById("consultingFees").textContent = consultingFeesValue;
+                        document.getElementById("constructionCooperationFunds").textContent = (constructionCooperationFunds / 1000).toFixed(0);
+                        document.getElementById("buildingConstructionCosts").textContent = buildingConstructionCosts;
+                        document.getElementById("relocationProposedStoreName").textContent = relocationProposedStoreName;
+                    } else {
+                        const errorMessage = "データが見つかりません";
+                        document.getElementById("name").textContent = errorMessage;
+                        document.getElementById("propertyType").textContent = errorMessage;
+                        document.getElementById("manager").textContent = errorMessage;
+                        document.getElementById("similarStores").textContent = errorMessage;
+                        document.getElementById("evacuation").textContent = errorMessage;
+                        document.getElementById("contractArea").textContent = errorMessage;
+                        document.getElementById("shopArea").textContent = errorMessage;
+                        document.getElementById("layout").textContent = errorMessage;
+                        document.getElementById("cashier").textContent = errorMessage;
+                        document.getElementById("numberofParkingSpaces").textContent = errorMessage;
+                        document.getElementById("rent").textContent = errorMessage;
+                        document.getElementById("deposit").textContent = errorMessage;
+                        document.getElementById("keyMoney").textContent = errorMessage;
+                        document.getElementById("brokerageFee").textContent = errorMessage;
+                        document.getElementById("consultingFees").textContent = errorMessage;
+                        document.getElementById("constructionCooperationFunds").textContent = errorMessage;
+                        document.getElementById("buildingConstructionCosts").textContent = errorMessage;
+                        document.getElementById("relocationProposedStoreName").textContent = errorMessage;
+                    }
+                } else {
+                    const errorMessage = "IDが指定されていません";
+                    document.getElementById("name").textContent = errorMessage;
+                    document.getElementById("propertyType").textContent = errorMessage;
+                    document.getElementById("manager").textContent = errorMessage;
+                    document.getElementById("similarStores").textContent = errorMessage;
+                    document.getElementById("evacuation").textContent = errorMessage;
+                    document.getElementById("contractArea").textContent = errorMessage;
+                    document.getElementById("shopArea").textContent = errorMessage;
+                    document.getElementById("layout").textContent = errorMessage;
+                    document.getElementById("cashier").textContent = errorMessage;
+                    document.getElementById("numberofParkingSpaces").textContent = errorMessage;
+                    document.getElementById("rent").textContent = errorMessage;
+                    document.getElementById("deposit").textContent = errorMessage;
+                    document.getElementById("keyMoney").textContent = errorMessage;
+                    document.getElementById("brokerageFee").textContent = errorMessage;
+                    document.getElementById("consultingFees").textContent = errorMessage;
+                    document.getElementById("constructionCooperationFunds").textContent = errorMessage;
+                    document.getElementById("buildingConstructionCosts").textContent = errorMessage;
+                    document.getElementById("relocationProposedStoreName").textContent = errorMessage;
+                }
+            } catch (error) {
+                console.error("エラーが発生しました:", error);
+                const errorMessage = "エラーが発生しました";
+                document.getElementById("name").textContent = errorMessage;
+                document.getElementById("propertyType").textContent = errorMessage;
+                document.getElementById("manager").textContent = errorMessage;
+                document.getElementById("similarStores").textContent = errorMessage;
+                document.getElementById("evacuation").textContent = errorMessage;
+                document.getElementById("contractArea").textContent = errorMessage;
+                document.getElementById("shopArea").textContent = errorMessage;
+                document.getElementById("layout").textContent = errorMessage;
+                document.getElementById("cashier").textContent = errorMessage;
+                document.getElementById("numberofParkingSpaces").textContent = errorMessage;
+                document.getElementById("rent").textContent = errorMessage;
+                document.getElementById("deposit").textContent = errorMessage;
+                document.getElementById("keyMoney").textContent = errorMessage;
+                document.getElementById("brokerageFee").textContent = errorMessage;
+                document.getElementById("consultingFees").textContent = errorMessage;
+                document.getElementById("constructionCooperationFunds").textContent = errorMessage;
+                document.getElementById("buildingConstructionCosts").textContent = errorMessage;
+                document.getElementById("relocationProposedStoreName").textContent = errorMessage;
+            }
+        }
+
+        // データ取得関数の実行
+        displayBusinessPlanData();
+
+        // フォームの入力をFirebaseに保存
+        document.getElementById("save-button").addEventListener("click", async () => {
+            if (confirm(`物件情報を更新しますか？`)) {
+                try {
+
+                    // フォームの入力データを取得
+                    const citySelect = document.getElementById("citySelect").value;
+                    const overview = document.getElementById("overview-input").value;
+                    const consumerCharacteristics = document.getElementById("consumerCharacteristics-input").value;
+                    const residences = parseFloat(document.getElementById("residences-input").value) || 0; // 数値変換
+                    const household = parseFloat(document.getElementById("household-input").value) || 0; // 数値変換
+                    const population = parseFloat(document.getElementById("population-input").value) || 0; // 数値変換
+                    const averagePopulation = parseFloat(document.getElementById("averagePopulation").value) || 0; // 数値変換
+                    const parkingSpacesSelect = document.getElementById("parkingSpacesSelect").value;
+                    const regularRegister = parseFloat(document.getElementById("regularRegister-input").value) || 0; // 数値変換
+
+                    const openSelect = document.getElementById("openSelect").value;
+                    const endSelect = document.getElementById("endSelect").value;
+                    const contractPeriodSelect = parseFloat(document.getElementById("contractPeriodSelect").value) || 0; // 数値変換
+                    const contractTypeSelect = document.getElementById("contractTypeSelect").value;
+                    const logisticsCosts = parseFloat(document.getElementById("logisticsCosts-input").value) || 0; // 数値変換
+                    const insurance = parseFloat(document.getElementById("insurance-input").value) || 0; // 数値変換
+                    const relocationProposedStore = parseFloat(document.getElementById("relocationProposedStore-input").value) || 0; // 数値変換
+                    const contractCode = document.getElementById("contractCode").textContent; 
+                    const contractCodeInput = parseFloat(document.getElementById("contractCode-input").value) || 0; // 数値変換
+
+                    const cityPlanningTaxSelect = document.getElementById("cityPlanningTaxSelect").value;
+                    const paymentFrequencySelect = document.getElementById("paymentFrequencySelect").value;
+                    const numberPaymentFrequency = document.getElementById("numberPaymentFrequency").textContent;
+                    const monthlyAmount = document.getElementById("monthlyAmount").textContent;
+
+
+                    if (propertyId) {
+                        const docRef = doc(db, "properties", propertyId);
+
+                         // 更新するデータをオブジェクトにまとめる
+                        const businessPlanData = {
+                            citySelect,
+                            overview,
+                            consumerCharacteristics,
+                            residences,
+                            household,
+                            population,
+                            averagePopulation,
+                            parkingSpacesSelect,
+                            regularRegister,
+                            openSelect,
+                            endSelect,
+                            contractPeriodSelect,
+                            contractTypeSelect,
+                            logisticsCosts,
+                            insurance,
+                            relocationProposedStore,
+                            contractCode,
+                            contractCodeInput,
+                            cityPlanningTaxSelect,
+                            paymentFrequencySelect,
+                            numberPaymentFrequency,
+                            monthlyAmount
+                        };
+                        // FirestoreにinputDataフィールドとして保存
+                        await setDoc(docRef, { businessPlanData }, { merge: true });
+                            alert("データが保存されました");
+                        } else {
+                            alert("物件IDが指定されていません");
+                        }
+                    } catch (error) {
+                        console.error("データの保存中にエラーが発生しました: ", error);
+                        alert("データの保存中にエラーが発生しました");
+                    }
+                }
+        });
+        
+        // Firebaseの情報読み込み
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (propertyId) {
+                try {
+                    const docRef = doc(db, "properties", propertyId);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const businessPlanData = docSnap.data().businessPlanData;
+
+                        // データが存在する場合、各フォームに表示
+                        document.getElementById("citySelect").value = businessPlanData.citySelect || "";
+                        document.getElementById("overview-input").value = businessPlanData.overview || "";
+                        document.getElementById("consumerCharacteristics-input").value = businessPlanData.consumerCharacteristics || "";
+                        document.getElementById("residences-input").value = businessPlanData.residences || 0;
+                        document.getElementById("household-input").value = businessPlanData.household || 0;
+                        document.getElementById("population-input").value = businessPlanData.population || 0;
+                        document.getElementById("averagePopulation").value = businessPlanData.averagePopulation || 0;
+                        document.getElementById("parkingSpacesSelect").value = businessPlanData.parkingSpacesSelect || "";
+                        document.getElementById("regularRegister-input").value = businessPlanData.regularRegister || 0;
+                        document.getElementById("openSelect").value = businessPlanData.openSelect || "";
+                        document.getElementById("endSelect").value = businessPlanData.endSelect || "";
+                        document.getElementById("contractPeriodSelect").value = businessPlanData.contractPeriodSelect || 0;
+                        document.getElementById("contractTypeSelect").value = businessPlanData.contractTypeSelect || "";
+                        document.getElementById("logisticsCosts-input").value = businessPlanData.logisticsCosts || 0;
+                        document.getElementById("insurance-input").value = businessPlanData.insurance || 0;
+                        document.getElementById("relocationProposedStore-input").value = businessPlanData.relocationProposedStore || 0;
+                        document.getElementById("contractCode").value = businessPlanData.contractCode || 0;
+                        document.getElementById("contractCode-input").value = businessPlanData.contractCodeInput || 0;
+                        document.getElementById("cityPlanningTaxSelect").value = businessPlanData.cityPlanningTaxSelect || "";
+                        document.getElementById("paymentFrequencySelect").value = businessPlanData.paymentFrequencySelect || "";
+                        document.getElementById("numberPaymentFrequency").value = businessPlanData.numberPaymentFrequency || 0;
+                        document.getElementById("monthlyAmount").value = businessPlanData.monthlyAmount || 0;
+
+                    } else {
+                        console.log("指定されたドキュメントが存在しません");
+                    }
+                } catch (error) {
+                    console.error("データの取得中にエラーが発生しました: ", error);
+                }
+            } else {
+                alert("物件IDが指定されていません");
+            }
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            function calculateAverage() {
+                const householdCount = parseFloat(document.getElementById("household-input").value) || 0;
+                const populationCount = parseFloat(document.getElementById("population-input").value) || 0;
+
+                const average = householdCount > 0 ? (populationCount / householdCount) : 0;
+                document.getElementById("averagePopulation").value = average.toFixed(2);
+            }
+
+            // イベントリスナーを追加
+            document.getElementById("household-input").addEventListener("input", calculateAverage);
+            document.getElementById("population-input").addEventListener("input", calculateAverage);
+
+            const householdCountInput = document.getElementById("householdCount");
+            const populationCountInput = document.getElementById("populationCount");
+
+            if (householdCountInput && populationCountInput) {
+                householdCountInput.addEventListener("input", calculateAverage);
+                populationCountInput.addEventListener("input", calculateAverage);
+            }
+
+            const constructionSupportInput = document.getElementById("constructionCooperationFunds-input");
+            const paymentFrequencySelect = document.getElementById("paymentFrequencySelect");
+            const numberPaymentFrequencyElement = document.getElementById("numberPaymentFrequency");
+            const monthlyAmountElement = document.getElementById("monthlyAmount");
+
+            if (constructionSupportInput && paymentFrequencySelect && numberPaymentFrequencyElement && monthlyAmountElement) {
+
+                function calculateMonthlyAmount() {
+                    const constructionSupport = parseFloat(constructionSupportInput.value) || 0;
+                    const paymentFrequency = parseFloat(paymentFrequencySelect.value) || 1;
+                    const monthlyAmount = constructionSupport / paymentFrequency;
+                    monthlyAmountElement.textContent = monthlyAmount.toFixed(0);
+                }
+
+                async function fetchPlannedOpeningDateAndUpdate() {
+                    if (!propertyId) {
+                        console.error("URLに'id'パラメータがありません。");
+                        return;
+                    }
+
+                    const docRef = doc(db, "properties", propertyId);
+
+                    try {
+                        const docSnap = await getDoc(docRef);
+                        if (docSnap.exists()) {
+                            const plannedOpeningDate = parseInt(docSnap.data().plannedOpeningDate, 10) || 0;
+                            updatePaymentFrequencyCode(plannedOpeningDate);
+                        } else {
+                            console.log("指定されたドキュメントが存在しません。");
+                        }
+                    } catch (error) {
+                        console.error("ドキュメントの取得エラー:", error);
+                    }
+                }
+
+                function updatePaymentFrequencyCode(plannedOpeningDate) {
+                    let plannedOpeningDateCount = 0;
+
+                    switch (plannedOpeningDate) {
+                        case 2: plannedOpeningDateCount = 12; break;
+                        case 1: plannedOpeningDateCount = 1; break;
+                        case 12: plannedOpeningDateCount = 2; break;
+                        case 11: plannedOpeningDateCount = 3; break;
+                        case 10: plannedOpeningDateCount = 4; break;
+                        case 9: plannedOpeningDateCount = 5; break;
+                        case 8: plannedOpeningDateCount = 6; break;
+                        case 7: plannedOpeningDateCount = 7; break;
+                        case 6: plannedOpeningDateCount = 8; break;
+                        case 5: plannedOpeningDateCount = 9; break;
+                        case 4: plannedOpeningDateCount = 10; break;
+                        case 3: plannedOpeningDateCount = 11; break;
+                        default: plannedOpeningDateCount = 0; break;
+                    }
+
+                    const paymentFrequency = parseInt(paymentFrequencySelect.value, 10) || 0;
+                    const paymentFrequencyCode = `${paymentFrequency}${plannedOpeningDateCount.toString().padStart(2, "0")}`;
+                    numberPaymentFrequencyElement.textContent = paymentFrequencyCode;
+                }
+
+                constructionSupportInput.addEventListener("input", calculateMonthlyAmount);
+                paymentFrequencySelect.addEventListener("change", () => {
+                    calculateMonthlyAmount();
+                    fetchPlannedOpeningDateAndUpdate();
+                });
+
+                calculateMonthlyAmount();
+                fetchPlannedOpeningDateAndUpdate();
+            } else {
+                console.error("一部または全ての要素が見つかりませんでした。HTMLの構造を確認してください。");
+            }
+        });
+
+    </script>
+</body>
+</html>

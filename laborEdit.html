@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人件費</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .year-header {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<h1>人件費 │ <span id="name"></span></h1>
+  <table>
+    <tbody>
+        <tr id="row1">
+            <th>期間</th>
+        <!-- 月度データが追加される場所 -->
+        </tr>
+        <tr id="row2">
+            <th id="deliveryDate1"></th>
+          <!-- 売上データが追加される場所 -->
+        </tr>
+        <tr id="row3">
+            <th id="deliveryDate2"></th>
+        </tr>
+        <tr id="row4">
+            <th id="deliveryDate3"></th>
+        </tr>
+        <tr id="row5">
+            <th id="deliveryDate4"></th>
+        </tr>
+        <tr id="row6">
+            <th id="deliveryDate5"></th>
+        </tr>
+    </tbody>
+  </table>
+
+  <h2>単年PL</h2>
+  <table>
+  <thead>
+    <tr>
+      <th>年度</th>
+      <th>単年PL</th>
+    </tr>
+  </thead>
+    <tr>
+      <th>1年目</th>
+      <td id="singleYear1"></td>
+    </tr>
+    <tr>
+      <th>2年目</th>
+      <td id="singleYear2"></td>
+    </tr>
+    <tr>
+      <th>3年目</th>
+      <td id="singleYear3"></td>
+    </tr>
+    <tr>
+      <th>4年目</th>
+      <td id="singleYear4"></td>
+    </tr>
+    <tr>
+      <th>5年目</th>
+      <td id="singleYear5"></td>
+    </tr>
+    <tr>
+      <th>10年合計</th>
+      <td id="singleYear10"></td>
+    </tr>
+</table>
+
+  <br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 月度指数と営業日
+  const monthIndices = [
+    { month: 3, index: 0.973253301, days: 31 },
+    { month: 4, index: 0.999759904, days: 30 },
+    { month: 5, index: 1.000912365, days: 31 },
+    { month: 6, index: 1.022232893, days: 30 },
+    { month: 7, index: 1.04182473, days: 31 },
+    { month: 8, index: 1.013589436, days: 31 },
+    { month: 9, index: 1.026266507, days: 30 },
+    { month: 10, index: 1.009555822, days: 31 },
+    { month: 11, index: 0.985354142, days: 30 },
+    { month: 12, index: 0.962304921, days: 31 },
+    { month: 1, index: 0.962304922, days: 31 },
+    { month: 2, index: 1.002641056, days: 28 }
+  ];
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+        const deliveryDate = propertyData.deliveryDate;
+        document.getElementById("deliveryDate1").textContent = `${deliveryDate}年`;
+        document.getElementById("deliveryDate2").textContent = `${deliveryDate + 1}年`;
+        document.getElementById("deliveryDate3").textContent = `${deliveryDate + 2}年`;
+        document.getElementById("deliveryDate4").textContent = `${deliveryDate + 3}年`;
+        document.getElementById("deliveryDate5").textContent = `${deliveryDate + 4}年`;
+
+        const plannedOpeningDate = propertyData.plannedOpeningDate || 0;
+        const startDate = plannedOpeningDate === 12 ? 1 : plannedOpeningDate + 1;
+
+        // openingDataの値に応じた数字を設定
+        let plannedOpeningDateCount = 0; // 初期値
+
+        switch (plannedOpeningDate) {
+            case 2:
+                plannedOpeningDateCount = 12;
+                break;
+            case 1:
+                plannedOpeningDateCount = 1;
+                break;
+            case 12:
+                plannedOpeningDateCount = 2;
+                break;
+            case 11:
+                plannedOpeningDateCount = 3;
+                break;
+            case 10:
+                plannedOpeningDateCount = 4;
+                break;
+            case 9:
+                plannedOpeningDateCount = 5;
+                break;
+            case 8:
+                plannedOpeningDateCount = 6;
+                break;
+            case 7:
+                plannedOpeningDateCount = 7;
+                break;
+            case 6:
+                plannedOpeningDateCount = 8;
+                break;
+            case 5:
+                plannedOpeningDateCount = 9;
+                break;
+            case 4:
+                plannedOpeningDateCount = 10;
+                break;
+            case 3:
+                plannedOpeningDateCount = 11;
+                break;
+            default:
+                plannedOpeningDateCount = 0;
+                break;
+        }
+
+        
+
+        const months = [];
+        for (let i = 0; i < 12; i++) {
+          // 現在の月を計算（12を超えたら1に戻る）
+          const month = (startDate + i - 1) % 12 + 1;
+          months.push(month);
+        }
+
+        // マップ内の情報取得
+        const laborCost = propertyData.laborCost || {};
+        const totalLaborCosts1 = laborCost.totalLaborCosts1 || 0;
+        const totalLaborCosts2 = laborCost.totalLaborCosts2 || 0;
+        const totalLaborCosts3 = laborCost.totalLaborCosts3 || 0;
+        const totalLaborCosts4 = laborCost.totalLaborCosts4 || 0;
+        const totalLaborCosts5 = laborCost.totalLaborCosts5 || 0;
+
+
+        // 売上を集計する月リストを動的に生成（startDateから年度末の2月まで）
+        const yearOneMonths = [];
+        let currentMonth = startDate;
+
+        // 開始月から2月までの月リストを作成
+        while (currentMonth !== 3) {  // 3月になるとループ終了
+          yearOneMonths.push(currentMonth);
+          currentMonth = (currentMonth % 12) + 1;  // 12月の次は1月
+        }
+
+        // 1年目（指定月から2月まで）の売上合計を計算
+        let yearOneTotalData = [0, 0, 0, 0, 0];  // 5つの売上を保持する配列
+        yearOneMonths.forEach(month => {
+          const monthData = monthIndices.find(m => m.month === month);
+          if (monthData) {
+            yearOneTotalData[0] += parseFloat(totalLaborCosts1);
+            yearOneTotalData[1] += parseFloat(totalLaborCosts2);
+            yearOneTotalData[2] += parseFloat(totalLaborCosts3);
+            yearOneTotalData[3] += parseFloat(totalLaborCosts4);
+            yearOneTotalData[4] += parseFloat(totalLaborCosts5);
+          }
+        });
+
+        const monthsRemaining1 = yearOneTotalData[0];
+        const monthsRemaining2 = yearOneTotalData[1];
+        const monthsRemaining3 = yearOneTotalData[2];
+        const monthsRemaining4 = yearOneTotalData[3]; 
+        const monthsRemaining5 = yearOneTotalData[4]; 
+
+        console.log(monthsRemaining1);
+        console.log(monthsRemaining2);
+        console.log(monthsRemaining3);
+        console.log(monthsRemaining4);
+        console.log(monthsRemaining5);
+
+
+        // 計算結果を表示用の配列に格納
+        const monthResults = months.map(month => {
+          // 現在の月に対応するデータを取得
+          const monthData = monthIndices.find(m => m.month === month);
+          if (monthData) {
+            // 各月における売上の計算
+            const monthdata1 = parseFloat(totalLaborCosts1);
+            const monthdata2 = parseFloat(totalLaborCosts2);
+            const monthdata3 = parseFloat(totalLaborCosts3);
+            const monthdata4 = parseFloat(totalLaborCosts4);
+            const monthdata5 = parseFloat(totalLaborCosts5);
+
+            // 利益を計算してyearOneTotalProfitsに加算
+            let yearOneTotal = [0, 0, 0, 0, 0];
+            yearOneMonths.forEach(month => {
+              const monthData = monthIndices.find(m => m.month === month);
+              if (monthData) {
+                yearOneTotal[0] += parseFloat(totalLaborCosts1);
+                yearOneTotal[1] += parseFloat(totalLaborCosts1);
+                yearOneTotal[2] += parseFloat(totalLaborCosts1);
+                yearOneTotal[3] += parseFloat(totalLaborCosts1);
+                yearOneTotal[4] += parseFloat(totalLaborCosts1);
+              }
+            });
+
+            // 計算結果の合計を表示
+            const singleYear1 = yearOneTotal[0] / plannedOpeningDateCount;
+            document.getElementById("singleYear1").textContent = singleYear1.toFixed(2);
+                     
+            return {
+              month,
+              monthdata1,
+              monthdata2,
+              monthdata3,
+              monthdata4,
+              monthdata5,
+              monthsRemaining1,
+              monthsRemaining2,
+              monthsRemaining3,
+              monthsRemaining4,
+              monthsRemaining5,
+              singleYear1
+            };
+          }
+          return {
+            month,
+            monthdata1: "データなし",
+            monthdata2: "データなし",
+            monthdata3: "データなし",
+            monthdata4: "データなし",
+            monthdata5: "データなし",
+            monthsRemaining1: "データなし",
+            monthsRemaining2: "データなし",
+            monthsRemaining3: "データなし",
+            monthsRemaining4: "データなし",
+            monthsRemaining5: "データなし",
+            singleYear1: "データなし"
+          };
+        });
+
+      displayMonthData(monthResults);
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+
+  function displayMonthData(monthResults) {
+    const row1 = document.getElementById("row1");
+    const row2 = document.getElementById("row2");
+    const row3 = document.getElementById("row3");
+    const row4 = document.getElementById("row4");
+    const row5 = document.getElementById("row5");
+    const row6 = document.getElementById("row6");
+
+    let total1 = 0, total2 = 0, total3 = 0, total4 = 0, total5 = 0;
+    let remaining1 = 0, remaining2 = 0, remaining3 = 0, remaining4 = 0, remaining5 = 0;
+    let singleYeartotal1 = 0;
+
+    monthResults.forEach(result => {
+      // 月度のセル
+      const cellMonth = document.createElement("th");
+      cellMonth.textContent = `${result.month}月`;
+
+      // 売上1から売上5のセル
+      const celldata1 = document.createElement("td");
+      const celldata2 = document.createElement("td");
+      const celldata3 = document.createElement("td");
+      const celldata4 = document.createElement("td");
+      const celldata5 = document.createElement("td");
+
+      // monthsRemaining1を表示するセル
+      const cellRemaining1 = document.createElement("td");
+      const cellsingleYear1 = document.createElement("td");
+
+      celldata1.textContent = result.monthdata1.toFixed(2);
+      celldata2.textContent = result.monthdata2.toFixed(2);
+      celldata3.textContent = result.monthdata3.toFixed(2);
+      celldata4.textContent = result.monthdata4.toFixed(2);
+      celldata5.textContent = result.monthdata5.toFixed(2);
+      cellRemaining1.textContent = result.monthsRemaining1;
+      cellsingleYear1.textContent = result.singleYear1;
+
+      // 行にデータを追加
+      row1.appendChild(cellMonth);
+      row2.appendChild(celldata1);
+      row3.appendChild(celldata2);
+      row4.appendChild(celldata3);
+      row5.appendChild(celldata4);
+      row6.appendChild(celldata5);
+
+      // 合計を加算
+      total1 += parseFloat(result.monthdata1) || 0;
+      total2 += parseFloat(result.monthdata2) || 0;
+      total3 += parseFloat(result.monthdata3) || 0;
+      total4 += parseFloat(result.monthdata4) || 0;
+      total5 += parseFloat(result.monthdata5) || 0;
+
+      // 残り月算出
+      remaining1 = parseFloat(result.monthsRemaining1) || 0;
+      remaining2 = parseFloat(result.monthsRemaining2) || 0;
+      remaining3 = parseFloat(result.monthsRemaining3) || 0;
+      remaining4 = parseFloat(result.monthsRemaining4) || 0;
+      remaining5 = parseFloat(result.monthsRemaining5) || 0;
+
+      singleYeartotal1 = parseFloat(result.singleYear1) || 0;
+
+      // console.log(singleYeartotal1);
+      // console.log(remaining2);
+
+    });
+    const safeTotal1 = isNaN(total1) ? 0 : total1;
+    const safeTotal2 = isNaN(total2) ? 0 : total2;
+    const safeTotal3 = isNaN(total3) ? 0 : total3;
+    const safeTotal4 = isNaN(total4) ? 0 : total4;
+
+    const safeRemaining1 = isNaN(remaining1) ? 0 : remaining1;
+    const safeRemaining2 = isNaN(remaining2) ? 0 : remaining2;
+    const safeRemaining3 = isNaN(remaining3) ? 0 : remaining3;
+    const safeRemaining4 = isNaN(remaining4) ? 0 : remaining4;
+    const safeRemaining5 = isNaN(remaining5) ? 0 : remaining5;
+
+    // 計算結果の合計を表示
+    const singleYear2 = (safeTotal1 + (safeRemaining2 - safeRemaining1)) / 12;
+    const singleYear3 = (safeTotal2 + (safeRemaining3 - safeRemaining2)) / 12;
+    const singleYear4 = (safeTotal3 + (safeRemaining4 - safeRemaining3)) / 12;
+    const singleYear5 = (safeTotal4 + (safeRemaining5 - safeRemaining4)) / 12;
+    document.getElementById("singleYear2").textContent = singleYear2.toFixed(2);
+    document.getElementById("singleYear3").textContent = singleYear3.toFixed(2);
+    document.getElementById("singleYear4").textContent = singleYear4.toFixed(2);
+    document.getElementById("singleYear5").textContent = singleYear5.toFixed(2);
+
+    const safeSingleYear1 = isNaN(singleYeartotal1) ? 0 : singleYeartotal1;
+    const safeSingleYear2 = isNaN(singleYear2) ? 0 : singleYear2;
+    const safeSingleYear3 = isNaN(singleYear3) ? 0 : singleYear3;
+    const safeSingleYear4 = isNaN(singleYear4) ? 0 : singleYear4;
+    const safeSingleYear5 = isNaN(singleYear5) ? 0 : singleYear5;
+
+    // console.log(safeSingleYear1);
+    // console.log(safeSingleYear2);
+    // console.log(safeSingleYear3);
+    // console.log(safeSingleYear4);
+    // console.log(safeSingleYear5);
+
+    const singleYear10 = ((safeSingleYear1 + safeSingleYear2 + safeSingleYear3 + safeSingleYear4) + (safeSingleYear5 * (10 - 4))) / 10;
+    document.getElementById("singleYear10").textContent = singleYear10.toFixed(2);
+  }
+
+  // ページがロードされた後にデータを表示
+  window.addEventListener("DOMContentLoaded", displayData);
+
+  // 保存ボタンの設定
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();  // ページ遷移を防ぐ
+      saveDataToFirestore();
+    });
+  } else {
+    console.error("保存ボタンが見つかりません");
+  }
+
+  // Firestoreにデータを保存する関数
+  async function saveDataToFirestore() {
+    // 新しいドキュメントを作成
+    try {
+      if (propertyId) {
+        const docRef = doc(db, "properties", propertyId);
+
+        const singleYear1 = parseFloat(document.getElementById("singleYear1").textContent).toFixed(3) || 0;
+        const singleYear2 = parseFloat(document.getElementById("singleYear2").textContent).toFixed(3) || 0;
+        const singleYear3 = parseFloat(document.getElementById("singleYear3").textContent).toFixed(3) || 0;
+        const singleYear4 = parseFloat(document.getElementById("singleYear4").textContent).toFixed(3) || 0;
+        const singleYear5 = parseFloat(document.getElementById("singleYear5").textContent).toFixed(3) || 0;
+        const singleYear10 = parseFloat(document.getElementById("singleYear10").textContent).toFixed(3) || 0;
+
+        // データを取得
+        const laborData = {
+          singleYear1: singleYear1,  
+          singleYear2: singleYear2,          
+          singleYear3: singleYear3,
+          singleYear4: singleYear4,
+          singleYear5: singleYear5,
+          singleYear10: singleYear10,
+        };
+        await setDoc(docRef, { laborData }, { merge: true });
+        alert("データが保存されました");
+      } else {
+        alert("物件IDが指定されていません");
+    }  
+    } catch (error) {
+      alert("データの保存中にエラーが発生しました");
+      console.error("データ保存エラー:", error);
+    }
+  }
+</script>
+</body>
+</html>

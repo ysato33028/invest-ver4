@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人件費DB</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> <!-- xlsxライブラリ -->
+</head>
+<body>
+    <h2>人件費DB</h2>
+    <input type="file" id="file-upload" accept=".xlsx, .xls">
+    <button onclick="uploadExcel()">アップロード</button>
+    <div id="progress-container" style="display:none; width: 100%; background-color: #f3f3f3; border-radius: 10px; height: 5px; margin-top: 10px;">
+        <div id="progress-bar" style="width: 0%; height: 100%; background-color: #00aec9; border-radius: 10px;"></div>
+    </div>
+    
+    <h2>類似店舗の人件費情報を検索</h2>
+    <input type="text" id="store-name" placeholder="店舗名を入力">
+    <button onclick="searchLaborCost()">検索</button><br>
+    <table>
+    　<tr>
+        <th>項目</th>
+        <th>検索結果</th>
+      </tr>
+      <tr>
+        <td>平均時給（円）</td>
+        <td id="avg-salary">-</td>
+      </tr>
+      <tr>
+        <td>派遣・請負額（円）</td>
+        <td id="dispatch-cost">-</td>
+      </tr>
+      <tr>
+        <td>月間派遣・請負人時（時間）</td>
+        <td id="dispatch-hours">-</td>
+      </tr>
+    </table><br>
+
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebaseの初期化
+        const firebaseConfig = {
+              apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+              authDomain: "mybas-61537.firebaseapp.com",
+              projectId: "mybas-61537",
+              storageBucket: "mybas-61537.firebasestorage.app",
+              messagingSenderId: "47149190856",
+              appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // URLから'd'パラメータを取得
+        const propertyId = getQueryParam('id');
+
+        // Firebaseの情報読み込み
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (propertyId) {
+                try {
+                    const docRef = doc(db, "properties", propertyId);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const propertyData = docSnap.data();
+
+                        // Firestoreのデータを表示
+                        document.getElementById("store-name").value = propertyData.similarStores || "";
+
+                    } else {
+                        console.log("指定されたドキュメントが存在しません");
+                    }
+                } catch (error) {
+                    console.error("データの取得中にエラーが発生しました: ", error);
+                }
+            } else {
+                alert("物件IDが指定されていません");
+            }
+        });
+
+        // 保存ボタンの設定
+        const saveButton = document.getElementById("save-button");
+        if (saveButton) {
+          saveButton.addEventListener("click", function(event) {
+            event.preventDefault();  // ページ遷移を防ぐ
+            saveDataToFirestore();
+          });
+        } else {
+          console.error("保存ボタンが見つかりません");
+        }
+
+        // Firestoreにデータを保存する関数
+        async function saveDataToFirestore() {
+          // 新しいドキュメントを作成
+          try {
+            if (propertyId) {
+              const docRef = doc(db, "properties", propertyId);
+
+              // Select要素から選ばれた値を取得
+              const avgSalary = document.getElementById("avg-salary").textContent || 0;
+              const dispatchCost = document.getElementById("dispatch-cost").textContent || 0;
+              const dispatchHours = document.getElementById("dispatch-hours").textContent || 0;
+
+              // データを取得
+              const laborCostDB = {
+                avgSalary: avgSalary,  
+                dispatchCost: dispatchCost,          
+                dispatchHours: dispatchHours,
+                
+              };
+              await setDoc(docRef, { laborCostDB }, { merge: true });
+              alert("データが保存されました");
+            } else {
+              alert("物件IDが指定されていません");
+          }  
+          } catch (error) {
+            alert("データの保存中にエラーが発生しました");
+            console.error("データ保存エラー:", error);
+          }
+        }
+
+        // エクセルファイルをアップロードしてFirebaseに登録する関数
+        async function uploadExcel() {
+            const fileInput = document.getElementById("file-upload");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("エクセルファイルを選択してください。");
+                return;
+            }
+
+            // プログレスバーの初期設定
+            const progressContainer = document.getElementById("progress-container");
+            const progressBar = document.getElementById("progress-bar");
+            progressContainer.style.display = "block"; // プログレスバーを表示
+            progressBar.style.width = "0%"; // 初期状態は0%
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                // Firebaseにアップロード
+                const dbRef = collection(db, "laborCostDB");
+                const totalRows = jsonData.length;
+                let uploadedRows = 0; // uploadedRows を for ループの外で宣言
+
+                for (const row of jsonData) {
+                    const storeName = row["店舗名"];
+
+                    try {
+                        // `店舗名`が一致するドキュメントを検索
+                        const q = query(dbRef, where("店舗名", "==", storeName));
+                        const querySnapshot = await getDocs(q);
+
+                        if (!querySnapshot.empty) {
+                            // `店舗名`が存在する場合は上書き
+                            querySnapshot.forEach(async (doc) => {
+                                const docRef = doc.ref;
+                                await setDoc(docRef, row, { merge: true });
+                                console.log("既存のデータが更新されました: ", row);
+                            });
+                        } else {
+                            // `店舗名`が存在しない場合は新規追加
+                            await addDoc(dbRef, row);
+                            console.log("新しいデータが追加されました: ", row);
+                        }
+                        // 進捗を更新
+                        uploadedRows++;
+                        const progress = (uploadedRows / totalRows) * 100;
+                        progressBar.style.width = `${progress}%`; // プログレスバーを更新
+                    } catch (error) {
+                        console.error("データ追加/更新エラー: ", error);
+                    }
+                }
+                alert("データが正常にアップロードされました！");
+                progressContainer.style.display = "none"; // プログレスバーを非表示にする
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 店舗名で検索し、該当データを表示する関数
+        async function searchLaborCost() {
+            const storeName = document.getElementById("store-name").value;
+            const dbRef = collection(db, "laborCostDB");
+
+            const q = query(dbRef, where("店舗名", "==", storeName));
+            const querySnapshot = await getDocs(q);
+
+            console.log("検索条件:", storeName);  // 検索条件の確認
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    document.getElementById("avg-salary").textContent = (data["平均時給（円）"] || 0).toFixed(2);
+                    document.getElementById("dispatch-cost").textContent = (data["派遣・請負額（円）"] || 0).toFixed(2);
+                    document.getElementById("dispatch-hours").textContent = (data["月間派遣・請負人時（時間）"] || 0).toFixed(2);
+                });
+            } else {
+                alert("該当する店舗が見つかりません。");
+            }
+        }
+
+        // グローバルに関数を登録
+        window.uploadExcel = uploadExcel;
+        window.searchLaborCost = searchLaborCost;
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内装投資費用</title>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .input-cell {
+        background-color: #fdd9b5; /* オレンジの入力欄 */
+    }
+    .center {
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<h2>内装投資費用 │ <span id="name"></span></h2>
+
+<table>
+    <tr>
+        <th>項目</th>
+        <th>入力 or リスト</th>
+        <th>入力欄↓</th>
+        <th>一式金額</th>
+        <th>㎡単価</th>
+        <th>面積×㎡単価</th>
+        <th>一式②</th>
+        <th>入力例</th>
+    </tr>
+    <tr>
+        <td>排水・タイル</td>
+        <td>タイプ</td>
+        <td class="center input-cell">
+            <select id="drainage-select">
+                <option>選択してください</option>
+                <option>新築フリスタ</option>
+                <option>新築ビルイン 鉄骨</option>
+                <option>新築ビルイン RC</option>
+                <option>居抜フリスタ</option>
+                <option>居抜ビルイン 鉄骨</option>
+                <option>居抜ビルイン RC</option>
+                <option>居抜ビルイン 区分所有</option>
+            </select>
+        </td>
+        <td id="drainage-cost">0</td> <!-- 一式金額 -->
+        <td id="drainage-unit-price">0</td> <!-- ㎡単価 -->
+        <td id="drainage-calculated-cost">0</td> <!-- 面積×㎡単価の計算結果 -->
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>事前解体</td>
+        <td>引き渡し状態</td>
+        <td class="center input-cell">
+            <select id="predismantling-select">
+                <option>選択してください</option>
+                <option>ｽｹﾙﾄﾝ（事前解体無し）</option>
+                <option>小規模解体</option>
+                <option>現状 事務所仕様</option>
+                <option>現状 飲食等（間仕切多）</option>
+            </select>
+        </td>
+        <td id="predismantling-cost">0</td> <!-- 一式金額 -->
+        <td id="predismantling-unit-price">0</td> <!-- ㎡単価 -->
+        <td id="predismantling-calculated-cost">0</td> <!-- 面積×㎡単価の計算結果 -->
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>外構</td>
+        <td>駐車場</td>
+        <td class="center input-cell">
+            <select id="parking-select">
+                <option >選択してください</option>
+                <option>駐車場なし</option>
+                <option>有り　2台未満</option>
+                <option>有り　3台以上</option>
+            </select>
+        </td>
+        <td id="parking-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>冷凍ﾘｰﾁｲﾝ</td>
+        <td class="center input-cell">
+            <select id="frozen-select">
+                <option>選択してください</option>
+                <option>ﾘｰﾁｲﾝ 9枚</option>
+                <option>ﾘｰﾁｲﾝ 15枚</option>
+                <option>ﾘｰﾁｲﾝ 18枚</option>
+                <option>ﾘｰﾁｲﾝ 24枚＋冷凍ﾌﾟﾚﾊﾌ</option>
+            </select>
+        </td>
+        <td id="frozen-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>先行解体</td>
+        <td class="center input-cell">
+            <span id="demolitionCost"></span>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>エントリーシートから読み取り</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>B工事</td>
+        <td class="center input-cell">
+            <input type="text" id="B-Construction-input" placeholder="0" required>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>全館自火報 等</td>
+        <td class="center input-cell">
+            <input type="text" id="AutomaticFireAlarm-input" placeholder="0" required>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>会議室・面談室 等</td>
+        <td class="center input-cell">
+            <input type="text" id="meetingRoom-input" placeholder="0" required>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>段差解消</td>
+        <td class="center input-cell">
+            <input type="text" id="eliminateSteps-input" placeholder="0" required>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>ポール看板</td>
+        <td class="center input-cell">
+            <select id="poleSign-select">
+                <option>選択してください</option>
+                <option>0</option>
+                <option>1350</option>
+                <option>4500</option>
+            </select>
+        </td>
+        <td id="poleSign-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>入力欄オレンジは必ず入力</td>
+    </tr>
+    <tr>
+        <td>仮設</td>
+        <td>面積</td>
+        <td class="center input-cell">
+            <span id="contractArea"></span>
+        </td>
+        <td id="contractArea-cost1"></td> <!-- 一式金額 -->
+        <td></td>
+        <td></td>
+        <td id="contractArea-cost2"></td> <!-- 一式② -->
+        <td>自動計算</td>
+    </tr>
+    <tr>
+        <td>標準外</td>
+        <td>用途の問題</td>
+        <td class="center input-cell">
+            <select id="problemsofUse-select">
+                <option>既存物販（問題なし）</option>
+                <option>用途変更必要</option>
+                <option>用途変更不可</option>
+            </select>
+        </td>
+        <td id="problemsofUse-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>既定値：既存物販（問題なし）</td>
+    </tr>
+    <tr>
+        <td>仮設</td>
+        <td>敷地状況</td>
+        <td class="center input-cell">
+            <select id="siteStatus-select">
+                <option>都心、国道沿い</option>
+                <option>国道沿い・バス通り</option>
+                <option>上記以外の道路</option>
+                <option>駐車場等、搬入場所あり</option>
+            </select>
+        </td>
+        <td id="siteStatus-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>既定値：上記以外の道路</td>
+    </tr>
+    <tr>
+        <td>ｻｯｼ工事</td>
+        <td>出入口・ﾌﾛﾝﾄｻｯｼ</td>
+        <td class="center input-cell">
+            <select id="entrance-select">
+                <option>新築既存利用</option>
+                <option>既存利用</option>
+                <option>新規自動ドア</option>
+                <option>ｼｬｯﾀｰ等新規W～６ｍ</option>
+                <option>ｼｬｯﾀｰ等新規 6～12ｍ</option>
+            </select>
+        </td>
+        <td id="entrance-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>既定値：新規自動ドア</td>
+    </tr>
+    <tr>
+        <td>解体</td>
+        <td>サッシ解体</td>
+        <td class="center input-cell">
+            <select id="sashDismantling-select">
+                <option>サッシ解体なし</option>
+                <option>サッシ解体有</option>
+                <option>フロント外壁込み解体</option>
+            </select>
+        </td>
+        <td id="sashDismantling-cost">0</td>
+        <td>0</td>
+        <td>0</td>
+        <td></td>
+        <td>既定値：サッシ解体なし</td>
+    </tr>
+    <tr>
+        <td>土間工事</td>
+        <td>床下がり</td>
+        <td class="center input-cell">
+            <select id="floorConstruction-select">
+                <option>無し・不明</option>
+                <option>～150</option>
+                <option>～300</option>
+            </select>
+        </td>
+        <td id="floorConstruction-cost">0</td> <!-- 一式金額 -->
+        <td id="floorConstruction-unit-price">0</td> <!-- ㎡単価 -->
+        <td id="floorConstruction-calculated-cost">0</td>
+        <td></td>
+        <td>既定値：無し・不明</td>
+    </tr>
+    <tr>
+        <td>防水</td>
+        <td>防水</td>
+        <td class="center input-cell">
+            <select id="waterproof-select">
+                <option>地下有り</option>
+                <option>地下無し</option>
+            </select>
+        </td>
+        <td id="waterproof-cost">0</td> <!-- 一式金額 -->
+        <td id="waterproof-unit-price">0</td> <!-- ㎡単価 -->
+        <td id="waterproof-calculated-cost">0</td>
+        <td></td>
+        <td>既定値：地下無し</td>
+    </tr>
+    <tr>
+        <td>内装</td>
+        <td>天井</td>
+        <td class="center input-cell">
+            <select id="ceiling-select">
+                <option>選択してください</option>
+                <option>天井新規・不明</option>
+                <option>スケルトン天井</option>
+            </select>
+        </td>
+        <td id="ceiling-cost"></td> <!-- 一式金額 -->
+        <td id="ceiling-unit-price"></td> <!-- ㎡単価 -->
+        <td id="ceiling-calculated-cost"></td>
+        <td></td>
+        <td>既定値：天井新規・不明</td>
+    </tr>
+    <tr>
+        <td>解体・左官</td>
+        <td>犬走り</td>
+        <td class="center input-cell">
+            <select id="dogRunning-select">
+                <option>土間補修必要・不明</option>
+                <option>土間補修不要</option>
+            </select>
+        </td>
+        <td id="dogRunning-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：土間補修不要・不明</td>
+    </tr>
+    <tr>
+        <td>左官・冷設・空調</td>
+        <td>室外機置場</td>
+        <td class="center input-cell">
+            <select id="outdoorUnitStorageArea-select">
+                <option>1階</option>
+                <option>～4階</option>
+                <option>～5階</option>
+            </select>
+        </td>
+        <td id="outdoorUnitStorageArea-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：1階</td>
+    </tr>
+    <tr>
+        <td>標準外・空調</td>
+        <td>休憩室</td>
+        <td class="center input-cell">
+            <select id="restRoom-select">
+                <option>休憩室無し</option>
+                <option>休憩室あり</option>
+            </select>
+        </td>
+        <td id="restRoom-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：休憩室無し</td>
+    </tr>
+    <tr>
+        <td>什器</td>
+        <td>ゴンドラ</td>
+        <td class="center input-cell">
+            <select id="gondola-select">
+                <option>D450</option>
+                <option>D500</option>
+            </select>
+        </td>
+        <td id="gondola-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：D450</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>農産</td>
+        <td class="center input-cell">
+            <select id="vegetables-select">
+                <option>農産　6尺</option>
+                <option>農産　9尺</option>
+            </select>
+        </td>
+        <td id="vegetables-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：農産　9尺</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>畜産</td>
+        <td class="center input-cell">
+            <select id="meats-select">
+                <option>畜産　6尺</option>
+                <option>畜産　9尺</option>
+                <option>畜産　12尺</option>
+            </select>
+        </td>
+        <td id="meats-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：畜産　9尺</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>デリカ</td>
+        <td class="center input-cell">
+            <select id="delica-select">
+                <option>ﾃﾞﾘｶ　12尺</option>
+                <option>ﾃﾞﾘｶ　15尺</option>
+                <option>ﾃﾞﾘｶ　18尺</option>
+            </select>
+        </td>
+        <td id="delica-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：デリカ　12尺</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>ウォークイン</td>
+        <td class="center input-cell">
+            <select id="walk-in-select">
+                <option>ｳｫｰｸｲﾝ 17尺（3＋4）</option>
+                <option>ｳｫｰｸｲﾝ 20尺（4＋4）</option>
+            </select>
+        </td>
+        <td id="walk-in-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：ウォークイン17尺</td>
+    </tr>
+    <tr>
+        <td>冷設</td>
+        <td>機械室</td>
+        <td class="center input-cell">
+            <select id="machineRoom-select">
+                <option>機械室必要</option>
+                <option>機械室不要</option>
+            </select>
+        </td>
+        <td id="machineRoom-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：機械室不要</td>
+    </tr>
+    <tr>
+        <td>室外機</td>
+        <td>室外機置場</td>
+        <td class="center input-cell">
+            <select id="outdoorUnit-select">
+                <option>室外機　GL</option>
+                <option>室外機　～4階</option>
+                <option>室外機　5階～</option>
+            </select>
+        </td>
+        <td id="outdoorUnit-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：室外機　GL</td>
+    </tr>
+    <tr>
+        <td>空調</td>
+        <td>空調（正方形）</td>
+        <td class="center input-cell">
+            <select id="airConditioning-select">
+                <option>区画整形 □</option>
+                <option>区画不整形 凹</option>
+            </select>
+        </td>
+        <td id="airConditioning-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：区画整形</td>
+    </tr>
+    <tr>
+        <td>看板工事</td>
+        <td>サイン出入口の数</td>
+        <td class="center input-cell">
+            <select id="numberofSignEntrances-select">
+                <option>出入口1か所</option>
+                <option>出入口2か所</option>
+            </select>
+        </td>
+        <td id="numberofSignEntrances-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：出入口1か所</td>
+    </tr>
+    <tr>
+        <td>看板工事</td>
+        <td>テント</td>
+        <td class="center input-cell">
+            <select id="tent-select">
+                <option>ﾃﾝﾄ有り</option>
+                <option>ﾃﾝﾄ無し</option>
+            </select>
+        </td>
+        <td id="tent-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：テント有り</td>
+    </tr>
+    <tr>
+        <td>看板工事</td>
+        <td>サイン下地</td>
+        <td class="center input-cell">
+            <select id="signBase-select">
+                <option>外壁取付け</option>
+                <option>ｻｲﾝ門型下地</option>
+            </select>
+        </td>
+        <td id="signBase-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：外壁取付け</td>
+    </tr>
+    <tr>
+        <td>看板工事</td>
+        <td>イオンチャンネル</td>
+        <td class="center input-cell">
+            <select id="aeonChannels-select">
+                <option>袖看板1か所</option>
+                <option>袖看板2か所</option>
+                <option>壁面チャンネル</option>
+                <option>Newデザイン</option>
+                <option>ｽﾀﾝﾄﾞｻｲﾝ</option>
+            </select>
+        </td>
+        <td id="aeonChannels-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：袖看板1か所</td>
+    </tr>
+    <tr>
+        <td>看板工事</td>
+        <td>グラフィック</td>
+        <td class="center input-cell">
+            <select id="graphic-select">
+                <option>ガラス面少ない</option>
+                <option>ガラス面多い</option>
+            </select>
+        </td>
+        <td id="graphic-cost">0</td> <!-- 一式金額 -->
+        <td>0</td> <!-- ㎡単価 -->
+        <td>0</td>
+        <td></td>
+        <td>既定値：ガラス面少ない</td>
+    </tr>
+</table><br>
+<button class="btn-save" type="button" id="save-button">更新</button>
+<button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+// Firebase App (必須)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// Firebaseの初期化
+const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com",
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// URLからidパラメータを取得
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// URLから'd'パラメータを取得
+const propertyId = getQueryParam('id');
+
+// フォームの入力をFirebaseに保存
+document.getElementById("save-button").addEventListener("click", async () => {
+    if (confirm(`物件情報を更新しますか？`)) {
+        try {
+
+            // 入力フィールドからデータを取得
+            const drainageType = document.getElementById("drainage-select").value;
+            const drainageCost = parseFloat(document.getElementById("drainage-cost").textContent) || 0;
+            const drainageCalculatedCost = parseFloat(document.getElementById("drainage-calculated-cost").textContent) || 0;
+
+            const predismantlingType = document.getElementById("predismantling-select").value;
+            const predismantlingCost = parseFloat(document.getElementById("predismantling-cost").textContent) || 0;
+            const predismantlingCalculatedCost = parseFloat(document.getElementById("predismantling-calculated-cost").textContent) || 0;
+
+            const parkingType = document.getElementById("parking-select").value;
+            const parkingCost = parseFloat(document.getElementById("parking-cost").textContent) || 0;
+
+            const frozenType = document.getElementById("frozen-select").value;
+            const frozenCost = parseFloat(document.getElementById("frozen-cost").textContent) || 0;
+
+            const demolitionCost = parseFloat(document.getElementById("demolitionCost").textContent) || 0;
+
+            const BConstruction = document.getElementById("B-Construction-input").value;
+            const AutomaticFireAlarm = document.getElementById("AutomaticFireAlarm-input").value;
+            const meetingRoom = document.getElementById("meetingRoom-input").value;
+            const eliminateSteps = document.getElementById("eliminateSteps-input").value;
+
+            const poleSignType = document.getElementById("poleSign-select").value;
+            const poleSignCost = parseFloat(document.getElementById("poleSign-cost").textContent) || 0;
+
+            const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+            const contractAreaCost1 = parseFloat(document.getElementById("contractArea-cost1").textContent) || 0;
+            const contractAreaCost2 = parseFloat(document.getElementById("contractArea-cost2").textContent) || 0;
+
+            const problemsofUse = document.getElementById("problemsofUse-select").value;
+            const problemsofUseCost = parseFloat(document.getElementById("problemsofUse-cost").textContent) || 0;
+
+            const siteStatus = document.getElementById("siteStatus-select").value;
+            const siteStatusCost = parseFloat(document.getElementById("siteStatus-cost").textContent) || 0;
+
+            const entranceType = document.getElementById("entrance-select").value;
+            const entranceCost = parseFloat(document.getElementById("entrance-cost").textContent) || 0;
+
+            const sashDismantlingType = document.getElementById("sashDismantling-select").value;
+            const sashDismantlingCost = parseFloat(document.getElementById("sashDismantling-cost").textContent) || 0;
+
+            const floorConstructionType = document.getElementById("floorConstruction-select").value;
+            const floorConstructionCost = parseFloat(document.getElementById("floorConstruction-cost").textContent) || 0;
+            const floorConstructionCalculatedCost = parseFloat(document.getElementById("floorConstruction-calculated-cost").textContent) || 0;
+
+            const waterproofType = document.getElementById("waterproof-select").value;
+            const waterproofCost = parseFloat(document.getElementById("waterproof-cost").textContent) || 0;
+            const waterproofCalculatedCost = parseFloat(document.getElementById("waterproof-calculated-cost").textContent) || 0;
+
+            const ceilingType = document.getElementById("ceiling-select").value;
+            const ceilingCost = parseFloat(document.getElementById("ceiling-cost").textContent) || 0;
+            const ceilingCalculatedCost = parseFloat(document.getElementById("ceiling-calculated-cost").textContent) || 0;
+
+            const dogRunningType = document.getElementById("dogRunning-select").value;
+            const dogRunningCost = parseFloat(document.getElementById("dogRunning-cost").textContent) || 0;
+
+            const outdoorUnitStorageAreaType = document.getElementById("outdoorUnitStorageArea-select").value;
+            const outdoorUnitStorageAreaCost = parseFloat(document.getElementById("outdoorUnitStorageArea-cost").textContent) || 0;
+
+            const restRoomType = document.getElementById("restRoom-select").value;
+            const restRoomCost = parseFloat(document.getElementById("restRoom-cost").textContent) || 0;
+
+            const gondolaType = document.getElementById("gondola-select").value;
+            const gondolaCost = parseFloat(document.getElementById("gondola-cost").textContent) || 0;
+
+            const vegetablesType = document.getElementById("vegetables-select").value;
+            const vegetablesCost = parseFloat(document.getElementById("vegetables-cost").textContent) || 0;
+
+            const meatsType = document.getElementById("meats-select").value;
+            const meatsCost = parseFloat(document.getElementById("meats-cost").textContent) || 0;
+
+            const delicaType = document.getElementById("delica-select").value;
+            const delicaCost = parseFloat(document.getElementById("delica-cost").textContent) || 0;
+
+            const walkInType = document.getElementById("walk-in-select").value;
+            const walkInCost = parseFloat(document.getElementById("walk-in-cost").textContent) || 0;
+
+            const machineRoomType = document.getElementById("machineRoom-select").value;
+            const machineRoomCost = parseFloat(document.getElementById("machineRoom-cost").textContent) || 0;
+
+            const outdoorUnitType = document.getElementById("outdoorUnit-select").value;
+            const outdoorUnitCost = parseFloat(document.getElementById("outdoorUnit-cost").textContent) || 0;
+
+            const airConditioningType = document.getElementById("airConditioning-select").value;
+            const airConditioningCost = parseFloat(document.getElementById("airConditioning-cost").textContent) || 0;
+
+            const numberofSignEntrancesType = document.getElementById("numberofSignEntrances-select").value;
+            const numberofSignEntrancesCost = parseFloat(document.getElementById("numberofSignEntrances-cost").textContent) || 0;
+
+            const tentType = document.getElementById("tent-select").value;
+            const tentCost = parseFloat(document.getElementById("tent-cost").textContent) || 0;
+
+            const signBaseType = document.getElementById("signBase-select").value;
+            const signBaseCost = parseFloat(document.getElementById("signBase-cost").textContent) || 0;
+
+            const aeonChannelsType = document.getElementById("aeonChannels-select").value;
+            const aeonChannelsCost = parseFloat(document.getElementById("aeonChannels-cost").textContent) || 0;
+
+            const graphicType = document.getElementById("graphic-select").value;
+            const graphicCost = parseFloat(document.getElementById("graphic-cost").textContent) || 0;
+
+            if (propertyId) {
+                const docRef = doc(db, "properties", propertyId);
+
+                 // 更新するデータをオブジェクトにまとめる
+                const interiorInvestmentCostsData = {
+                    drainageType,
+                    drainageCost,
+                    drainageCalculatedCost,
+                    predismantlingType,
+                    predismantlingCost,
+                    predismantlingCalculatedCost,
+                    parkingType,
+                    parkingCost,
+                    frozenType,
+                    frozenCost,
+                    demolitionCost,
+                    BConstruction,
+                    AutomaticFireAlarm,
+                    meetingRoom,
+                    eliminateSteps,
+                    poleSignType,
+                    poleSignCost,
+                    contractAreaCost1,
+                    contractAreaCost2,
+                    problemsofUse,
+                    problemsofUseCost,
+                    siteStatus,
+                    siteStatusCost,
+                    entranceType,
+                    entranceCost,
+                    sashDismantlingType,
+                    sashDismantlingCost,
+                    floorConstructionType,
+                    floorConstructionCost,
+                    floorConstructionCalculatedCost,
+                    waterproofType,
+                    waterproofCost,
+                    waterproofCalculatedCost,
+                    ceilingType,
+                    ceilingCost,
+                    ceilingCalculatedCost,
+                    dogRunningType,
+                    dogRunningCost,
+                    outdoorUnitStorageAreaType,
+                    outdoorUnitStorageAreaCost,
+                    restRoomType,
+                    restRoomCost,
+                    gondolaType,
+                    gondolaCost,
+                    vegetablesType,
+                    vegetablesCost,
+                    meatsType,
+                    meatsCost,
+                    delicaType,
+                    delicaCost,
+                    walkInType,
+                    walkInCost,
+                    machineRoomType,
+                    machineRoomCost,
+                    outdoorUnitType,
+                    outdoorUnitCost,
+                    airConditioningType,
+                    airConditioningCost,
+                    numberofSignEntrancesType,
+                    numberofSignEntrancesCost,
+                    tentType,
+                    tentCost,
+                    signBaseType,
+                    signBaseCost,
+                    aeonChannelsType,
+                    aeonChannelsCost,
+                    graphicType,
+                    graphicCost
+                };
+                // FirestoreにinputDataフィールドとして保存
+                await setDoc(docRef, { interiorInvestmentCostsData }, { merge: true });
+                    alert("データが保存されました");
+                } else {
+                    alert("物件IDが指定されていません");
+                }
+            } catch (error) {
+                console.error("データの保存中にエラーが発生しました: ", error);
+                alert("データの保存中にエラーが発生しました");
+            }
+        }
+});
+
+// Firebaseの登録時の読み込み
+async function loadFirebaseData() {
+    try {
+        if (propertyId) {
+            const docRef = doc(db, "properties", propertyId);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                // Firebaseデータが存在する場合、フォームに値を設定
+                const propertyData = docSnap.data()
+                document.getElementById("name").textContent = propertyData.name || "";
+                const contractArea = propertyData.contractArea || 0;
+
+                const data = docSnap.data().interiorInvestmentCostsData; // inputDataフィールドのデータを取得
+
+                if(data) {                   
+                    document.getElementById("demolitionCost").textContent = data.demolitionCost || "";
+                    
+                    const contractAreaCost = contractArea * 3.3025;
+                    document.getElementById("contractArea").textContent = contractAreaCost.toFixed(2);
+
+                    // contractArea-cost1, contractArea-cost2の計算
+                    let cost1 = (contractAreaCost <= 165) ? 400 : (contractAreaCost <= 230) ? 500 : 600;
+                    let cost2 = (contractAreaCost <= 165) ? 1000 : (contractAreaCost <= 230) ? 1300 : 1500;
+                    document.getElementById("contractArea-cost1").textContent = cost1;
+                    document.getElementById("contractArea-cost2").textContent = cost2;
+
+                    // Firebaseデータが存在する場合、フォームに値を設定
+                    document.getElementById("drainage-select").value = data.drainageType || document.getElementById("drainage-select").value;
+                    document.getElementById("drainage-cost").textContent = data.drainageCost || document.getElementById("drainage-cost").textContent;
+                    document.getElementById("drainage-calculated-cost").textContent = data.drainageCalculatedCost || document.getElementById("drainage-calculated-cost").textContent;
+
+                    document.getElementById("predismantling-select").value = data.predismantlingType || document.getElementById("predismantling-select").value;
+                    document.getElementById("predismantling-cost").textContent = data.predismantlingCost || document.getElementById("predismantling-cost").textContent;
+                    document.getElementById("predismantling-calculated-cost").textContent = data.predismantlingCalculatedCost || document.getElementById("predismantling-calculated-cost").textContent;
+
+                    document.getElementById("parking-select").value = data.parkingType || document.getElementById("parking-select").value;
+                    document.getElementById("parking-cost").textContent = data.parkingCost || document.getElementById("parking-cost").textContent;
+
+                    document.getElementById("frozen-select").value = data.frozenType || document.getElementById("frozen-select").value;
+                    document.getElementById("frozen-cost").textContent = data.frozenCost || document.getElementById("frozen-cost").textContent;
+
+                    document.getElementById("demolitionCost").textContent = data.demolitionCost || document.getElementById("demolitionCost").textContent;
+                    document.getElementById("B-Construction-input").value = data.BConstruction || document.getElementById("B-Construction-input").value;
+                    document.getElementById("AutomaticFireAlarm-input").value = data.AutomaticFireAlarm || document.getElementById("AutomaticFireAlarm-input").value;
+                    document.getElementById("meetingRoom-input").value = data.meetingRoom || document.getElementById("meetingRoom-input").value;
+                    document.getElementById("eliminateSteps-input").value = data.eliminateSteps || document.getElementById("eliminateSteps-input").value;
+
+                    document.getElementById("poleSign-select").value = data.poleSignType || document.getElementById("poleSign-select").value;
+                    document.getElementById("poleSign-cost").textContent = data.poleSignCost || document.getElementById("poleSign-cost").textContent;
+
+                    document.getElementById("problemsofUse-select").value = data.problemsofUse || document.getElementById("problemsofUse-select").value;
+                    document.getElementById("problemsofUse-cost").textContent = data.problemsofUseCost || document.getElementById("problemsofUse-cost").textContent;
+
+                    document.getElementById("siteStatus-select").value = data.siteStatus || document.getElementById("siteStatus-select").value;
+                    document.getElementById("siteStatus-cost").textContent = data.siteStatusCost || document.getElementById("siteStatus-cost").textContent;
+
+                    document.getElementById("entrance-select").value = data.entranceType || document.getElementById("entrance-select").value;
+                    document.getElementById("entrance-cost").textContent = data.entranceCost || document.getElementById("entrance-cost").textContent;
+
+                    document.getElementById("sashDismantling-select").value = data.sashDismantlingType || document.getElementById("sashDismantling-select").value;
+                    document.getElementById("sashDismantling-cost").textContent = data.sashDismantlingCost || document.getElementById("sashDismantling-cost").textContent;
+
+                    document.getElementById("floorConstruction-select").value = data.floorConstructionType || document.getElementById("floorConstruction-select").value;
+                    document.getElementById("floorConstruction-cost").textContent = data.floorConstructionCost || document.getElementById("floorConstruction-cost").textContent;
+                    document.getElementById("floorConstruction-calculated-cost").textContent = data.floorConstructionCalculatedCost || document.getElementById("floorConstruction-calculated-cost").textContent;
+
+                    document.getElementById("waterproof-select").value = data.waterproofType || document.getElementById("waterproof-select").value;
+                    document.getElementById("waterproof-cost").textContent = data.waterproofCost || document.getElementById("waterproof-cost").textContent;
+                    document.getElementById("waterproof-calculated-cost").textContent = data.waterproofCalculatedCost || document.getElementById("waterproof-calculated-cost").textContent;
+
+                    document.getElementById("ceiling-select").value = data.ceilingType || document.getElementById("ceiling-select").value;
+                    document.getElementById("ceiling-cost").textContent = data.ceilingCost || document.getElementById("ceiling-cost").textContent;
+                    document.getElementById("ceiling-calculated-cost").textContent = data.ceilingCalculatedCost || document.getElementById("ceiling-calculated-cost").textContent;
+
+                    document.getElementById("dogRunning-select").value = data.dogRunningType || document.getElementById("dogRunning-select").value;
+                    document.getElementById("dogRunning-cost").textContent = data.dogRunningCost || document.getElementById("dogRunning-cost").textContent;
+
+                    document.getElementById("outdoorUnitStorageArea-select").value = data.outdoorUnitStorageAreaType || document.getElementById("outdoorUnitStorageArea-select").value;
+                    document.getElementById("outdoorUnitStorageArea-cost").textContent = data.outdoorUnitStorageAreaCost || document.getElementById("outdoorUnitStorageArea-cost").textContent;
+
+                    document.getElementById("restRoom-select").value = data.restRoomType || document.getElementById("restRoom-select").value;
+                    document.getElementById("restRoom-cost").textContent = data.restRoomCost || document.getElementById("restRoom-cost").textContent;
+
+                    document.getElementById("gondola-select").value = data.gondolaType || document.getElementById("gondola-select").value;
+                    document.getElementById("gondola-cost").textContent = data.gondolaCost || document.getElementById("gondola-cost").textContent;
+
+                    document.getElementById("vegetables-select").value = data.vegetablesType || document.getElementById("vegetables-select").value;
+                    document.getElementById("vegetables-cost").textContent = data.vegetablesCost || document.getElementById("vegetables-cost").textContent;
+
+                    document.getElementById("meats-select").value = data.meatsType || document.getElementById("meats-select").value;
+                    document.getElementById("meats-cost").textContent = data.meatsCost || document.getElementById("meats-cost").textContent;
+
+                    document.getElementById("delica-select").value = data.delicaType || document.getElementById("delica-select").value;
+                    document.getElementById("delica-cost").textContent = data.delicaCost || document.getElementById("delica-cost").textContent;
+
+                    document.getElementById("walk-in-select").value = data.walkInType || document.getElementById("walk-in-select").value;
+                    document.getElementById("walk-in-cost").textContent = data.walkInCost || document.getElementById("walk-in-cost").textContent;
+
+                    document.getElementById("machineRoom-select").value = data.machineRoomType || document.getElementById("machineRoom-select").value;
+                    document.getElementById("machineRoom-cost").textContent = data.machineRoomCost || document.getElementById("machineRoom-cost").textContent;
+
+                    document.getElementById("outdoorUnit-select").value = data.outdoorUnitType || document.getElementById("outdoorUnit-select").value;
+                    document.getElementById("outdoorUnit-cost").textContent = data.outdoorUnitCost || document.getElementById("outdoorUnit-cost").textContent;
+
+                    document.getElementById("airConditioning-select").value = data.airConditioningType || document.getElementById("airConditioning-select").value;
+                    document.getElementById("airConditioning-cost").textContent = data.airConditioningCost || document.getElementById("airConditioning-cost").textContent;
+
+                    document.getElementById("numberofSignEntrances-select").value = data.numberofSignEntrancesType || document.getElementById("numberofSignEntrances-select").value;
+                    document.getElementById("numberofSignEntrances-cost").textContent = data.numberofSignEntrancesCost || document.getElementById("numberofSignEntrances-cost").textContent;
+
+                    document.getElementById("tent-select").value = data.tentType || document.getElementById("tent-select").value;
+                    document.getElementById("tent-cost").textContent = data.tentCost || document.getElementById("tent-cost").textContent;
+
+                    document.getElementById("signBase-select").value = data.signBaseType || document.getElementById("signBase-select").value;
+                    document.getElementById("signBase-cost").textContent = data.signBaseCost || document.getElementById("signBase-cost").textContent;
+
+                    document.getElementById("aeonChannels-select").value = data.aeonChannelsType || document.getElementById("aeonChannels-select").value;
+                    document.getElementById("aeonChannels-cost").textContent = data.aeonChannelsCost || document.getElementById("aeonChannels-cost").textContent;
+
+                    document.getElementById("graphic-select").value = data.graphicType || document.getElementById("graphic-select").value;
+                    document.getElementById("graphic-cost").textContent = data.graphicCost || document.getElementById("graphic-cost").textContent;
+
+                    // 各フィールドに対する更新関数の呼び出し
+                    updateProblemsofUseCost();
+                    updateSiteStatusCost();
+                    updateEntranceCost();
+                    updateSashDismantlingCost();
+                    updatedogRunning();
+                    updateoutdoorUnitStorageArea();
+                    updaterestRoom();
+                    updategondola();
+                    updatevegetables();
+                    updatemeats();
+                    updatedelica();
+                    updatewalkIn();
+                    updatemachineRoom();
+                    updateoutdoorUnit();
+                    updateairConditioning();
+                    updatenumberofSignEntrances();
+                    updatetent();
+                    updatesignBase();
+                    updateaeonChannels();
+                    updategraphic();
+                    updateWaterproof();
+                    updateCeiling();
+                    updateFloorConstruction();
+
+                }
+
+            } else {
+                // Firebaseにデータが存在しない場合は初期値を設定
+                setDefaultValues();
+                alert("データが見つかりませんでした");
+            }
+        }
+    } catch (error) {
+        console.error("データの読み込み中にエラーが発生しました: ", error);
+        alert("データの読み込み中にエラーが発生しました");
+    }
+}
+
+function updateDrainage() {
+    const select = document.getElementById("drainage-select");
+    const costCell = document.getElementById("drainage-cost");
+    const unitPriceCell = document.getElementById("drainage-unit-price");
+    const calculatedCostCell = document.getElementById("drainage-calculated-cost");
+    const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+
+    // 選択されたオプションに基づいて㎡単価と一式金額を設定
+    switch (select.value) {
+        case "新築フリスタ":
+            costCell.textContent = 600;  // 一式金額
+            unitPriceCell.textContent = 3.9; // ㎡単価
+            break;
+        case "新築ビルイン 鉄骨":
+        case "新築ビルイン RC":
+            costCell.textContent = 650;  // 一式金額
+            unitPriceCell.textContent = 3.9; // ㎡単価
+            break;
+        case "居抜フリスタ":
+        case "居抜ビルイン 鉄骨":
+        case "居抜ビルイン RC":
+            costCell.textContent = 720;  // 一式金額
+            unitPriceCell.textContent = 7.5; // ㎡単価
+            break;
+        case "居抜ビルイン 区分所有":
+            costCell.textContent = 300;  // 一式金額
+            unitPriceCell.textContent = 11.4; // ㎡単価
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            unitPriceCell.textContent = ""; // Default empty
+            break;
+    }
+
+    // ㎡単価の値を取得し数値に変換
+    const unitPrice = parseFloat(unitPriceCell.textContent) || 0;
+
+    // 面積 × ㎡単価の計算結果を表示
+    const calculatedCost = unitPrice * contractArea;
+    calculatedCostCell.textContent = calculatedCost.toFixed(0); // 結果を表示（整数に丸める）
+}
+
+
+function updatePredismantling() {
+    const select = document.getElementById("predismantling-select");
+    const costCell = document.getElementById("predismantling-cost");
+    const unitPriceCell = document.getElementById("predismantling-unit-price");
+    const calculatedCostCell = document.getElementById("predismantling-calculated-cost");
+    const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "ｽｹﾙﾄﾝ（事前解体無し）":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = ""; // ㎡単価
+            break;
+        case "小規模解体":
+            costCell.textContent = 400;  // 一式金額
+            unitPriceCell.textContent = ""; // ㎡単価
+            break;
+        case "現状 事務所仕様":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = 30; // ㎡単価
+            break;
+        case "現状 飲食等（間仕切多）":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = 45; // ㎡単価
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            unitPriceCell.textContent = ""; // Default empty
+            break;
+    }
+
+    // ㎡単価の値を取得し数値に変換
+    const unitPrice = parseFloat(unitPriceCell.textContent) || 0;
+
+    // 面積 × ㎡単価の計算結果を表示
+    const calculatedCost = unitPrice * contractArea;
+    calculatedCostCell.textContent = calculatedCost.toFixed(0); // 結果を表示（整数に丸める）
+}
+
+function updateCeiling() {
+    const select = document.getElementById("ceiling-select");
+    const costCell = document.getElementById("ceiling-cost");
+    const unitPriceCell = document.getElementById("ceiling-unit-price");
+    const calculatedCostCell = document.getElementById("ceiling-calculated-cost");
+    const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "天井新規・不明":
+            costCell.textContent = 75;  // 一式金額
+            unitPriceCell.textContent = 4; // ㎡単価
+            break;
+        case "スケルトン天井":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = ""; // ㎡単価
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            unitPriceCell.textContent = ""; // Default empty
+            break;
+    }
+
+    // ㎡単価の値を取得し数値に変換
+    const unitPrice = parseFloat(unitPriceCell.textContent) || 0;
+
+    // 面積 × ㎡単価の計算結果を表示
+    const calculatedCost = unitPrice * contractArea;
+    calculatedCostCell.textContent = calculatedCost.toFixed(0); // 結果を表示（整数に丸める）
+}
+
+function updateFloorConstruction() {
+    const select = document.getElementById("floorConstruction-select");
+    const costCell = document.getElementById("floorConstruction-cost");
+    const unitPriceCell = document.getElementById("floorConstruction-unit-price");
+    const calculatedCostCell = document.getElementById("floorConstruction-calculated-cost");
+    const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "無し・不明":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = 0; // ㎡単価
+            break;
+        case "～150":
+            costCell.textContent = 180;  // 一式金額
+            unitPriceCell.textContent = 7.5; // ㎡単価
+            break;
+        case "～300":
+            costCell.textContent = 180;  // 一式金額
+            unitPriceCell.textContent = 12; // ㎡単価
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            unitPriceCell.textContent = ""; // Default empty
+            break;
+    }
+    // ㎡単価の値を取得し数値に変換
+    const unitPrice = parseFloat(unitPriceCell.textContent) || 0;
+
+    // 面積 × ㎡単価の計算結果を表示
+    const calculatedCost = unitPrice * contractArea;
+    calculatedCostCell.textContent = calculatedCost.toFixed(0); // 結果を表示（整数に丸める）
+}
+
+function updateWaterproof() {
+    const select = document.getElementById("waterproof-select");
+    const costCell = document.getElementById("waterproof-cost");
+    const unitPriceCell = document.getElementById("waterproof-unit-price");
+    const calculatedCostCell = document.getElementById("waterproof-calculated-cost");
+    const contractArea = parseFloat(document.getElementById("contractArea").textContent) || 0;
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "地下有り":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = 4.7; // ㎡単価
+            break;
+        case "地下無し":
+            costCell.textContent = 0;  // 一式金額
+            unitPriceCell.textContent = 0; // ㎡単価
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            unitPriceCell.textContent = ""; // Default empty
+            break;
+    }
+    // ㎡単価の値を取得し数値に変換
+    const unitPrice = parseFloat(unitPriceCell.textContent) || 0;
+
+    // 面積 × ㎡単価の計算結果を表示
+    const calculatedCost = unitPrice * contractArea;
+    calculatedCostCell.textContent = calculatedCost.toFixed(0); // 結果を表示（整数に丸める）
+}
+
+function updateParkingCost() {
+    const select = document.getElementById("parking-select");  // select要素を取得
+    const costCell = document.getElementById("parking-cost");  
+
+    switch (select.value) {
+        case "駐車場なし":
+            costCell.textContent = 0;  
+            break;
+        case "有り　2台未満":
+            costCell.textContent = 400;  
+            break;
+        case "有り　3台以上":
+            costCell.textContent = 800;  
+            break;
+        default:
+            costCell.textContent = 0;  
+            break;
+    }
+}
+
+function updateFrozenCost() {
+    const select = document.getElementById("frozen-select");
+    const costCell = document.getElementById("frozen-cost");
+
+    switch (select.value) {
+        case "ﾘｰﾁｲﾝ 9枚":
+            costCell.textContent = 14500;  // 例として、9枚のコストを500とする
+            break;
+        case "ﾘｰﾁｲﾝ 15枚":
+            costCell.textContent = 16000;  // 例として、15枚のコストを700とする
+            break;
+        case "ﾘｰﾁｲﾝ 18枚":
+            costCell.textContent = 17000;  // 例として、18枚のコストを800とする
+            break;
+        case "ﾘｰﾁｲﾝ 24枚＋冷凍ﾌﾟﾚﾊﾌ":
+            costCell.textContent = 20500; // 例として、24枚＋冷凍プレハフのコストを1200とする
+            break;
+        default:
+            costCell.textContent = 0;    // 選択されていない場合はコストを0にする
+            break;
+    }
+}
+
+function updatePoleSignCost() {
+    // Get the selected option and the cell to update
+    const select = document.getElementById("poleSign-select");
+    const costCell = document.getElementById("poleSign-cost");
+
+    // Set the value based on the selected option
+    switch (select.value) {
+        case "0":
+            costCell.textContent = 0;
+            break;
+        case "1350":
+            costCell.textContent = 1350;
+            break;
+        case "4500":
+            costCell.textContent = 4500;
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateProblemsofUseCost() {
+    // Get the selected option and the cell to update
+    const select = document.getElementById("problemsofUse-select");
+    const costCell = document.getElementById("problemsofUse-cost");
+
+    // Set the value based on the selected option
+    switch (select.value) {
+        case "既存物販（問題なし）":
+            costCell.textContent = 0;
+            break;
+        case "用途変更必要":
+            costCell.textContent = 600;
+            break;
+        case "用途変更不可":
+            costCell.textContent = 0;
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateSiteStatusCost() {
+    // Get the selected option and the cell to update
+    const select = document.getElementById("siteStatus-select");
+    const costCell = document.getElementById("siteStatus-cost");
+
+    // Set the value based on the selected option
+    switch (select.value) {
+        case "都心、国道沿い":
+            costCell.textContent = 350;
+            break;
+        case "国道沿い・バス通り":
+            costCell.textContent = 250;
+            break;
+        case "上記以外の道路":
+            costCell.textContent = 150;
+            break;
+        case "駐車場等、搬入場所あり":
+            costCell.textContent = 0;
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateEntranceCost() {
+    // Get the selected option and the cell to update
+    const select = document.getElementById("entrance-select");
+    const costCell = document.getElementById("entrance-cost");
+
+    // Set the value based on the selected option
+    switch (select.value) {
+        case "新築既存利用":
+            costCell.textContent = 150;
+            break;
+        case "既存利用":
+            costCell.textContent = 350;
+            break;
+        case "新規自動ドア":
+            costCell.textContent = 1000;
+            break;
+        case "ｼｬｯﾀｰ等新規W～６ｍ":
+            costCell.textContent = 1300;
+            break;
+        case "ｼｬｯﾀｰ等新規 6～12ｍ":
+            costCell.textContent = 2000;
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateSashDismantlingCost() {
+    // Get the selected option and the cell to update
+    const select = document.getElementById("sashDismantling-select");
+    const costCell = document.getElementById("sashDismantling-cost");
+
+    // Set the value based on the selected option
+    switch (select.value) {
+        case "サッシ解体なし":
+            costCell.textContent = 150;
+            break;
+        case "サッシ解体有":
+            costCell.textContent = 500;
+            break;
+        case "フロント外壁込み解体":
+            costCell.textContent = 1100;
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatedogRunning() {
+    const select = document.getElementById("dogRunning-select");
+    const costCell = document.getElementById("dogRunning-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "土間補修必要・不明":
+            costCell.textContent = 700;  // 一式金額
+            break;
+        case "土間補修不要":
+            costCell.textContent = 100;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateoutdoorUnitStorageArea() {
+    const select = document.getElementById("outdoorUnitStorageArea-select");
+    const costCell = document.getElementById("outdoorUnitStorageArea-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "1階":
+            costCell.textContent = 300;  // 一式金額
+            break;
+        case "～4階":
+            costCell.textContent = 500;  // 一式金額
+            break;
+        case "～5階":
+            costCell.textContent = 700;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updaterestRoom() {
+    const select = document.getElementById("restRoom-select");
+    const costCell = document.getElementById("restRoom-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "休憩室無し":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "休憩室あり":
+            costCell.textContent = 400;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updategondola() {
+    const select = document.getElementById("gondola-select");
+    const costCell = document.getElementById("gondola-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "D450":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "D500":
+            costCell.textContent = 250;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatevegetables() {
+    const select = document.getElementById("vegetables-select");
+    const costCell = document.getElementById("vegetables-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "農産　6尺":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "農産　9尺":
+            costCell.textContent = 165;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatemeats() {
+    const select = document.getElementById("meats-select");
+    const costCell = document.getElementById("meats-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "畜産　6尺":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "畜産　9尺":
+            costCell.textContent = 165;  // 一式金額
+            break;
+        case "畜産　12尺":
+            costCell.textContent = 385;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatedelica() {
+    const select = document.getElementById("delica-select");
+    const costCell = document.getElementById("delica-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "ﾃﾞﾘｶ　12尺":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "ﾃﾞﾘｶ　15尺":
+            costCell.textContent = 150;  // 一式金額
+            break;
+        case "ﾃﾞﾘｶ　18尺":
+            costCell.textContent = 550;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatewalkIn() {
+    const select = document.getElementById("walk-in-select");
+    const costCell = document.getElementById("walk-in-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "ｳｫｰｸｲﾝ 17尺（3＋4）":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "ｳｫｰｸｲﾝ 20尺（4＋4）":
+            costCell.textContent = 150;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatemachineRoom() {
+    const select = document.getElementById("machineRoom-select");
+    const costCell = document.getElementById("machineRoom-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "機械室必要":
+            costCell.textContent = 350;  // 一式金額
+            break;
+        case "機械室不要":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateoutdoorUnit() {
+    const select = document.getElementById("outdoorUnit-select");
+    const costCell = document.getElementById("outdoorUnit-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "室外機　GL":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "室外機　～4階":
+            costCell.textContent = 300;  // 一式金額
+            break;
+        case "室外機　5階～":
+            costCell.textContent = 500;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateairConditioning() {
+    const select = document.getElementById("airConditioning-select");
+    const costCell = document.getElementById("airConditioning-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "区画整形 □":
+            costCell.textContent = 2200;  // 一式金額
+            break;
+        case "区画不整形 凹":
+            costCell.textContent = 2500;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatenumberofSignEntrances() {
+    const select = document.getElementById("numberofSignEntrances-select");
+    const costCell = document.getElementById("numberofSignEntrances-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "出入口1か所":
+            costCell.textContent = 1000;  // 一式金額
+            break;
+        case "出入口2か所":
+            costCell.textContent = 1500;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatetent() {
+    const select = document.getElementById("tent-select");
+    const costCell = document.getElementById("tent-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "ﾃﾝﾄ有り":
+            costCell.textContent = 550;  // 一式金額
+            break;
+        case "ﾃﾝﾄ無し":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updatesignBase() {
+    const select = document.getElementById("signBase-select");
+    const costCell = document.getElementById("signBase-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "外壁取付け":
+            costCell.textContent = 0;  // 一式金額
+            break;
+        case "ｻｲﾝ門型下地":
+            costCell.textContent = 2000;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updateaeonChannels() {
+    const select = document.getElementById("aeonChannels-select");
+    const costCell = document.getElementById("aeonChannels-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "袖看板1か所":
+            costCell.textContent = 500;  // 一式金額
+            break;
+        case "袖看板2か所":
+            costCell.textContent = 1000;  // 一式金額
+            break;
+        case "壁面チャンネル":
+            costCell.textContent = 400;  // 一式金額
+            break;
+        case "Newデザイン":
+            costCell.textContent = 1200;  // 一式金額
+            break;
+        case "ｽﾀﾝﾄﾞｻｲﾝ":
+            costCell.textContent = 170;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+function updategraphic() {
+    const select = document.getElementById("graphic-select");
+    const costCell = document.getElementById("graphic-cost");
+
+    // Set values based on selected option
+    switch (select.value) {
+        case "ガラス面少ない":
+            costCell.textContent = 150;  // 一式金額
+            break;
+        case "ガラス面多い":
+            costCell.textContent = 300;  // 一式金額
+            break;
+        default:
+            costCell.textContent = 0;  // Default to 0
+            break;
+    }
+}
+
+// デフォルトの選択値を設定する関数
+function setDefaultValues() {
+    document.getElementById("problemsofUse-select").value = "既存物販（問題なし）";
+    document.getElementById("siteStatus-select").value = "上記以外の道路";
+    document.getElementById("entrance-select").value = "新規自動ドア";
+    document.getElementById("sashDismantling-select").value = "サッシ解体なし";
+    document.getElementById("ceiling-select").value = "天井新規・不明";
+    document.getElementById("floorConstruction-select").value = "無し・不明";
+    document.getElementById("waterproof-select").value = "地下無し";
+    document.getElementById("dogRunning-select").value = "土間補修不要";
+    document.getElementById("outdoorUnitStorageArea-select").value = "1階";
+    document.getElementById("restRoom-select").value = "休憩室無し";
+    document.getElementById("gondola-select").value = "D450";
+    document.getElementById("vegetables-select").value = "農産　9尺";
+    document.getElementById("meats-select").value = "畜産　9尺";
+    document.getElementById("delica-select").value = "ﾃﾞﾘｶ　12尺";
+    document.getElementById("walk-in-select").value = "ｳｫｰｸｲﾝ 17尺（3＋4）";
+    document.getElementById("machineRoom-select").value = "機械室不要";
+    document.getElementById("outdoorUnit-select").value = "室外機　GL";
+    document.getElementById("airConditioning-select").value = "区画整形 □";
+    document.getElementById("numberofSignEntrances-select").value = "出入口1か所";
+    document.getElementById("tent-select").value = "ﾃﾝﾄ有り";
+    document.getElementById("signBase-select").value = "外壁取付け";
+    document.getElementById("aeonChannels-select").value = "袖看板1か所";
+    document.getElementById("graphic-select").value = "ガラス面少ない";
+
+    // 各フィールドに対する更新関数の呼び出し
+    updateProblemsofUseCost();
+    updateSiteStatusCost();
+    updateEntranceCost();
+    updateSashDismantlingCost();
+    updatedogRunning();
+    updateoutdoorUnitStorageArea();
+    updaterestRoom();
+    updategondola();
+    updatevegetables();
+    updatemeats();
+    updatedelica();
+    updatewalkIn();
+    updatemachineRoom();
+    updateoutdoorUnit();
+    updateairConditioning();
+    updatenumberofSignEntrances();
+    updatetent();
+    updatesignBase();
+    updateaeonChannels();
+    updategraphic();
+    updateWaterproof();
+    updateCeiling();
+    updateFloorConstruction();
+}
+
+// ページがロードされたときにFirebaseデータを読み込み
+window.onload = loadFirebaseData;
+
+// ドロップダウンの選択が変更されたときにupdateDrainageを呼び出す
+document.getElementById("drainage-select").addEventListener("change", updateDrainage);
+document.getElementById("predismantling-select").addEventListener("change", updatePredismantling);
+document.getElementById("ceiling-select").addEventListener("change", updateCeiling);
+document.getElementById("floorConstruction-select").addEventListener("change", updateFloorConstruction);
+document.getElementById("waterproof-select").addEventListener("change", updateWaterproof);
+document.getElementById("parking-select").addEventListener("change", updateParkingCost);
+document.getElementById("frozen-select").addEventListener("change", updateFrozenCost);
+document.getElementById("poleSign-select").addEventListener("change", updatePoleSignCost);
+document.getElementById("problemsofUse-select").addEventListener("change", updateProblemsofUseCost);
+document.getElementById("siteStatus-select").addEventListener("change", updateSiteStatusCost);
+document.getElementById("entrance-select").addEventListener("change", updateEntranceCost);
+document.getElementById("sashDismantling-select").addEventListener("change", updateSashDismantlingCost);
+document.getElementById("dogRunning-select").addEventListener("change", updatedogRunning);
+document.getElementById("outdoorUnitStorageArea-select").addEventListener("change", updateoutdoorUnitStorageArea);
+document.getElementById("restRoom-select").addEventListener("change", updaterestRoom);
+document.getElementById("gondola-select").addEventListener("change", updategondola);
+document.getElementById("vegetables-select").addEventListener("change", updatevegetables);
+document.getElementById("meats-select").addEventListener("change", updatemeats);
+document.getElementById("delica-select").addEventListener("change", updatedelica);
+document.getElementById("walk-in-select").addEventListener("change", updatewalkIn);
+document.getElementById("machineRoom-select").addEventListener("change", updatemachineRoom);
+document.getElementById("outdoorUnit-select").addEventListener("change", updateoutdoorUnit);
+document.getElementById("airConditioning-select").addEventListener("change", updateairConditioning);
+document.getElementById("numberofSignEntrances-select").addEventListener("change", updatenumberofSignEntrances);
+document.getElementById("tent-select").addEventListener("change", updatetent);
+document.getElementById("signBase-select").addEventListener("change", updatesignBase);
+document.getElementById("aeonChannels-select").addEventListener("change", updateaeonChannels);
+document.getElementById("graphic-select").addEventListener("change", updategraphic);
+    
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    setDefaultValues();
+});
+
+</script>
+</body>
+</html>

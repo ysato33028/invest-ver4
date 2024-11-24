@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>売上予測</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
+    label, select, input { display: block; margin: 8px 0; }
+    #combination { font-weight: bold; color: blue; margin-top: 10px; }
+    #population-ratio-display { font-weight: bold; color: blue; margin-top: 10px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+  </style>
+</head>
+<body>
+
+  <h1>売上予測</h1>
+  <form id="store-form">
+  <table>
+    <tr>
+      <th>入力項目</th>
+      <th>入力 or リスト</th>
+      <th>入力内容</th>
+    </tr>
+    <tr>
+      <td>物件名</td>
+      <td>エントリーシート</td>
+      <td class="required" id="name"></td>
+    </tr>
+    <tr>
+      <td>競争店数</td>
+      <td>リスト</td>
+      <td class="required">
+        <select id="competition" required>
+          <option value="1">なし</option>
+          <option value="2">あり</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>たばこ</td>
+      <td>リスト</td>
+      <td class="required">
+        <select id="tobacco" required>
+          <option value="1">なし</option>
+          <option value="2">あり</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>レイアウト</td>
+      <td>エントリーシート</td>
+      <td class="required" id="layout"></td>
+    </tr>
+    <tr>
+      <td>営業時間</td>
+      <td>自動計算</td>
+      <td class="required" id="opening-hours"></td>
+    </tr>
+    <tr>
+      <td>売場面積（坪）</td>
+      <td>エントリーシート</td>
+      <td class="required" id="sales-area"></td>
+    </tr>
+    <tr>
+      <td>ハフモデル世帯数</td>
+      <td>入力</td>
+      <td class="required"><input type="number" id="households" required></td>
+    </tr>
+    <tr>
+      <td>1次商圏単身世帯</td>
+      <td>入力</td>
+      <td class="required"><input type="number" id="single-households" required min="0" max="10000" step="0.0001"></td>
+    </tr>
+    <tr>
+      <td>昼間人口比率（％）</td>
+      <td>入力</td>
+      <td class="required"><input type="number" id="population-ratio" required min="0" max="1000" step="0.0001"></td>
+    </tr>
+    <tr>
+      <td>昼間人口比率</td>
+      <td>自動計算</td>
+      <td class="required" id="population-ratio-result"></td>
+    </tr>
+    <tr>
+      <td>最寄り駅距離（m）</td>
+      <td>入力</td>
+      <td class="required"><input type="number" id="nearest-station-distance" required min="0" max="10000" step="0.0001"></td>
+    </tr>
+    <tr>
+      <td>CVS数（500m内）</td>
+      <td>入力</td>
+      <td class="required"><input type="number" id="cvs-count" required min="0" max="10000" step="0.0001"></td>
+    </tr>
+  </table>
+
+  <h2>＜係数計算＞</h2>
+
+  <table>
+    <tr>
+      <th>項目</th>
+      <th>自動計算</th>
+      <th>計算結果</th>
+    </tr>
+    <tr>
+      <td>営業年度</td>
+      <td>係数</td>
+      <td class="required" id="business-Year"></td>
+    </tr>
+    <tr>
+      <td>営業時間計算</td>
+      <td>係数</td>
+      <td class="required" id="operating-hours-result"></td>
+    </tr>
+    <tr>
+      <td>最寄り駅距離計算</td>
+      <td>係数</td>
+      <td class="required" id="station-distance-result"></td>
+    </tr>
+    <tr>
+      <td>ハフモデル世帯数計算</td>
+      <td>係数</td>
+      <td class="required" id="huff-households-result"></td>
+    </tr>
+    <tr>
+      <td>1次商圏1人世帯計算</td>
+      <td>係数</td>
+      <td class="required" id="primary-households-result"></td>
+    </tr>
+    <tr>
+      <td>昼間人口比率計算</td>
+      <td>係数</td>
+      <td class="required" id="population-ratio-calculated-result"></td>
+    </tr>
+    <tr>
+      <td>売場面積計算</td>
+      <td>係数</td>
+      <td class="required" id="floor-area-result"></td>
+    </tr>
+    <tr>
+      <td>CVS数計算</td>
+      <td>係数</td>
+      <td class="required" id="cvs-result"></td>
+    </tr>
+    <tr>
+      <td>係数合計</td>
+      <td>係数</td>
+      <td class="required" id="coefficient-sum"></td>
+    </tr>
+    <tr>
+      <td>係数合算</td>
+      <td>係数</td>
+      <td class="required" id="coefficient-total"></td>
+    </tr>
+  </table>
+
+  <h2>＜売上予測＞</h2>
+
+  <table>
+  <tr>
+    <th>項目</th>
+    <th>自動計算</th>
+    <th>計算結果</th>
+  </tr>
+  <tr>
+    <td>想定客数</td>
+    <td>係数</td>
+    <td class="required" id="estimated-customers"></td>
+  </tr>
+  <tr>
+    <td>想定客単価</td>
+    <td>係数</td>
+    <td class="required" id="estimated-unit-price"></td>
+  </tr>
+  <tr>
+    <td>想定売上</td>
+    <td>係数</td>
+    <td class="required" id="estimated-sales"></td>
+  </tr>
+  </table><br>
+    <button id="calculate-button">計算する</button>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    </form>
+
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com",
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // 初期設定と組み合わせの更新
+  document.addEventListener("DOMContentLoaded", function() {
+  // ボタン要素を取得し、クリックイベントを設定
+  const calculateButton = document.getElementById("calculate-button");
+    if (calculateButton) {
+      calculateButton.addEventListener("click", function(event) {
+        event.preventDefault();  // ページ遷移を防ぐ
+        updatePopulationRatio();
+        calculateCoefficients(); // 計算を実行
+        alert("計算が完了しました");
+      });
+    } else {
+      console.error("計算ボタンが見つかりません");
+    }
+
+    // Firestoreから指定IDのデータを取得して表示
+    async function displaySalesForecastingData() {
+      if (!propertyId) {
+        document.getElementById("name").textContent = "IDが指定されていません";
+        return;
+      }
+
+      try {
+        const docRef = doc(db, "properties", propertyId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const propertyData = docSnap.data();
+
+          // Firestoreのデータを表示
+          document.getElementById("name").textContent = propertyData.name || "";
+          document.getElementById("layout").textContent = propertyData.layout || "1";
+          document.getElementById("sales-area").textContent = propertyData.shopArea || "";
+
+          // businessPlanDataマップ内の情報取得
+          const businessPlanData = propertyData.businessPlanData || {};
+
+          // データをフォームに設定
+          document.getElementById("competition").value = businessPlanData.competition || "1";
+          document.getElementById("tobacco").value = businessPlanData.tobacco || "1";
+          document.getElementById("population-ratio").value = businessPlanData.populationRatio || 100;
+          document.getElementById("households").value = businessPlanData.households || 0;
+          document.getElementById("single-households").value = businessPlanData.singleHouseholds || 0;
+          document.getElementById("opening-hours").textContent = businessPlanData.openingHours || "0";
+
+          // 営業開始・終了時刻の取得と計算
+          const openTime = businessPlanData.openSelect || "1";; // 例: "7:00:00"
+          const endTime = businessPlanData.endSelect || "1";;   // 例: "22:00:00"
+          const openHour = parseInt(openTime.split(":")[0], 10);
+          const endHour = parseInt(endTime.split(":")[0], 10);
+          const openingHours = endHour - openHour;
+
+          // 営業時間をHTMLに反映
+          document.getElementById("opening-hours").textContent = isNaN(openingHours) ? "0" : openingHours;
+
+          // 他の計算用のデータ（例: nearest-station-distance）
+          document.getElementById("nearest-station-distance").value = businessPlanData.nearestStationDistance || 0;
+          document.getElementById("cvs-count").value = businessPlanData.cvsCount || 0;
+
+        } else {
+          console.error("データが見つかりません");
+        }
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+      }
+
+      
+    }
+
+    // フォーム要素の取得とnullチェック
+    const formElements = [
+      "competition", "tobacco", "opening-hours", "households", "single-households", 
+      "population-ratio", "nearest-station-distance", "cvs-count"
+    ];
+
+    let missingElement = formElements.find(id => !document.getElementById(id));
+    if (missingElement) {
+      console.error(`必要なフォーム要素が見つかりません: ${missingElement}`);
+      return;
+    }
+
+    // 保存ボタンの設定
+    const saveButton = document.getElementById("save-button");
+    if (saveButton) {
+      saveButton.addEventListener("click", function(event) {
+        event.preventDefault();  // ページ遷移を防ぐ
+        saveDataToFirestore();
+      });
+    } else {
+      console.error("保存ボタンが見つかりません");
+    }
+
+    // Firestoreにデータを保存する関数
+    async function saveDataToFirestore() {
+      // 新しいドキュメントを作成
+      try {
+        if (propertyId) {
+          const docRef = doc(db, "properties", propertyId);
+
+          // Select要素から選ばれた値を取得
+          const competition = document.getElementById("competition").value;
+          const tobacco = document.getElementById("tobacco").value;
+          const openingHours = document.getElementById("opening-hours").textContent;
+          const households = document.getElementById("households").value;
+          const singleHouseholds = document.getElementById("single-households").value;
+          const populationRatio = document.getElementById("population-ratio").value;
+          const populationRatioResult = document.getElementById("population-ratio-result").textContent;
+          const nearestStationDistance = document.getElementById("nearest-station-distance").value;
+          const cvsCount = document.getElementById("cvs-count").value;
+          const estimatedSales = document.getElementById("estimated-sales").textContent;
+
+          // データを取得
+          const salesForecastingData = {
+            competition: competition,  // 選択された値を保存
+            tobacco: tobacco,          // 同様に
+            openingHours: openingHours,
+            households: parseInt(households, 10),
+            singleHouseholds: parseInt(singleHouseholds, 10),
+            populationRatio: parseFloat(populationRatio),
+            populationRatioResult: populationRatioResult,
+            nearestStationDistance: parseFloat(nearestStationDistance),
+            cvsCount: parseInt(cvsCount, 10),
+            estimatedSales: parseFloat(estimatedSales),  // 売上を数値で保存
+          };
+          await setDoc(docRef, { salesForecastingData }, { merge: true });
+          alert("データが保存されました");
+        } else {
+          alert("物件IDが指定されていません");
+      }  
+      } catch (error) {
+        alert("データの保存中にエラーが発生しました");
+        console.error("データ保存エラー:", error);
+      }
+    }
+
+    // 初期値設定
+    document.getElementById("competition").value = "1";
+    document.getElementById("tobacco").value = "1";
+    document.getElementById("layout").value = "1";
+    document.getElementById("population-ratio").value = 100;
+
+    // データ表示
+    displaySalesForecastingData();
+
+    // 初期組み合わせ表示
+    updateCombination();
+    updatePopulationRatio();
+    calculateCoefficients();
+
+    // 組み合わせ更新
+    document.getElementById("store-form").addEventListener("change", function(event) {
+      if (event.target.id === "population-ratio") {
+        updatePopulationRatio();
+      } else {
+        updateCombination();
+      }
+    });
+
+    // 組み合わせの更新
+    function updateCombination() {
+      const competition = document.getElementById("competition").value === "1" ? "なし" : "あり";
+      const tobacco = document.getElementById("tobacco").value === "1" ? "なし" : "あり";
+      const layout = document.getElementById("layout").value === "2" ? "狭小" : "標準または80坪パターン";
+      const combination = `競争店数: ${competition}, たばこ: ${tobacco}, レイアウト: ${layout}`;
+    }
+
+    // 昼間人口比率の更新
+    function updatePopulationRatio() {
+      const populationRatio = parseFloat(document.getElementById("population-ratio").value);
+      const ratioText = populationRatio >= 100 ? "昼間人口比率100以上" : "昼間人口比率100未満";
+      document.getElementById("population-ratio-result").textContent = ratioText;
+    }
+
+    function calculateCoefficients() {
+      let coefficientSum = 0;
+
+      const populationRatio = parseFloat(document.getElementById("population-ratio").value) || 0;;
+      let businessYear = populationRatio >= 100 ? 1712.457415 : 2532.79871062102;
+      document.getElementById("business-Year").textContent = businessYear.toFixed(6);
+
+      const operatingHours = parseFloat(document.getElementById("opening-hours").textContent) || 0;;
+      const stationDistance = parseFloat(document.getElementById("nearest-station-distance").value) || 0;;
+      const huffHouseholds = parseFloat(document.getElementById("households").value) || 0;;
+      const primaryHouseholds = parseFloat(document.getElementById("single-households").value) || 0;;
+      const floorArea = parseFloat(document.getElementById("sales-area").textContent) || 0;;
+      const cvs = parseFloat(document.getElementById("cvs-count").value) || 0;;
+
+      let operatingHoursResult, stationDistanceResult, huffHouseholdsResult, primaryHouseholdsResult, populationRatioResult, floorAreaResult, cvsResult;
+      let coefficientTotal;
+
+      if (populationRatio >= 100) {
+        operatingHoursResult = 21192.39814 * operatingHours;
+        stationDistanceResult = -105.7920932 * stationDistance;
+        huffHouseholdsResult = 18.24306646 * huffHouseholds;
+        primaryHouseholdsResult = 153146.176 * primaryHouseholds / 100;
+        populationRatioResult = 7795.422536 * populationRatio / 100;
+        floorAreaResult = 2292.656646 * floorArea;
+        cvsResult = 0;
+        coefficientSum = businessYear + operatingHoursResult + stationDistanceResult + huffHouseholdsResult + primaryHouseholdsResult + populationRatioResult + floorAreaResult;
+        coefficientTotal = coefficientSum + -228315.672627;
+      } else {
+        operatingHoursResult = 26401.60713 * operatingHours;
+        stationDistanceResult = -36.9135746672787 * stationDistance;
+        huffHouseholdsResult = 45.8003796056782 * huffHouseholds;
+        primaryHouseholdsResult = 61.6138376774208 * primaryHouseholds;
+        populationRatioResult = 71315.1731218356 * populationRatio / 100;
+        floorAreaResult = 2137.32319642045 * floorArea;
+        cvsResult = 2748.90648977707 * cvs;
+        coefficientSum = operatingHoursResult + stationDistanceResult + huffHouseholdsResult + primaryHouseholdsResult + populationRatioResult + floorAreaResult + cvsResult;
+        coefficientTotal = coefficientSum + -398976.419423733;
+      }
+
+      document.getElementById("operating-hours-result").textContent = operatingHoursResult.toFixed(2);
+      document.getElementById("station-distance-result").textContent = stationDistanceResult.toFixed(2);
+      document.getElementById("huff-households-result").textContent = huffHouseholdsResult.toFixed(2);
+      document.getElementById("primary-households-result").textContent = primaryHouseholdsResult.toFixed(2);
+      document.getElementById("population-ratio-calculated-result").textContent = populationRatioResult.toFixed(2);
+      document.getElementById("floor-area-result").textContent = floorAreaResult.toFixed(2);
+      document.getElementById("cvs-result").textContent = cvsResult.toFixed(2);
+      document.getElementById("coefficient-sum").textContent = coefficientSum.toFixed(2);
+      document.getElementById("coefficient-total").textContent = coefficientTotal.toFixed(2);
+
+      // Calculate estimated customers, unit price, and sales
+      const estimatedCustomers = coefficientTotal / 365;
+      document.getElementById("estimated-customers").textContent = isNaN(estimatedCustomers) ? "N/A" : parseFloat(estimatedCustomers.toFixed(0));
+
+      const competition = document.getElementById("competition").value;
+      const tobacco = document.getElementById("tobacco").value;
+      const layout = document.getElementById("layout").value;
+
+      let estimatedUnitPrice;
+
+      if (populationRatio >= 100) {
+        if (competition === "2" && tobacco === "2") {
+          estimatedUnitPrice = 715;
+        } else if (competition === "2" && tobacco === "1") {
+          estimatedUnitPrice = 645;
+        } else if (competition === "1" && tobacco === "2") {
+          estimatedUnitPrice = 807;
+        } else {
+          estimatedUnitPrice = 735;
+        }
+      } else {
+        if (competition === "2" && tobacco === "2" && layout === "1") {
+          estimatedUnitPrice = 817;
+        } else if (competition === "2" && tobacco === "1" && layout === "1") {
+          estimatedUnitPrice = 736;
+        } else if (competition === "2" && tobacco === "2" && layout === "2") {
+          estimatedUnitPrice = 754;
+        } else if (competition === "2" && tobacco === "1" && layout === "2") {
+          estimatedUnitPrice = 690;
+        } else if (competition === "1" && tobacco === "2" && layout === "1") {
+          estimatedUnitPrice = 916;
+        } else if (competition === "1" && tobacco === "1" && layout === "1") {
+          estimatedUnitPrice = 858;
+        } else if (competition === "1" && tobacco === "2" && layout === "2") {
+          estimatedUnitPrice = 859;
+        } else {
+          estimatedUnitPrice = 796;
+        }
+      }
+
+      document.getElementById("estimated-unit-price").textContent = isNaN(estimatedUnitPrice) ? "N/A" : parseFloat(estimatedUnitPrice.toFixed(0));
+
+
+      // 売上の計算
+      const estimatedSales = (estimatedCustomers * estimatedUnitPrice) / 1000;
+      // estimatedSales を HTML に表示
+      document.getElementById("estimated-sales").textContent = isNaN(estimatedSales) ? "N/A" : parseFloat(estimatedSales.toFixed(0));
+    }
+
+    updateCombination();
+    updatePopulationRatio();
+    calculateCoefficients();
+
+    document.getElementById("competition").addEventListener("change", updateCombination);
+    document.getElementById("tobacco").addEventListener("change", updateCombination);
+    document.getElementById("layout").addEventListener("change", updateCombination);
+    document.getElementById("population-ratio").addEventListener("change", updatePopulationRatio);
+    document.getElementById("competition").addEventListener("change", calculateCoefficients);
+    document.getElementById("tobacco").addEventListener("change", calculateCoefficients);
+    document.getElementById("layout").addEventListener("change", calculateCoefficients);
+    document.getElementById("households").addEventListener("input", calculateCoefficients);
+    document.getElementById("single-households").addEventListener("input", calculateCoefficients);
+    document.getElementById("population-ratio").addEventListener("input", calculateCoefficients);
+    document.getElementById("nearest-station-distance").addEventListener("input", calculateCoefficients);
+    document.getElementById("cvs-count").addEventListener("input", calculateCoefficients);
+
+  });
+
+  // Firebaseの情報読み込み
+  document.addEventListener("DOMContentLoaded", async () => {
+      if (propertyId) {
+          try {
+              const docRef = doc(db, "properties", propertyId);
+              const docSnap = await getDoc(docRef);
+
+              if (docSnap.exists()) {
+                  const salesForecastingData = docSnap.data().salesForecastingData;
+
+                  // データが存在する場合、各フォームに表示
+                  document.getElementById("competition").value = salesForecastingData.competition || "";
+                  document.getElementById("tobacco").value = salesForecastingData.tobacco || "";
+                  document.getElementById("opening-hours").textContent = salesForecastingData.openingHours || "";
+                  document.getElementById("households").value = salesForecastingData.households || 0;
+                  document.getElementById("single-households").value = salesForecastingData.singleHouseholds || 0;
+                  document.getElementById("population-ratio").value = salesForecastingData.populationRatio || 0;
+                  document.getElementById("nearest-station-distance").value = salesForecastingData.nearestStationDistance || 0;
+                  document.getElementById("cvs-count").value = salesForecastingData.cvsCount || 0;
+
+              } else {
+                  console.log("指定されたドキュメントが存在しません");
+              }
+          } catch (error) {
+              console.error("データの取得中にエラーが発生しました: ", error);
+          }
+      } else {
+          alert("物件IDが指定されていません");
+      }
+  });
+</script>
+</body>
+</html>

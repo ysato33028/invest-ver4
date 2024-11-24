@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>損益分岐点予測</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>損益分岐点予測 │ <span id="name"></span></h1>
+    
+    <!-- 3年目予測データ -->
+    <table>
+        <h2>3年目予測数値 (単位：千円)</h2>
+        <thead>
+            <tr>
+                <th>営業利益率</th>
+                <th>日数</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>26.1</td>
+                <td>30.417</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>店名</th>
+                <th>家賃</th>
+                <th>物流</th>
+                <th>人件費<br>(社員含む)</th>
+                <th colspan="2">他販管費</th>
+                <th colspan="2">販管費計</th>
+                <th>営業利益</th>
+                <th>日販予測</th>
+                <th>損益分岐点<br>(日販)</th>
+                <th>賃借面積<br>(坪)</th>
+                <th>坪単価</th>
+                <th>開店日</th>
+                <th>店舗年齢<br>(年)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>物件</td>
+                <td id="rent"></td>
+                <td id="logisticsCosts"></td>
+                <td id="labor3"></td>
+                <td id="otherSelling"></td>
+                <td id="otherSellingRatio3"></td>
+                <td id="totalSelling3"></td>
+                <td id="totalSellingRatio3"></td>
+                <td id="monthlyStoreProfit3"></td>
+                <td id="daily3Sales"></td>
+                <td id="breakEvenPoint3"></td>
+                <td id="contractArea"></td>
+                <td id="tsubotanka"></td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 2023年度累計実績値 -->
+    <table>
+        <h2>今年度累計実績値 (単位：千円)</h2>
+        <thead>
+            <tr>
+                <th>店名</th>
+                <th>家賃</th>
+                <th>物流</th>
+                <th>人件費<br>(社員含む)</th>
+                <th colspan="2">他販管費</th>
+                <th colspan="2">販管費計</th>
+                <th>営業利益</th>
+                <th>日販</th>
+                <th>損益分岐点<br>(日販)</th>
+                <th>賃借面積<br>(坪)</th>
+                <th>坪単価</th>
+                <th>開店日</th>
+                <th>店舗年齢<br>(年)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="storeName1"></td>
+                <td id="storeRent1"></td>
+                <td id="storeLogistic1"></td>
+                <td id="storeLabor1"></td>
+                <td id="storeOtherSelling1"></td>
+                <td id="storeOtherSellingRatio1"></td>
+                <td id="storeTotalSelling1"></td>
+                <td id="storeTotalSellingRatio1"></td>
+                <td id="storeProfit1"></td>
+                <td id="storeDailySales1"></td>
+                <td id="storeBreakEvenPoint1"></td>
+                <td id="storeArea1"></td>
+                <td id="storePricePerTsubo1"></td>
+                <td id="storeOpening1"></td>
+                <td id="storeAge1"></td>
+            </tr>
+            <tr>
+                <td id="storeName2"></td>
+                <td id="storeRent2"></td>
+                <td id="storeLogistic2"></td>
+                <td id="storeLabor2"></td>
+                <td id="storeOtherSelling2"></td>
+                <td id="storeOtherSellingRatio2"></td>
+                <td id="storeTotalSelling2"></td>
+                <td id="storeTotalSellingRatio2"></td>
+                <td id="storeProfit2"></td>
+                <td id="storeDailySales2"></td>
+                <td id="storeBreakEvenPoint2"></td>
+                <td id="storeArea2"></td>
+                <td id="storePricePerTsubo2"></td>
+                <td id="storeOpening2"></td>
+                <td id="storeAge2"></td>
+            </tr>
+            <tr>
+                <td id="storeName3"></td>
+                <td id="storeRent3"></td>
+                <td id="storeLogistic3"></td>
+                <td id="storeLabor3"></td>
+                <td id="storeOtherSelling3"></td>
+                <td id="storeOtherSellingRatio3"></td>
+                <td id="storeTotalSelling3"></td>
+                <td id="storeTotalSellingRatio3"></td>
+                <td id="storeProfit3"></td>
+                <td id="storeDailySales3"></td>
+                <td id="storeBreakEvenPoint3"></td>
+                <td id="storeArea3"></td>
+                <td id="storePricePerTsubo3"></td>
+                <td id="storeOpening3"></td>
+                <td id="storeAge3"></td>
+            </tr>
+            <tr>
+                <td id="storeName4"></td>
+                <td id="storeRent4"></td>
+                <td id="storeLogistic4"></td>
+                <td id="storeLabor4"></td>
+                <td id="storeOtherSelling4"></td>
+                <td id="storeOtherSellingRatio4"></td>
+                <td id="storeTotalSelling4"></td>
+                <td id="storeTotalSellingRatio4"></td>
+                <td id="storeProfit4"></td>
+                <td id="storeDailySales4"></td>
+                <td id="storeBreakEvenPoint4"></td>
+                <td id="storeArea4"></td>
+                <td id="storePricePerTsubo4"></td>
+                <td id="storeOpening4"></td>
+                <td id="storeAge4"></td>
+            </tr>
+        </tbody>
+    </table>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // Firebaseの初期化
+    const firebaseConfig = {
+          apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+          authDomain: "mybas-61537.firebaseapp.com",
+          projectId: "mybas-61537",
+          storageBucket: "mybas-61537.firebasestorage.app",
+          messagingSenderId: "47149190856",
+          appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // URLからidパラメータを取得
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // URLから'id'パラメータを取得
+    const propertyId = getQueryParam('id');
+    const docId = "commonData";
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      const dbRef = doc(db, "laborCostRatio", docId);
+      const dbSnap = await getDoc(dbRef);
+
+      if (docSnap.exists() && dbSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firebase からのデータ取得
+        const ratioData = dbSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+        document.getElementById("rent").textContent = Math.round(propertyData.rent / 1000).toLocaleString() || "";
+        document.getElementById("contractArea").textContent = propertyData.contractArea || "";
+
+        const businessPlanData = propertyData.businessPlanData || {};
+        document.getElementById("logisticsCosts").textContent = businessPlanData.logisticsCosts || 0;
+
+        const laborData = propertyData.laborData || {};
+        document.getElementById("labor3").textContent = Math.round(laborData.singleYear3 || 0).toLocaleString();
+
+        const incomeData = propertyData.incomeData || {};
+        // データ元から値を取得し、カンマを削除して数値に変換
+        const totalSelling3Value = parseFloat(
+            (incomeData.totalSelling3 || "").replace(/,/g, "")
+        );
+
+        // カンマを再び付けた形でテキストコンテンツに設定
+        document.getElementById("totalSelling3").textContent = 
+            isNaN(totalSelling3Value) ? "" : Math.round(totalSelling3Value).toLocaleString();
+        document.getElementById("monthlyStoreProfit3").textContent = Math.round(incomeData.monthlyStoreProfit3 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint3").textContent = Math.round(incomeData.breakEvenPoint3 || 0).toLocaleString();
+
+        const salesTable = propertyData.salesTable || {};
+        document.getElementById("daily3Sales").textContent = Math.round(salesTable.daily3Sales || 0).toLocaleString();
+
+        document.getElementById("tsubotanka").textContent = Math.round((propertyData.rent / 1000) / propertyData.contractArea * 1000).toLocaleString();
+
+        const otherSelling = totalSelling3Value - (propertyData.rent / 1000) - (businessPlanData.logisticsCosts) - (laborData.singleYear3);
+        document.getElementById("otherSelling").textContent = Math.round(otherSelling).toLocaleString();
+        document.getElementById("totalSellingRatio3").textContent = `${(totalSelling3Value / ((salesTable.daily3Sales) * 30) * 100).toFixed(1)}%`;
+        document.getElementById("otherSellingRatio3").textContent = `${(otherSelling / ((salesTable.daily3Sales) * 30) * 100).toFixed(1)}%`;
+
+        const storesDB = propertyData.storesDB || {};
+        const store1 = storesDB.store1 || {};
+        const store2 = storesDB.store2 || {};
+        const store3 = storesDB.store3 || {};
+        const store4 = storesDB.store4 || {};
+
+        document.getElementById("storeName1").textContent = store1.storeName || "";
+        document.getElementById("storeRent1").textContent = Math.round(store1.rent).toLocaleString() || "";
+        document.getElementById("storeLogistic1").textContent = Math.round(store1.logistic).toLocaleString() || "";
+        document.getElementById("storeLabor1").textContent = Math.round(store1.labor).toLocaleString() || "";
+        document.getElementById("storeOtherSelling1").textContent = Math.round(store1.otherSelling).toLocaleString() || "";
+        document.getElementById("storeOtherSellingRatio1").textContent = `${(store1.otherSellingRatio)}%`;
+        document.getElementById("storeTotalSelling1").textContent = Math.round(store1.selling).toLocaleString() || "";
+        document.getElementById("storeTotalSellingRatio1").textContent = `${(store1.sellingRatio)}%`;
+        document.getElementById("storeProfit1").textContent = Math.round(store1.profit).toLocaleString() || "";
+        document.getElementById("storeDailySales1").textContent = Math.round(store1.dailySales).toLocaleString() || "";
+        document.getElementById("storeBreakEvenPoint1").textContent = Math.round(store1.breakEvenPoint).toLocaleString() || "";
+        document.getElementById("storeArea1").textContent = store1.area || "";
+        document.getElementById("storePricePerTsubo1").textContent = Math.round(store1.pricePerTsubo).toLocaleString() || "";
+        document.getElementById("storeOpening1").textContent = store1.opening || "";
+        document.getElementById("storeAge1").textContent = store1.storeAge || "";
+
+        document.getElementById("storeName2").textContent = store2.storeName || "";
+        document.getElementById("storeRent2").textContent = Math.round(store2.rent).toLocaleString() || "";
+        document.getElementById("storeLogistic2").textContent = Math.round(store2.logistic).toLocaleString() || "";
+        document.getElementById("storeLabor2").textContent = Math.round(store2.labor).toLocaleString() || "";
+        document.getElementById("storeOtherSelling2").textContent = Math.round(store2.otherSelling).toLocaleString() || "";
+        document.getElementById("storeOtherSellingRatio2").textContent = `${(store2.otherSellingRatio)}%`;
+        document.getElementById("storeTotalSelling2").textContent = Math.round(store2.selling).toLocaleString() || "";
+        document.getElementById("storeTotalSellingRatio2").textContent = `${(store2.sellingRatio)}%`;
+        document.getElementById("storeProfit2").textContent = Math.round(store2.profit).toLocaleString() || "";
+        document.getElementById("storeDailySales2").textContent = Math.round(store2.dailySales).toLocaleString() || "";
+        document.getElementById("storeBreakEvenPoint2").textContent = Math.round(store2.breakEvenPoint).toLocaleString() || "";
+        document.getElementById("storeArea2").textContent = store2.area || "";
+        document.getElementById("storePricePerTsubo2").textContent = Math.round(store2.pricePerTsubo).toLocaleString() || "";
+        document.getElementById("storeOpening2").textContent = store2.opening || "";
+        document.getElementById("storeAge2").textContent = store2.storeAge || "";
+
+        document.getElementById("storeName3").textContent = store3.storeName || "";
+        document.getElementById("storeRent3").textContent = Math.round(store3.rent).toLocaleString() || "";
+        document.getElementById("storeLogistic3").textContent = Math.round(store3.logistic).toLocaleString() || "";
+        document.getElementById("storeLabor3").textContent = Math.round(store3.labor).toLocaleString() || "";
+        document.getElementById("storeOtherSelling3").textContent = Math.round(store3.otherSelling).toLocaleString() || "";
+        document.getElementById("storeOtherSellingRatio3").textContent = `${(store3.otherSellingRatio)}%`;
+        document.getElementById("storeTotalSelling3").textContent = Math.round(store3.selling).toLocaleString() || "";
+        document.getElementById("storeTotalSellingRatio3").textContent = `${(store3.sellingRatio)}%`;
+        document.getElementById("storeProfit3").textContent = Math.round(store3.profit).toLocaleString() || "";
+        document.getElementById("storeDailySales3").textContent = Math.round(store3.dailySales).toLocaleString() || "";
+        document.getElementById("storeBreakEvenPoint3").textContent = Math.round(store3.breakEvenPoint).toLocaleString() || "";
+        document.getElementById("storeArea3").textContent = store3.area || "";
+        document.getElementById("storePricePerTsubo3").textContent = Math.round(store3.pricePerTsubo).toLocaleString() || "";
+        document.getElementById("storeOpening3").textContent = store3.opening || "";
+        document.getElementById("storeAge3").textContent = store3.storeAge || "";
+
+        document.getElementById("storeName4").textContent = store4.storeName || "";
+        document.getElementById("storeRent4").textContent = Math.round(store4.rent).toLocaleString() || "";
+        document.getElementById("storeLogistic4").textContent = Math.round(store4.logistic).toLocaleString() || "";
+        document.getElementById("storeLabor4").textContent = Math.round(store4.labor).toLocaleString() || "";
+        document.getElementById("storeOtherSelling4").textContent = Math.round(store4.otherSelling).toLocaleString() || "";
+        document.getElementById("storeOtherSellingRatio4").textContent = `${(store4.otherSellingRatio)}%`;
+        document.getElementById("storeTotalSelling4").textContent = Math.round(store4.selling).toLocaleString() || "";
+        document.getElementById("storeTotalSellingRatio4").textContent = `${(store4.sellingRatio)}%`;
+        document.getElementById("storeProfit4").textContent = Math.round(store4.profit).toLocaleString() || "";
+        document.getElementById("storeDailySales4").textContent = Math.round(store4.dailySales).toLocaleString() || "";
+        document.getElementById("storeBreakEvenPoint4").textContent = Math.round(store4.breakEvenPoint).toLocaleString() || "";
+        document.getElementById("storeArea4").textContent = store4.area || "";
+        document.getElementById("storePricePerTsubo4").textContent = Math.round(store4.pricePerTsubo).toLocaleString() || "";
+        document.getElementById("storeOpening4").textContent = store4.opening || "";
+        document.getElementById("storeAge4").textContent = store4.storeAge || "";
+        
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+  displayData();
+</script>
+</body>
+</html>

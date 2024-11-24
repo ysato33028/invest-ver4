@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>まいばすけっと投資回収シミュレーション</title>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>まいばすけっと投資回収シミュレーション</h1>
+    <button id="logout-button">
+        <img id="logout-icon" src="icon/logout.png" alt="ログアウトアイコン">
+        <span id="logout-text">ログアウト</span>
+  　</button>
+    <div class="container">
+        <div class="column">
+        <h3><span>01</span>エントリーシートの読み込み</h3>
+          <form id="excel-upload-form">
+            <label for="excel-file">xlsx形式をアップロード:</label><br>
+            <input type="file" id="excel-file" accept=".xlsx" required /><br><br>
+            <button class="btn-upload" type="submit">アップロード</button>
+        </form>
+        </div>
+        <div class="column">
+        <h3><span>02</span>物件入力</h3>
+        <table>
+            <thead>
+                <tr>
+                <th>項目</th>
+                <th>詳細</th>
+            　　</tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td><label for="name">物件名:</label></td>
+                <td><input type="text" id="name" required></td>
+            </tr>
+            <tr>
+                <td><label for="testSales">３年目日販売上 (千円):</label></td>
+                <td><input type="number" id="testSales" required></td>
+            </tr>
+            <tr>
+                <td><label for="rent">地代家賃 (千円):</label></td>
+                <td><input type="number" id="rent" required></td>
+            </tr>
+            <tr>
+            <td><label for="area-type">出店エリア:</label></td>
+              <td>
+              <div class="selectdiv">
+              <select id="area-type" required>
+                <option value="existing">既存エリア</option>
+                <option value="new">新エリア</option>
+              </select>
+              </div>
+              </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <input id="simulate" type="button" value="シミュレーション結果" /></input>
+
+    <h3><span>03</span>簡易シミュレーション結果</h3>
+    <table id="simulation-results">
+        <thead>
+            <tr>
+                <th>項目</th>
+                <th>1年目</th>
+                <th>2年目</th>
+                <th>3年目</th>
+                <th>4年目</th>
+                <th>5年目</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>日販売上 (千円)</td>
+                <td id="dailySales1"></td>
+                <td id="dailySales2"></td>
+                <td id="dailySales3"></td>
+                <td id="dailySales4"></td>
+                <td id="dailySales5"></td>
+            </tr>
+            <tr>
+                <td>損益計算書 (千円)</td>
+                <td id="breakEvenPoint1"></td>
+                <td id="breakEvenPoint2"></td>
+                <td id="breakEvenPoint3"></td>
+                <td id="breakEvenPoint4"></td>
+                <td id="breakEvenPoint5"></td>
+            </tr>
+            <tr>
+                <td>売上高 (千円)</td>
+                <td id="sale1"></td>
+                <td id="sale2"></td>
+                <td id="sale3"></td>
+                <td id="sale4"></td>
+                <td id="sale5"></td>
+            </tr>
+            <tr>
+                <td>営業総利益 (千円)</td>
+                <td id="profit1"></td>
+                <td id="profit2"></td>
+                <td id="profit3"></td>
+                <td id="profit4"></td>
+                <td id="profit5"></td>
+            </tr>
+            <tr>
+                <td>人件費 (千円)</td>
+                <td id="labor1"></td>
+                <td id="labor2"></td>
+                <td id="labor3"></td>
+                <td id="labor4"></td>
+                <td id="labor5"></td>
+            </tr>
+            <tr>
+                <td>販売管理費計 (千円)</td>
+                <td id="selling1"></td>
+                <td id="selling2"></td>
+                <td id="selling3"></td>
+                <td id="selling4"></td>
+                <td id="selling5"></td>
+            </tr>
+            <tr>
+                <td>建物建築費 (千円)</td>
+                <td id="building1"></td>
+                <td id="building2"></td>
+                <td id="building3"></td>
+                <td id="building4"></td>
+                <td id="building5"></td>
+            </tr>
+            <tr>
+                <td>減価償却費 (千円)</td>
+                <td id="depreciationCost1"></td>
+                <td id="depreciationCost2"></td>
+                <td id="depreciationCost3"></td>
+                <td id="depreciationCost4"></td>
+                <td id="depreciationCost5"></td>
+            </tr>
+            <tr>
+                <td>水道光熱費 (千円)</td>
+                <td id="utilityData1"></td>
+                <td id="utilityData2"></td>
+                <td id="utilityData3"></td>
+                <td id="utilityData4"></td>
+                <td id="utilityData5"></td>
+            </tr>
+            <tr>
+                <td>地代家賃 (千円)</td>
+                <td id="rendCost1"></td>
+                <td id="rendCost2"></td>
+                <td id="rendCost3"></td>
+                <td id="rendCost4"></td>
+                <td id="rendCost5"></td>
+            </tr>
+            <tr>
+                <td>設備費計 (千円)</td>
+                <td id="equipmentCosts1"></td>
+                <td id="equipmentCosts2"></td>
+                <td id="equipmentCosts3"></td>
+                <td id="equipmentCosts4"></td>
+                <td id="equipmentCosts5"></td>
+            </tr>
+            <tr>
+                <td>一般費合計 (千円)</td>
+                <td id="generalData1"></td>
+                <td id="generalData2"></td>
+                <td id="generalData3"></td>
+                <td id="generalData4"></td>
+                <td id="generalData5"></td>
+            </tr>
+            <tr>
+                <td>販売一般管理費計 (千円)</td>
+                <td id="totalSelling1"></td>
+                <td id="totalSelling2"></td>
+                <td id="totalSelling3"></td>
+                <td id="totalSelling4"></td>
+                <td id="totalSelling5"></td>
+            </tr>
+            <tr>
+                <td>店舗営業利益 (千円)</td>
+                <td id="monthlyStoreProfit1"></td>
+                <td id="monthlyStoreProfit2"></td>
+                <td id="monthlyStoreProfit3"></td>
+                <td id="monthlyStoreProfit4"></td>
+                <td id="monthlyStoreProfit5"></td>
+            </tr>
+            <tr>
+                <td>本社経費 (千円)</td>
+                <td id="mainOfficeCost1"></td>
+                <td id="mainOfficeCost2"></td>
+                <td id="mainOfficeCost3"></td>
+                <td id="mainOfficeCost4"></td>
+                <td id="mainOfficeCost5"></td>
+            </tr>
+            <tr>
+                <td>営業利益（本社経費含む） (千円)</td>
+                <td id="officeProfit1"></td>
+                <td id="officeProfit2"></td>
+                <td id="officeProfit3"></td>
+                <td id="officeProfit4"></td>
+                <td id="officeProfit5"></td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+    <button id="export-ppt-button" class="btn-ppt" type="button">PPTエクスポート</button>
+    <div class="container">
+        <div class="column">
+            <h2>物件検索</h2>
+            <form id="search-form">
+                <input type="text" id="search" placeholder="物件名を入力" />
+                <input id="search-button" type="submit" value="検索" /></input>
+            </form>
+        </div>
+        <div class="column">
+            <h2>物件登録一覧</h2>
+            <input id="list-all" type="button" value="登録一覧を表示" /></input>
+        </div>
+        <div class="column">
+            <h2>営業利益率</h2>
+            <button class="btn-DB" onclick="goToProfit('commonData')">編集</button>
+        </div>
+        <div class="column">
+            <h2>コスト比率</h2>
+            <button class="btn-DB" onclick="goToPersonnelRatio('commonData')">編集</button>
+        </div>
+    </div>
+    <h2>物件詳細</h2>
+    <div id="property-details"></div>
+    <h2>検索結果</h2>
+    <ul id="property-list"></ul>
+    <script src="script.js"></script>
+    <script type="module">
+
+      // Firebase App (必須)
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"; // Auth用
+      import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+      // Firebaseの初期化
+      const firebaseConfig = {
+          apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+          authDomain: "mybas-61537.firebaseapp.com",
+          projectId: "mybas-61537",
+          storageBucket: "mybas-61537.firebasestorage.app",
+          messagingSenderId: "47149190856",
+          appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app); // Authを初期化
+      const db = getFirestore(app);
+
+      // 認証状態を確認
+        onAuthStateChanged(auth, (user) => {
+          if (!user) {
+            // ログインしていない場合、login.htmlにリダイレクト
+            window.location.href = "login.html";
+          }
+        });
+
+        // ログアウトボタンの処理
+        document.getElementById("logout-button").addEventListener("click", async () => {
+          try {
+            await signOut(auth);
+            window.location.href = "login.html"; // ログアウト後にログインページにリダイレクト
+          } catch (error) {
+            console.error("ログアウトに失敗しました: ", error);
+          }
+        });
+
+
+    // シミュレーション結果の計算処理
+    document.getElementById("simulate").addEventListener("click", async () => {
+
+
+      // テスト売上値を取得
+      const testSales = Number(document.getElementById("testSales").value);
+
+      // Firebaseから取得
+      let profitRatio = {};
+      let ratioData = {};
+
+      try {
+
+        const docId = "commonData"; // ここに適切なドキュメントIDを設定
+        const docRef = doc(db, "profitMarginRatio", docId);
+        const docSnap = await getDoc(docRef);
+
+        const dbRef = doc(db, "laborCostRatio", docId);
+        const dbSnap = await getDoc(dbRef);
+
+        if (docSnap.exists() && dbSnap.exists()) {
+          profitRatio = docSnap.data() || {};
+          ratioData = dbSnap.data() || {};
+          
+        }
+      } catch (error) {
+        console.error("労働コスト比率データの取得中にエラーが発生しました:", error);
+        return;
+      }
+
+      // 年度指数
+      const yearIndices = {
+        existing: [0.829, 0.93, 1.0, 1.08, 1.15],
+        new: [0.75, 0.88, 1.0, 1.08, 1.15],
+      };
+
+      // 選択されたエリアタイプを取得
+      const areaType = document.getElementById("area-type").value;
+
+      // 選択したエリアタイプに基づく年度指数を取得
+      const indices = yearIndices[areaType];
+
+      // 利益比率を取得する関数
+        function getprofitMarginRatio(dailySales, profitRatio) {
+            if (dailySales > 1001) {
+                return profitRatio.profitMarginRatio1001;
+            } else if (dailySales > 1000) {
+                return profitRatio.profitMarginRatio1000;
+            } else if (dailySales > 950) {
+                return profitRatio.profitMarginRatio950;
+            } else if (dailySales > 900) {
+                return profitRatio.profitMarginRatio900;
+            } else if (dailySales > 850) {
+                return profitRatio.profitMarginRatio850;
+            } else if (dailySales > 800) {
+                return profitRatio.profitMarginRatio800;
+            } else if (dailySales > 750) {
+                return profitRatio.profitMarginRatio750;
+            } else if (dailySales > 700) {
+                return profitRatio.profitMarginRatio700;
+            } else if (dailySales > 650) {
+                return profitRatio.profitMarginRatio650;
+            } else if (dailySales > 600) {
+                return profitRatio.profitMarginRatio600;
+            } else if (dailySales > 550) {
+                return profitRatio.profitMarginRatio550;
+            } else if (dailySales > 500) {
+                return profitRatio.profitMarginRatio500;
+            } else if (dailySales > 450) {
+                return profitRatio.profitMarginRatio450;
+            } else if (dailySales > 400) {
+                return profitRatio.profitMarginRatio400;
+            } else if (dailySales > 350) {
+                return profitRatio.profitMarginRatio350;
+            } else if (dailySales > 301) {
+                return profitRatio.profitMarginRatio301;
+            } else {
+                return profitRatio.profitMarginRatio1;
+            }
+        }
+
+      // 労働コスト比率を取得する関数
+      function getLaborCostRatio(dailySales, ratioData) {
+        if (dailySales > 1201) return ratioData.laborCostRatio1201;
+        if (dailySales > 1200) return ratioData.laborCostRatio1200;
+        if (dailySales > 1150) return ratioData.laborCostRatio1150;
+        if (dailySales > 1100) return ratioData.laborCostRatio1100;
+        if (dailySales > 1050) return ratioData.laborCostRatio1050;
+        if (dailySales > 1000) return ratioData.laborCostRatio1000;
+        if (dailySales > 950) return ratioData.laborCostRatio950;
+        if (dailySales > 900) return ratioData.laborCostRatio900;
+        if (dailySales > 850) return ratioData.laborCostRatio850;
+        if (dailySales > 800) return ratioData.laborCostRatio800;
+        if (dailySales > 750) return ratioData.laborCostRatio750;
+        if (dailySales > 700) return ratioData.laborCostRatio700;
+        if (dailySales > 650) return ratioData.laborCostRatio650;
+        if (dailySales > 600) return ratioData.laborCostRatio600;
+        if (dailySales > 550) return ratioData.laborCostRatio550;
+        if (dailySales > 500) return ratioData.laborCostRatio500;
+        if (dailySales > 450) return ratioData.laborCostRatio450;
+        if (dailySales > 400) return ratioData.laborCostRatio400;
+        if (dailySales > 350) return ratioData.laborCostRatio350;
+        if (dailySales > 101) return ratioData.laborCostRatio101;
+        return ratioData.laborCostRatio0;
+      }
+
+      // 日販売上結果表示
+      for (let year = 0; year < 5; year++) {
+        const dailySales = testSales * indices[year];
+
+        // 結果を該当する <td> に表示
+        const dailySalesElement = document.getElementById(`dailySales${year + 1}`);
+        if (dailySalesElement) {
+          dailySalesElement.textContent = Math.round(dailySales).toLocaleString(); // 小数点なしで結果を表示
+        }
+
+        // 売上高の計算（日販売上 × 29）
+        const totalSales = dailySales * 29;
+
+        const salesElement = document.getElementById(`sale${year + 1}`);
+        if (salesElement) {
+          salesElement.textContent = Math.round(totalSales).toLocaleString(); // 小数点なしで結果を表示
+        }
+
+        // 営業総利益の計算
+        const dailySalesData = getprofitMarginRatio(dailySales, profitRatio) || 0;
+        const totalProfit = totalSales * dailySalesData / 100;
+
+        const profitElement = document.getElementById(`profit${year + 1}`);
+        if (profitElement) {
+          profitElement.textContent = Math.round(totalProfit).toLocaleString(); // 小数点なしで結果を表示
+        }
+
+        const laborCostData = ratioData.laborCostData || 0; // ここで正しく定義
+
+        // 労働コスト比率を取得
+        const laborCostRatio = Number(ratioData.laborCostData) || 0;
+        const dailyWorkingHours = Number(getLaborCostRatio(dailySales, ratioData)) || 0;
+
+        // 各年の人件費計算
+        const companyAvg = 1239.94954595866;
+        const avgSalary = Number(companyAvg * laborCostRatio * 1.25);
+        const laborCost = Number((avgSalary * dailyWorkingHours * 30) / 1000) + 330;
+
+        const laborElement = document.getElementById(`labor${year + 1}`);
+        if (laborElement) {
+          laborElement.textContent = Math.round(laborCost).toLocaleString();
+        }
+
+        const sellingCostData = ratioData.sellingCostData || 0; // ここで正しく定義
+        const sellingCostRatio = Number(sellingCostData) || 0;
+        const sellingCost = Number(totalSales * sellingCostRatio) / 100;
+
+        const sellingElement = document.getElementById(`selling${year + 1}`);
+        if (sellingElement) {
+          sellingElement.textContent = Math.round(sellingCost).toLocaleString();
+        }
+
+        const buildingCost = 0;
+        const buildingElement = document.getElementById(`building${year + 1}`);
+        if (buildingElement) {
+          buildingElement.textContent = Math.round(buildingCost).toLocaleString();
+        }
+
+        const depreciationRatio = 1.9;
+        const depreciationCost = Number(totalSales * depreciationRatio) / 100;
+
+        const depreciationElement = document.getElementById(`depreciationCost${year + 1}`);
+        if (depreciationElement) {
+          depreciationElement.textContent = Math.round(depreciationCost).toLocaleString();
+        }
+
+        const utilityRatio = 2.3;
+        const utilityCost = Number(totalSales * utilityRatio) / 100;
+
+        const utilityElement = document.getElementById(`utilityData${year + 1}`);
+        if (utilityElement) {
+          utilityElement.textContent = Math.round(utilityCost).toLocaleString();
+        }
+
+        // rentのデータを取得
+        const rentValue = Number(document.getElementById("rent").value) || 0;
+        const rentData = rentValue;  // 必ず数値に変換した値を使用
+
+        const rentElement = document.getElementById(`rendCost${year + 1}`);
+        if (rentElement) {
+          rentElement.textContent = Math.round(rentData).toLocaleString(); // 小数点なしで結果を表示
+        }
+
+        const equipment = Number(buildingCost + depreciationCost + utilityCost + rentData) + 200;
+        const equipmentElement = document.getElementById(`equipmentCosts${year + 1}`);
+        if (equipmentElement) {
+          equipmentElement.textContent = Math.round(equipment).toLocaleString(); // 小数点なしで結果を表示
+        }
+
+        const generalData = ratioData.generalExpensesCostData || 0; // ここで正しく定義
+        const generalDataRatio = Number(generalData) || 0;
+        const generalCost = Number(totalSales * generalDataRatio) / 100;
+
+        const generalElement = document.getElementById(`generalData${year + 1}`);
+        if (generalElement) {
+          generalElement.textContent = Math.round(generalCost).toLocaleString();
+        }
+
+        const totalSelling = Number(laborCost + sellingCost + equipment + generalCost);
+        const totalSellingElement = document.getElementById(`totalSelling${year + 1}`);
+        if (totalSellingElement) {
+          totalSellingElement.textContent = Math.round(totalSelling).toLocaleString();
+        }
+
+        const monthlyStoreProfit = Number(totalProfit - totalSelling);
+        const monthlyStoreProfitElement = document.getElementById(`monthlyStoreProfit${year + 1}`);
+        if (monthlyStoreProfitElement) {
+          monthlyStoreProfitElement.textContent = Math.round(monthlyStoreProfit).toLocaleString();
+        }
+
+        const mainOffice = ratioData.mainOfficeCostData || 0; // ここで正しく定義
+        const mainOfficeRatio = Number(mainOffice) || 0;
+        const mainOfficeCost = Number(totalSales * mainOfficeRatio) / 100;
+
+        const mainOfficeCostElement = document.getElementById(`mainOfficeCost${year + 1}`);
+        if (mainOfficeCostElement) {
+          mainOfficeCostElement.textContent = Math.round(mainOfficeCost).toLocaleString();
+        }
+
+        const officeProfit = Number(monthlyStoreProfit - mainOfficeCost);
+        const officeProfitElement = document.getElementById(`officeProfit${year + 1}`);
+        if (officeProfitElement) {
+          officeProfitElement.textContent = Math.round(officeProfit).toLocaleString();
+        }
+        
+        const breakEvenPoint = Number(totalSelling / (dailySalesData / 100) / 30.417);
+        const breakEvenPointElement = document.getElementById(`breakEvenPoint${year + 1}`);
+        if (breakEvenPointElement) {
+          breakEvenPointElement.textContent = Math.round(breakEvenPoint).toLocaleString();
+        }
+
+      }
+    });
+
+      // フォームの送信処理（検索）
+      document.getElementById("search-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const searchQuery = document.getElementById("search").value.trim().toLowerCase();
+
+        try {
+          const propertyList = document.getElementById("property-list");
+          propertyList.innerHTML = ""; // リストをクリア
+
+          const propertiesRef = collection(db, "properties");
+          const querySnapshot = await getDocs(propertiesRef);
+
+          let resultsFound = false;
+
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const docId = doc.id;
+
+            // 安全にチェックしてから `toLowerCase()` を適用
+            if (data.name && typeof data.name === 'string' && data.name.toLowerCase().includes(searchQuery)) {
+              resultsFound = true;
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `
+                  <table>
+                    <thead>
+                        <tr>
+                        <th>物件名</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>物件削除</th>
+                    　　</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${data.name}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn-delete" onclick="deleteProperty('${docId}')">削除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>項目</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>経営計画書</td>
+                      <td><button class="btn-edit" onclick="goToBusinessPlanInput('${docId}')">入力</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>内装投資費用</td>
+                      <td><button class="btn-edit" onclick="goToInteriorInvestmentCosts('${docId}')">入力</button></td>
+                      <td><button class="btn-edit" onclick="goToConstructionDetails('${docId}')">工事詳細</button></td>
+                      <td><button class="btn-edit" onclick="goToConstructionCosts('${docId}')">概算表</button></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>売上予測</td>
+                      <td><button class="btn-edit" onclick="goToSalesForecasting('${docId}')">予測</button></td>
+                      <td><button class="btn-edit" onclick="goToFiveYearSales('${docId}')">５カ年</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>人件費編集</td>
+                      <td><button class="btn-edit" onclick="goToPersonnelDB('${docId}')">DB</button></td>
+                      <td><button class="btn-edit" onclick="goToPersonnel('${docId}')">編集</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>各種設定</td>
+                      <td><button class="btn-edit" onclick="goToSalesEdit('${docId}')">売上高</button></td>
+                      <td><button class="btn-edit" onclick="goToDailySalesEdit('${docId}')">営業利益</button></td>
+                      <td><button class="btn-edit" onclick="goTolaborEdit('${docId}')">人件費</button></td>
+                      <td><button class="btn-edit" onclick="goToSellingEdit('${docId}')">販管費</button></td>
+                      <td><button class="btn-edit" onclick="goTobuildEdit('${docId}')">建築費</button></td>
+                    </tr>
+                    <tr>
+                      <td>各種設定</td>
+                      <td><button class="btn-edit" onclick="goToDepreciationEdit('${docId}')">減価償却</button></td>
+                      <td><button class="btn-edit" onclick="goToRentEdit('${docId}')">地代家賃</button></td>
+                      <td><button class="btn-edit" onclick="goToUtilityBillsEdit('${docId}')">水道光熱費</button></td>
+                      <td><button class="btn-edit" onclick="goToGeneralEdit('${docId}')">一般費</button></td>
+                      <td><button class="btn-edit" onclick="goToMainOfficeCostEdit('${docId}')">本社経費</button></td>
+                    </tr>
+                    <td>損益計算書</td>
+                      <td><button class="btn-edit" onclick="goToIncomeEdit('${docId}')">損益計算書</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              `;
+              propertyList.appendChild(listItem);
+            }
+          });
+
+            if (!resultsFound) {
+                alert("その物件名では登録がありません");
+            }
+          } catch (error) {
+            console.error("検索に失敗しました: ", error);
+          }
+        });
+
+        // 経営計画書入力ページに遷移する関数
+        window.goToBusinessPlanInput = function(id) {
+          window.open(`businessPlanInput.html?id=${id}`, '_blank');
+        }
+
+        // 内装投資費用入力ページに遷移する関数
+        window.goToInteriorInvestmentCosts = function(id) {
+          window.open(`Interior-investment-costs.html?id=${id}`, '_blank');
+        }
+
+        // カテゴリー別工事費用（詳細）ページに遷移する関数
+        window.goToConstructionDetails = function(id) {
+          window.open(`constructionCosts-byCategory.html?id=${id}`, '_blank');
+        }
+
+        // 建築設備工事概算費用ページに遷移する関数
+        window.goToConstructionCosts = function(id) {
+          window.open(`constructionCosts.html?id=${id}`, '_blank');
+        }
+
+        // 売上予測ページに遷移する関数
+        window.goToSalesForecasting = function(id) {
+          window.open(`salesForecasting.html?id=${id}`, '_blank');
+        }
+
+        // ５カ年ページに遷移する関数
+        window.goToFiveYearSales = function(id) {
+          window.open(`salestable.html?id=${id}`, '_blank');
+        }
+
+        // 人件費に遷移する関数
+        window.goToPersonnel = function(id) {
+          window.open(`laborCost.html?id=${id}`, '_blank');
+        }
+
+        // 人件費DBに遷移する関数
+        window.goToPersonnelDB = function(id) {
+          window.open(`laborCostDB.html?id=${id}`, '_blank');
+        }
+
+        // 人件費に遷移する関数
+        window.goToPersonnelRatio = function() {
+          const fixedDocId = "commonData";
+        　window.open(`laborCostRatio.html?id=${fixedDocId}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToSalesEdit = function(id) {
+          window.open(`salesEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToDailySalesEdit = function(id) {
+          window.open(`dailySalesEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToStoresDB = function(id) {
+          window.open(`storesDB.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToProfit = function() {
+            const fixedDocId = "commonData";
+            window.open(`profitMargin.html?id=${fixedDocId}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goTolaborEdit = function(id) {
+          window.open(`laborEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToSellingEdit = function(id) {
+          window.open(`sellingEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goTobuildEdit = function(id) {
+          window.open(`buildingConstruction.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToDepreciationEdit = function(id) {
+          window.open(`depreciationCost.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToRentEdit = function(id) {
+          window.open(`rendEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToUtilityBillsEdit = function(id) {
+          window.open(`utilityBillsEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToGeneralEdit = function(id) {
+          window.open(`generalEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToMainOfficeCostEdit = function(id) {
+          window.open(`mainOfficeCost.html?id=${id}`, '_blank');
+        }
+
+        // 損益計算書に遷移する関数
+        window.goToIncomeEdit = function(id) {
+          window.open(`incomeEdit.html?id=${id}`, '_blank');
+        }
+
+        // 損益分岐点に遷移する関数
+        window.goTobreakEvenPoint = function(id) {
+          window.open(`breakEvenPoint.html?id=${id}`, '_blank');
+        }
+
+        // 出店判断に遷移する関数
+        window.goToInvestment = function(id) {
+          window.open(`investment.html?id=${id}`, '_blank');
+        }
+
+        // 経営計画書に遷移する関数
+        window.goToBussinessPlanSheet = function(id) {
+          window.open(`businessPlanSheet.html?id=${id}`, '_blank');
+        }
+
+        // 全物件を表示するボタンの処理
+        document.getElementById("list-all").addEventListener("click", async () => {
+          try {
+            const propertyList = document.getElementById("property-list");
+            propertyList.innerHTML = ""; // リストをクリア
+
+            const propertiesRef = collection(db, "properties");
+            const querySnapshot = await getDocs(propertiesRef);
+
+            if (querySnapshot.empty) {
+              alert("登録された物件はありません");
+            } else {
+              // テーブル作成
+              const table = document.createElement("table");
+              const thead = document.createElement("thead");
+              const tbody = document.createElement("tbody");
+
+              // ヘッダーを追加（1回のみ）
+              thead.innerHTML = `
+                <tr>
+                  <th>物件名</th>
+                  <th>詳細設定</th>
+                  <th>物件削除</th>
+                </tr>
+              `;
+              table.appendChild(thead);
+
+              querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${data.name}</td>
+                  <td><button class="btn-detail" onclick="showPropertyDetails('${doc.id}')">詳細</button></td>
+                  <td><button class="btn-delete" onclick="deleteProperty('${doc.id}')">削除</button></td>
+                `;
+                tbody.appendChild(row);
+              });
+
+              table.appendChild(tbody);
+              propertyList.appendChild(table);
+            }
+          } catch (error) {
+            console.error("一覧の取得に失敗しました: ", error);
+          }
+        });
+
+        // 詳細データ表示の関数
+        window.showPropertyDetails = async function (docId) {
+          try {
+            const docRef = doc(db, "properties", docId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              const detailTable = `
+                <table>
+                    <thead>
+                        <tr>
+                        <th>物件名</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>物件削除</th>
+                    　　</tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${data.name}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><button class="btn-delete" onclick="deleteProperty('${docId}')">削除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>項目</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>経営計画書</td>
+                      <td><button class="btn-edit" onclick="goToBusinessPlanInput('${docId}')">入力</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>内装投資費用</td>
+                      <td><button class="btn-edit" onclick="goToInteriorInvestmentCosts('${docId}')">入力</button></td>
+                      <td><button class="btn-edit" onclick="goToConstructionDetails('${docId}')">工事詳細</button></td>
+                      <td><button class="btn-edit" onclick="goToConstructionCosts('${docId}')">概算表</button></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>売上予測</td>
+                      <td><button class="btn-edit" onclick="goToStoresDB('${docId}')">既存店DB</button></td>
+                      <td><button class="btn-edit" onclick="goToSalesForecasting('${docId}')">予測</button></td>
+                      <td><button class="btn-edit" onclick="goToFiveYearSales('${docId}')">５カ年</button></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>人件費編集</td>
+                      <td><button class="btn-edit" onclick="goToPersonnelDB('${docId}')">人件費DB</button></td>
+                      <td><button class="btn-edit" onclick="goToPersonnel('${docId}')">編集</button></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>各種設定</td>
+                      <td><button class="btn-edit" onclick="goToSalesEdit('${docId}')">売上高</button></td>
+                      <td><button class="btn-edit" onclick="goToDailySalesEdit('${docId}')">営業利益</button></td>
+                      <td><button class="btn-edit" onclick="goTolaborEdit('${docId}')">人件費</button></td>
+                      <td><button class="btn-edit" onclick="goToSellingEdit('${docId}')">販管費</button></td>
+                      <td><button class="btn-edit" onclick="goTobuildEdit('${docId}')">建築費</button></td>
+                    </tr>
+                    <tr>
+                      <td>各種設定</td>
+                      <td><button class="btn-edit" onclick="goToDepreciationEdit('${docId}')">減価償却</button></td>
+                      <td><button class="btn-edit" onclick="goToRentEdit('${docId}')">地代家賃</button></td>
+                      <td><button class="btn-edit" onclick="goToUtilityBillsEdit('${docId}')">水道光熱費</button></td>
+                      <td><button class="btn-edit" onclick="goToGeneralEdit('${docId}')">一般費</button></td>
+                      <td><button class="btn-edit" onclick="goToMainOfficeCostEdit('${docId}')">本社経費</button></td>
+                    </tr>
+                    <td>提出資料</td>
+                      <td><button class="btn-edit" onclick="goToIncomeEdit('${docId}')">損益計算書</button></td>
+                      <td><button class="btn-edit" onclick="goTobreakEvenPoint('${docId}')">損益分岐点</button></td>
+                      <td><button class="btn-edit" onclick="goToInvestment('${docId}')">出店判断</button></td>
+                      <td><button class="btn-edit" onclick="goToBussinessPlanSheet('${docId}')">経営計画書</button></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              `;
+              document.getElementById("property-details").innerHTML = detailTable;
+            } else {
+              alert("詳細情報が見つかりません");
+            }
+          } catch (error) {
+            console.error("詳細表示に失敗しました: ", error);
+          }
+        }
+
+        // 物件を削除する関数
+        window.deleteProperty = async function(docId) {
+          if (confirm("本当に削除しますか？")) {
+            try {
+              // Firestoreから物件を削除
+              await deleteDoc(doc(db, "properties", docId));
+              alert("物件が削除されました");
+              // ページを再読み込みしてリストを更新
+              location.reload();
+            } catch (error) {
+              console.error("削除に失敗しました: ", error);
+              alert("物件の削除に失敗しました");
+            }
+          }
+        }
+
+        let data = {}; // グローバル変数としてデータを保存
+
+        // 物件のデータを使用する関数
+        window.usePropertyData = async function(docId) {
+          try {
+            // Firestoreから物件データを取得
+            const docRef = doc(db, "properties", docId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+              // 取得したデータをフォームに入力
+              data = docSnap.data(); // グローバル変数にデータを保存
+              document.getElementById("name").value = data.name || '';
+              document.getElementById("testSales").value = data.testSales || '';
+              document.getElementById("rent").value = data.rent || '';
+
+              alert("データがフォームに入力されました");
+            } else {
+              alert("データが見つかりませんでした");
+            }
+          } catch (error) {
+            console.error("データの取得に失敗しました: ", error);
+         }
+        }
+
+        // Excelファイルのデータ取り込み
+        document.getElementById('excel-upload-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const fileInput = document.getElementById('excel-file');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Excelファイルを選択してください");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async function (event) {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
+            
+            // 各セルからデータを取得
+            const nameCell = sheet['D5'];
+            const propertyTypeCell = sheet['E5'];
+            const managerCell = sheet['F5'];
+            const similarStoresCell = sheet['H5'];
+            const deliveryDateCell = sheet['J5'];
+            const plannedOpeningDateCell = sheet['K5'];
+            const demolitionCostCell = sheet['M5'];
+            const evacuationCell = sheet['N5'];
+            const contractAreaCell = sheet['P5'];
+            const shopAreaCell = sheet['Q5'];
+            const layoutCell = sheet['R5'];
+            const cashierCell = sheet['S5'];
+            const numberofParkingSpacesCell = sheet['T5'];
+            const rentCell = sheet['U5'];
+            const depositCell = sheet['V5'];
+            const keyMoneyCell = sheet['W5'];
+            const brokerageFeeCell = sheet['X5'];
+            const consultingFeesCell = sheet['Y5'];
+            const constructionCooperationFundsCell = sheet['Z5'];
+            const buildingConstructionCostsCell = sheet['AC5'];
+            const relocationProposedStoreNameCell = sheet['AE5'];
+            
+            const name = nameCell ? nameCell.v : "";
+            const propertyType = propertyTypeCell ? propertyTypeCell.v : "";
+            const manager = managerCell ? managerCell.v : "";
+            const similarStores = similarStoresCell ? similarStoresCell.v : "";
+            const deliveryDateSerial = deliveryDateCell ? deliveryDateCell.v : null;
+            const plannedOpeningDate = plannedOpeningDateCell ? plannedOpeningDateCell.v : "";
+            const demolitionCost = demolitionCostCell ? demolitionCostCell.v : "";
+            const evacuation = evacuationCell ? evacuationCell.v : "";
+            const contractArea = contractAreaCell ? contractAreaCell.v : "";
+            const shopArea = shopAreaCell ? shopAreaCell.v : "";
+            const layout = layoutCell ? layoutCell.v : "";
+            const cashier = cashierCell ? cashierCell.v : "";
+            const numberofParkingSpaces = numberofParkingSpacesCell ? numberofParkingSpacesCell.v : "";
+            const rent = rentCell ? rentCell.v : 0;
+            const deposit = depositCell ? depositCell.v : "";
+            const keyMoney = keyMoneyCell ? keyMoneyCell.v : "";
+            const brokerageFee = brokerageFeeCell ? brokerageFeeCell.v : "";
+            const consultingFees = consultingFeesCell ? consultingFeesCell.v : "";
+            const constructionCooperationFunds = constructionCooperationFundsCell ? constructionCooperationFundsCell.v : "";
+            const buildingConstructionCosts = buildingConstructionCostsCell ? buildingConstructionCostsCell.v : "";
+            const relocationProposedStoreName = relocationProposedStoreNameCell ? relocationProposedStoreNameCell.v : "";
+
+            // deliveryDateがnullでない場合、シリアル値を年に変換
+            let deliveryYear = null;
+            let deliveryMonth = null;
+            if (deliveryDateSerial !== null) {
+                // Excelの日付シリアルの基準日
+                const baseDate = new Date(1899, 11, 30);
+                // シリアル値を日付に変換し、年度を取得
+                const actualDate = new Date(baseDate.getTime() + deliveryDateSerial * 24 * 60 * 60 * 1000);
+                deliveryYear = actualDate.getFullYear(); // 年度のみ取得
+                deliveryMonth = actualDate.getMonth() + 1; // 月を取得 (0-11のため+1)
+            }
+
+            // Firebaseに保存
+            if (name) {
+                try {
+                    // 既存の物件名があるかチェック
+                    const propertiesRef = collection(db, "properties");
+                    const q = query(propertiesRef, where("name", "==", name));
+                    const querySnapshot = await getDocs(q);
+
+                    if (!querySnapshot.empty) {
+                        // 物件名がすでに存在する場合、上書きするか確認
+                        if (confirm("同じ物件名で登録されています。上書きしてもいいですか？")) {
+                            // 上書き処理
+                            const docId = querySnapshot.docs[0].id;
+                            const docRef = doc(db, "properties", docId);
+
+                            // 上書きするデータをここに指定
+                            await updateDoc(docRef, {
+                                propertyType: propertyType,
+                                manager: manager,
+                                similarStores: similarStores,
+                                deliveryDate: deliveryYear, // 年度のみを保存
+                                plannedOpeningDate: plannedOpeningDate,
+                                deliveryMonth: deliveryMonth,
+                                demolitionCost: demolitionCost,
+                                evacuation: evacuation,
+                                contractArea: contractArea,
+                                shopArea: shopArea,
+                                layout: layout,
+                                cashier: cashier,
+                                numberofParkingSpaces: numberofParkingSpaces,
+                                rent: rent,
+                                deposit: deposit,
+                                keyMoney: keyMoney,
+                                brokerageFee: brokerageFee,
+                                consultingFees: consultingFees,
+                                constructionCooperationFunds: constructionCooperationFunds,
+                                buildingConstructionCosts: buildingConstructionCosts,
+                                relocationProposedStoreName: relocationProposedStoreName
+                            });
+
+                            alert("データが上書きされました");
+
+                            // フォームに反映
+                            document.getElementById('name').value = name;
+                            document.getElementById('rent').value = rent / 1000;
+                        }
+                    } else {
+                        // 新規登録
+                        await addDoc(propertiesRef, {
+                            name: name,
+                            propertyType: propertyType,
+                            manager: manager,
+                            similarStores: similarStores,
+                            deliveryDate: deliveryYear, // 年度のみを保存
+                            deliveryMonth: deliveryMonth,
+                            plannedOpeningDate: plannedOpeningDate,
+                            demolitionCost: demolitionCost,
+                            evacuation: evacuation,
+                            contractArea: contractArea,
+                            shopArea: shopArea,
+                            layout: layout,
+                            cashier: cashier,
+                            numberofParkingSpaces: numberofParkingSpaces,
+                            rent: rent,
+                            deposit: deposit,
+                            keyMoney: keyMoney,
+                            brokerageFee: brokerageFee,
+                            consultingFees: consultingFees,
+                            constructionCooperationFunds: constructionCooperationFunds,
+                            buildingConstructionCosts: buildingConstructionCosts,
+                            relocationProposedStoreName: relocationProposedStoreName
+                        });
+
+                        alert("データが保存されました");
+
+                        // フォームに反映
+                        document.getElementById('name').value = name;
+                    }
+                } catch (error) {
+                    console.error("エラーが発生しました: ", error);
+                    alert("データの保存に失敗しました");
+                }
+            } else {
+                alert("物件名が見つかりませんでした");
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+</script>
+<!-- Excel用SheetJSのライブラリ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</body>
+</html>

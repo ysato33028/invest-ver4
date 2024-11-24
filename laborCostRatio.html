@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コスト比率</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+</head>
+<body>
+    <h2>販管費比率【経営計画数値】</h2>
+    <div>
+        <label for="sellingCostData">本年度販管費：</label>
+        <input type="number" id="sellingCostData" value="1.83" step="0.01"> 
+    </div><br>
+    <h2>一般費比率【経営計画数値】</h2>
+    <div>
+        <label for="generalExpensesCostData">本年度一般費：</label>
+        <input type="number" id="generalExpensesCostData" value="3.06" step="0.01"> 
+    </div><br>
+    <h2>本社経費比率【経営計画数値】</h2>
+    <div>
+        <label for="mainOfficeCostData">本年度本社経費：</label>
+        <input type="number" id="mainOfficeCostData" value="3.06" step="0.01"> 
+    </div><br>
+    <h2>人件費比率【経営計画数値】</h2>
+    <div>
+        <label for="laborCostData">本年度人件費：</label>
+        <input type="number" id="laborCostData" value="1.07" step="0.01"> 
+    </div><br>
+
+    <!-- 日販表 -->
+    <table>
+        <thead>
+            <tr>
+                <th>日販</th>
+                <th>人件費</th>
+                <th>日販</th>
+                <th>人件費</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1201～</td>
+                <td><input type="number" id="laborCost-ratio1201" value="" step="0.01"></td>
+                <td>～700</td>
+                <td><input type="number" id="laborCost-ratio700" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1200</td>
+                <td><input type="number" id="laborCost-ratio1200" value="" step="0.01"></td>
+                <td>～650</td>
+                <td><input type="number" id="laborCost-ratio650" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1150</td>
+                <td><input type="number" id="laborCost-ratio1150" value="" step="0.01"></td>
+                <td>～600</td>
+                <td><input type="number" id="laborCost-ratio600" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1100</td>
+                <td><input type="number" id="laborCost-ratio1100" value="" step="0.01"></td>
+                <td>～550</td>
+                <td><input type="number" id="laborCost-ratio550" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1050</td>
+                <td><input type="number" id="laborCost-ratio1050" value="" step="0.01"></td>
+                <td>～500</td>
+                <td><input type="number" id="laborCost-ratio500" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1000</td>
+                <td><input type="number" id="laborCost-ratio1000" value="" step="0.01"></td>
+                <td>～450</td>
+                <td><input type="number" id="laborCost-ratio450" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～950</td>
+                <td><input type="number" id="laborCost-ratio950" value="" step="0.01"></td>
+                <td>～400</td>
+                <td><input type="number" id="laborCost-ratio400" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～900</td>
+                <td><input type="number" id="laborCost-ratio900" value="" step="0.01"></td>
+                <td>～350</td>
+                <td><input type="number" id="laborCost-ratio350" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～850</td>
+                <td><input type="number" id="laborCost-ratio850" value="" step="0.01"></td>
+                <td>～101</td>
+                <td><input type="number" id="laborCost-ratio101" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～800</td>
+                <td><input type="number" id="laborCost-ratio800" value="" step="0.01"></td>
+                <td>0</td>
+                <td><input type="number" id="laborCost-ratio0" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～750</td>
+                <td><input type="number" id="laborCost-ratio750" value="" step="0.01"></td>
+            </tr>
+        </tbody>
+    </table><br>
+
+    <h2>水道光熱費【経営計画数値】</h2>
+    <div>
+        <label for="80T-utilityData">80坪：</label>
+        <input type="number" id="80T-utilityData" value="0"> 
+    </div><br>
+    <div>
+        <label for="basic-utilityData">標準：</label>
+        <input type="number" id="basic-utilityData" value="0"> 
+    </div><br>
+    <div>
+        <label for="small-utilityData">狭小：</label>
+        <input type="number" id="small-utilityData" value="0"> 
+    </div><br>
+    <table>
+        <tr>
+            <th>月度</th>
+            <th>3月</th>
+            <th>4月</th>
+            <th>5月</th>
+            <th>6月</th>
+            <th>7月</th>
+            <th>8月</th>
+            <th>9月</th>
+            <th>10月</th>
+            <th>11月</th>
+            <th>12月</th>
+            <th>1月</th>
+            <th>2月</th>
+        </tr>
+        <tr>
+            <td>80坪</td>
+            <td id="80T-utility3"></td>
+            <td id="80T-utility4"></td>
+            <td id="80T-utility5"></td>
+            <td id="80T-utility6"></td>
+            <td id="80T-utility7"></td>
+            <td id="80T-utility8"></td>
+            <td id="80T-utility9"></td>
+            <td id="80T-utility10"></td>
+            <td id="80T-utility11"></td>
+            <td id="80T-utility12"></td>
+            <td id="80T-utility1"></td>
+            <td id="80T-utility2"></td>
+        </tr>
+        <tr>
+            <td>標準</td>
+            <td id="basic-utility3"></td>
+            <td id="basic-utility4"></td>
+            <td id="basic-utility5"></td>
+            <td id="basic-utility6"></td>
+            <td id="basic-utility7"></td>
+            <td id="basic-utility8"></td>
+            <td id="basic-utility9"></td>
+            <td id="basic-utility10"></td>
+            <td id="basic-utility11"></td>
+            <td id="basic-utility12"></td>
+            <td id="basic-utility1"></td>
+            <td id="basic-utility2"></td>
+        </tr>
+        <tr>
+            <td>狭小</td>
+            <td id="small-utility3"></td>
+            <td id="small-utility4"></td>
+            <td id="small-utility5"></td>
+            <td id="small-utility6"></td>
+            <td id="small-utility7"></td>
+            <td id="small-utility8"></td>
+            <td id="small-utility9"></td>
+            <td id="small-utility10"></td>
+            <td id="small-utility11"></td>
+            <td id="small-utility12"></td>
+            <td id="small-utility1"></td>
+            <td id="small-utility2"></td>
+        </tr>
+    </table><br>
+    <button id="calculateButton">計算</button>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// Firebaseの初期化
+const firebaseConfig = {
+      apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+      authDomain: "mybas-61537.firebaseapp.com",
+      projectId: "mybas-61537",
+      storageBucket: "mybas-61537.firebasestorage.app",
+      messagingSenderId: "47149190856",
+      appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 固定ドキュメントIDを使用（例: "commonData"）
+const docId = "commonData"; // Firebaseのコレクション内の固定ID
+
+// 係数の配列 (例: 必要に応じて修正)
+const coefficients = [0.868, 0.972, 0.934, 1.016, 1.032, 1.192, 1.15, 1.024, 0.974, 0.918, 0.962, 0.96];
+
+// 計算処理
+function calculateUtility() {
+    // 各フォームの入力値を取得
+    const t80inputValue = parseFloat(document.getElementById("80T-utilityData").value) || 0;
+    const basicinputValue = parseFloat(document.getElementById("basic-utilityData").value) || 0;
+    const smallinputValue = parseFloat(document.getElementById("small-utilityData").value) || 0;
+
+    // 各係数に基づき計算し、結果を反映
+    coefficients.forEach((coef, index) => {
+        const monthIndex = (index + 3) % 12 || 12; // 月の列名に対応 (3月からスタート)
+
+        // 80坪
+        const t80result = (t80inputValue * coef).toFixed(2);
+        const t80element = document.getElementById(`80T-utility${monthIndex}`);
+        if (t80element) {
+            t80element.textContent = t80result;
+        }
+
+        // 標準
+        const basicresult = (basicinputValue * coef).toFixed(2);
+        const basicelement = document.getElementById(`basic-utility${monthIndex}`);
+        if (basicelement) {
+            basicelement.textContent = basicresult;
+        }
+
+        // 狭小
+        const smallresult = (smallinputValue * coef).toFixed(2);
+        const smallelement = document.getElementById(`small-utility${monthIndex}`);
+        if (smallelement) {
+            smallelement.textContent = smallresult;
+        }
+    });
+}
+
+
+// ページ読み込み時にFirebaseからデータを取得し、入力フォームに表示
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const docRef = doc(db, "laborCostRatio", docId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            // フィールドにデータを反映
+            document.getElementById("sellingCostData").value = data.sellingCostData || "";
+            document.getElementById("mainOfficeCostData").value = data.mainOfficeCostData || "";
+            document.getElementById("generalExpensesCostData").value = data.generalExpensesCostData || "";
+            document.getElementById("laborCostData").value = data.laborCostData || "";
+            document.getElementById("laborCost-ratio1201").value = data.laborCostRatio1201 || "";
+            document.getElementById("laborCost-ratio1200").value = data.laborCostRatio1200 || "";
+            document.getElementById("laborCost-ratio1150").value = data.laborCostRatio1150 || "";
+            document.getElementById("laborCost-ratio1100").value = data.laborCostRatio1100 || "";
+            document.getElementById("laborCost-ratio1050").value = data.laborCostRatio1050 || "";
+            document.getElementById("laborCost-ratio1000").value = data.laborCostRatio1000 || "";
+            document.getElementById("laborCost-ratio950").value = data.laborCostRatio950 || "";
+            document.getElementById("laborCost-ratio900").value = data.laborCostRatio900 || "";
+            document.getElementById("laborCost-ratio850").value = data.laborCostRatio850 || "";
+            document.getElementById("laborCost-ratio800").value = data.laborCostRatio800 || "";
+            document.getElementById("laborCost-ratio750").value = data.laborCostRatio750 || "";
+            document.getElementById("laborCost-ratio700").value = data.laborCostRatio700 || "";
+            document.getElementById("laborCost-ratio650").value = data.laborCostRatio650 || "";
+            document.getElementById("laborCost-ratio600").value = data.laborCostRatio600 || "";
+            document.getElementById("laborCost-ratio550").value = data.laborCostRatio550 || "";
+            document.getElementById("laborCost-ratio500").value = data.laborCostRatio500 || "";
+            document.getElementById("laborCost-ratio450").value = data.laborCostRatio450 || "";
+            document.getElementById("laborCost-ratio400").value = data.laborCostRatio400 || "";
+            document.getElementById("laborCost-ratio350").value = data.laborCostRatio350 || "";
+            document.getElementById("laborCost-ratio101").value = data.laborCostRatio101 || "";
+            document.getElementById("laborCost-ratio0").value = data.laborCostRatio0 || "";
+            document.getElementById("80T-utilityData").value = data.t80UtilityData  || "";
+            document.getElementById("80T-utility3").value = data.t80Utility3  || "";
+            document.getElementById("80T-utility4").value = data.t80Utility4  || "";
+            document.getElementById("80T-utility5").value = data.t80Utility5  || "";
+            document.getElementById("80T-utility6").value = data.t80Utility6  || "";
+            document.getElementById("80T-utility7").value = data.t80Utility7  || "";
+            document.getElementById("80T-utility8").value = data.t80Utility8  || "";
+            document.getElementById("80T-utility9").value = data.t80Utility9  || "";
+            document.getElementById("80T-utility10").value = data.t80Utility10  || "";
+            document.getElementById("80T-utility11").value = data.t80Utility11  || "";
+            document.getElementById("80T-utility12").value = data.t80Utility12  || "";
+            document.getElementById("80T-utility1").value = data.t80Utility1  || "";
+            document.getElementById("80T-utility2").value = data.t80Utility2  || "";
+            document.getElementById("basic-utilityData").value = data.basicinputValue  || "";
+            document.getElementById("basic-utility3").value = data.basicUtility3  || "";
+            document.getElementById("basic-utility4").value = data.basicUtility4  || "";
+            document.getElementById("basic-utility5").value = data.basicUtility5  || "";
+            document.getElementById("basic-utility6").value = data.basicUtility6  || "";
+            document.getElementById("basic-utility7").value = data.basicUtility7  || "";
+            document.getElementById("basic-utility8").value = data.basicUtility8  || "";
+            document.getElementById("basic-utility9").value = data.basicUtility9  || "";
+            document.getElementById("basic-utility10").value = data.basicUtility10  || "";
+            document.getElementById("basic-utility11").value = data.basicUtility11  || "";
+            document.getElementById("basic-utility12").value = data.basicUtility12  || "";
+            document.getElementById("basic-utility1").value = data.basicUtility1  || "";
+            document.getElementById("basic-utility2").value = data.basicUtility2  || "";
+            document.getElementById("small-utilityData").value = data.smallinputValue  || "";
+            document.getElementById("small-utility3").value = data.smallUtility3  || "";
+            document.getElementById("small-utility4").value = data.smallUtility4  || "";
+            document.getElementById("small-utility5").value = data.smallUtility5  || "";
+            document.getElementById("small-utility6").value = data.smallUtility6  || "";
+            document.getElementById("small-utility7").value = data.smallUtility7  || "";
+            document.getElementById("small-utility8").value = data.smallUtility8  || "";
+            document.getElementById("small-utility9").value = data.smallUtility9  || "";
+            document.getElementById("small-utility10").value = data.smallUtility10  || "";
+            document.getElementById("small-utility11").value = data.smallUtility11  || "";
+            document.getElementById("small-utility12").value = data.smallUtility12  || "";
+            document.getElementById("small-utility1").value = data.smallUtility1  || "";
+            document.getElementById("small-utility2").value = data.smallUtility2  || "";
+            
+        } else {
+            console.log("指定されたドキュメントが存在しません");
+        }
+    } catch (error) {
+        console.error("データの取得中にエラーが発生しました: ", error);
+    }
+});
+
+ // Save data to Firebase function
+async function saveDataToFirestore() {
+    try {
+        const t80inputValue = parseFloat(document.getElementById("80T-utilityData").value) || 0;
+        const basicinputValue = parseFloat(document.getElementById("basic-utilityData").value) || 0;
+        const smallinputValue = parseFloat(document.getElementById("small-utilityData").value) || 0;
+
+        // 計算結果を格納するオブジェクトを初期化
+        const calculatedT80Results = {};
+        const calculatedBasicResults = {};
+        const calculatedSmallResults = {};
+        const calculatedResults = {};
+
+        // 月ごとの計算を実行
+        coefficients.forEach((coef, index) => {
+            // 月の列名に対応 (3月からスタート)
+            const monthIndex = (index + 3) % 12 || 12;
+
+            // 各結果を計算して格納
+            calculatedT80Results[`t80Utility${monthIndex}`] = (t80inputValue * coef).toFixed(2);
+            calculatedBasicResults[`basicUtility${monthIndex}`] = (basicinputValue * coef).toFixed(2);
+            calculatedSmallResults[`smallUtility${monthIndex}`] = (smallinputValue * coef).toFixed(2);
+        });
+
+
+        const docRef = doc(db, "laborCostRatio", docId);
+
+        // Collecting all input values dynamically
+        const laborCostData = {
+            sellingCostData: document.getElementById("sellingCostData").value,
+            mainOfficeCostData: document.getElementById("mainOfficeCostData").value,
+            generalExpensesCostData: document.getElementById("generalExpensesCostData").value,
+            laborCostData: document.getElementById("laborCostData").value,
+            laborCostRatio1201: document.getElementById("laborCost-ratio1201").value,
+            laborCostRatio1200: document.getElementById("laborCost-ratio1200").value,
+            laborCostRatio1150: document.getElementById("laborCost-ratio1150").value,
+            laborCostRatio1100: document.getElementById("laborCost-ratio1100").value,
+            laborCostRatio1050: document.getElementById("laborCost-ratio1050").value,
+            laborCostRatio1000: document.getElementById("laborCost-ratio1000").value,
+            laborCostRatio950: document.getElementById("laborCost-ratio950").value,
+            laborCostRatio900: document.getElementById("laborCost-ratio900").value,
+            laborCostRatio850: document.getElementById("laborCost-ratio850").value,
+            laborCostRatio800: document.getElementById("laborCost-ratio800").value,
+            laborCostRatio750: document.getElementById("laborCost-ratio750").value,
+            laborCostRatio700: document.getElementById("laborCost-ratio700").value,
+            laborCostRatio650: document.getElementById("laborCost-ratio650").value,
+            laborCostRatio600: document.getElementById("laborCost-ratio600").value,
+            laborCostRatio550: document.getElementById("laborCost-ratio550").value,
+            laborCostRatio500: document.getElementById("laborCost-ratio500").value,
+            laborCostRatio450: document.getElementById("laborCost-ratio450").value,
+            laborCostRatio400: document.getElementById("laborCost-ratio400").value,
+            laborCostRatio350: document.getElementById("laborCost-ratio350").value,
+            laborCostRatio101: document.getElementById("laborCost-ratio101").value,
+            laborCostRatio0: document.getElementById("laborCost-ratio0").value,
+            t80UtilityData: t80inputValue,
+            basicinputValue: basicinputValue,
+            smallinputValue: smallinputValue,
+            ...calculatedT80Results,
+            ...calculatedBasicResults,
+            ...calculatedSmallResults
+        };
+
+        // Saving data to Firebase
+        await setDoc(docRef, laborCostData, { merge: true });
+        alert("データが保存されました");
+    } catch (error) {
+        alert("データの保存中にエラーが発生しました");
+        console.error("データ保存エラー:", error);
+    }
+}
+document.getElementById("calculateButton").addEventListener("click", calculateUtility);
+
+// Set up Save button event
+document.getElementById("save-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    saveDataToFirestore();
+});
+</script>
+</body>
+</html>

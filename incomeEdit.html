@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>損益計算書（月平均）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <div class="table-header">
+            <h2>損益計算書（月平均） │ <span id="name"></span></h2>
+            <span id="areaName"></span>
+        </div>
+        <thead>
+            <tr>
+                <th rowspan="2" colspan="2">項目</th>
+                <th colspan="10">年度</th>
+                <th rowspan="2" colspan="2">10年間合計</th>
+            </tr>
+            <tr>
+                <th id="deliveryDate1" colspan="2"></th>
+                <th id="deliveryDate2" colspan="2"></th>
+                <th id="deliveryDate3" colspan="2"></th>
+                <th id="deliveryDate4" colspan="2"></th>
+                <th id="deliveryDate5" colspan="2"></th>                
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="2">日販</td>
+                <td>日販</td>
+                <td id="dailySales1" colspan="2"></td>
+                <td id="dailySales2" colspan="2"></td>
+                <td id="dailySales3" colspan="2"></td>
+                <td id="dailySales4" colspan="2"></td>
+                <td id="dailySales5" colspan="2"></td>
+                <td id="dailySales10" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>損益分岐点</td>
+                <td id="breakEvenPoint1" colspan="2"></td>
+                <td id="breakEvenPoint2" colspan="2"></td>
+                <td id="breakEvenPoint3" colspan="2"></td>
+                <td id="breakEvenPoint4" colspan="2"></td>
+                <td id="breakEvenPoint5" colspan="2"></td>
+                <td id="breakEvenPoint10" colspan="2"></td>
+            </tr>
+            <tr>
+                <td rowspan="14">単月PL</td>
+                <td>売上高</td>
+                <td id="sale1"></td>
+                <td></td>
+                <td id="sale2"></td>
+                <td></td>
+                <td id="sale3"></td>
+                <td></td>
+                <td id="sale4"></td>
+                <td></td>
+                <td id="sale5"></td>
+                <td></td>
+                <td id="sale10"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>営業総利益</td>
+                <td id="profit1"></td>
+                <td id="profitDataratio1"></td>
+                <td id="profit2"></td>
+                <td id="profitDataratio2"></td>
+                <td id="profit3"></td>
+                <td id="profitDataratio3"></td>
+                <td id="profit4"></td>
+                <td id="profitDataratio4"></td>
+                <td id="profit5"></td>
+                <td id="profitDataratio5"></td>
+                <td id="profit10"></td>
+                <td id="profitDataratio10"></td>
+            </tr>
+            <tr>
+                <td>人件費</td>
+                <td id="labor1"></td>
+                <td id="laborDataratio1"></td>
+                <td id="labor2"></td>
+                <td id="laborDataratio2"></td>
+                <td id="labor3"></td>
+                <td id="laborDataratio3"></td>
+                <td id="labor4"></td>
+                <td id="laborDataratio4"></td>
+                <td id="labor5"></td>
+                <td id="laborDataratio5"></td>
+                <td id="labor10"></td>
+                <td id="laborDataratio10"></td>
+            </tr>
+            <tr>
+                <td>販売管理費計</td>
+                <td id="selling1"></td>
+                <td id="sellingDataratio1"></td>
+                <td id="selling2"></td>
+                <td id="sellingDataratio2"></td>
+                <td id="selling3"></td>
+                <td id="sellingDataratio3"></td>
+                <td id="selling4"></td>
+                <td id="sellingDataratio4"></td>
+                <td id="selling5"></td>
+                <td id="sellingDataratio5"></td>
+                <td id="selling10"></td>
+                <td id="sellingDataratio10"></td>
+            </tr>
+            <tr>
+                <td>建物建築費</td>
+                <td id="building1"></td>
+                <td id="buildingCostratio1"></td>
+                <td id="building2"></td>
+                <td id="buildingCostratio2"></td>
+                <td id="building3"></td>
+                <td id="buildingCostratio3"></td>
+                <td id="building4"></td>
+                <td id="buildingCostratio4"></td>
+                <td id="building5"></td>
+                <td id="buildingCostratio5"></td>
+                <td id="building10"></td>
+                <td id="buildingCostratio10"></td>
+            </tr>
+            <tr>
+                <td>減価償却費</td>
+                <td id="depreciationCost1"></td>
+                <td id="depreciationCostratio1"></td>
+                <td id="depreciationCost2"></td>
+                <td id="depreciationCostratio2"></td>
+                <td id="depreciationCost3"></td>
+                <td id="depreciationCostratio3"></td>
+                <td id="depreciationCost4"></td>
+                <td id="depreciationCostratio4"></td>
+                <td id="depreciationCost5"></td>
+                <td id="depreciationCostratio5"></td>
+                <td id="depreciationCost10"></td>
+                <td id="depreciationCostratio10"></td>
+            </tr>
+            <tr>
+                <td>水道光熱費</td>
+                <td id="utilityData1"></td>
+                <td id="utilityDataratio1"></td>
+                <td id="utilityData2"></td>
+                <td id="utilityDataratio2"></td>
+                <td id="utilityData3"></td>
+                <td id="utilityDataratio3"></td>
+                <td id="utilityData4"></td>
+                <td id="utilityDataratio4"></td>
+                <td id="utilityData5"></td>
+                <td id="utilityDataratio5"></td>
+                <td id="utilityData10"></td>
+                <td id="utilityDataratio10"></td>
+            </tr>
+            <tr>
+                <td>地代家賃</td>
+                <td id="rendCost1"></td>
+                <td id="rendCostratio1"></td>
+                <td id="rendCost2"></td>
+                <td id="rendCostratio2"></td>
+                <td id="rendCost3"></td>
+                <td id="rendCostratio3"></td>
+                <td id="rendCost4"></td>
+                <td id="rendCostratio4"></td>
+                <td id="rendCost5"></td>
+                <td id="rendCostratio5"></td>
+                <td id="rendCost10"></td>
+                <td id="rendCostratio10"></td>
+            </tr>
+            <tr>
+                <td>設備費計</td>
+                <td id="equipmentCosts1"></td>
+                <td id="equipmentratio1"></td>
+                <td id="equipmentCosts2"></td>
+                <td id="equipmentratio2"></td>
+                <td id="equipmentCosts3"></td>
+                <td id="equipmentratio3"></td>
+                <td id="equipmentCosts4"></td>
+                <td id="equipmentratio4"></td>
+                <td id="equipmentCosts5"></td>
+                <td id="equipmentratio5"></td>
+                <td id="equipmentCosts10"></td>
+                <td id="equipmentratio10"></td>
+            </tr>
+            <tr>
+                <td>一般費合計</td>
+                <td id="generalData1"></td>
+                <td id="generalDataratio1"></td>
+                <td id="generalData2"></td>
+                <td id="generalDataratio2"></td>
+                <td id="generalData3"></td>
+                <td id="generalDataratio3"></td>
+                <td id="generalData4"></td>
+                <td id="generalDataratio4"></td>
+                <td id="generalData5"></td>
+                <td id="generalDataratio5"></td>
+                <td id="generalData10"></td>
+                <td id="generalDataratio10"></td>
+            </tr>
+            <tr>
+                <td>販売一般管理費計</td>
+                <td id="totalSelling1"></td>
+                <td id="totalSellingratio1"></td>
+                <td id="totalSelling2"></td>
+                <td id="totalSellingratio2"></td>
+                <td id="totalSelling3"></td>
+                <td id="totalSellingratio3"></td>
+                <td id="totalSelling4"></td>
+                <td id="totalSellingratio4"></td>
+                <td id="totalSelling5"></td>
+                <td id="totalSellingratio5"></td>
+                <td id="totalSelling10"></td>
+                <td id="totalSellingratio10"></td>
+            </tr>
+            <tr>
+                <td>店舗営業利益</td>
+                <td id="monthlyStoreProfit1"></td>
+                <td id="monthlyStoreProfitratio1"></td>
+                <td id="monthlyStoreProfit2"></td>
+                <td id="monthlyStoreProfitratio2"></td>
+                <td id="monthlyStoreProfit3"></td>
+                <td id="monthlyStoreProfitratio3"></td>
+                <td id="monthlyStoreProfit4"></td>
+                <td id="monthlyStoreProfitratio4"></td>
+                <td id="monthlyStoreProfit5"></td>
+                <td id="monthlyStoreProfitratio5"></td>
+                <td id="monthlyStoreProfit10"></td>
+                <td id="monthlyStoreProfitratio10"></td>
+            </tr>
+            <tr>
+                <td>本社経費</td>
+                <td id="mainOfficeCost1"></td>
+                <td id="mainOfficeCostratio1"></td>
+                <td id="mainOfficeCost2"></td>
+                <td id="mainOfficeCostratio2"></td>
+                <td id="mainOfficeCost3"></td>
+                <td id="mainOfficeCostratio3"></td>
+                <td id="mainOfficeCost4"></td>
+                <td id="mainOfficeCostratio4"></td>
+                <td id="mainOfficeCost5"></td>
+                <td id="mainOfficeCostratio5"></td>
+                <td id="mainOfficeCost10"></td>
+                <td id="mainOfficeCostratio10"></td>
+            </tr>
+            <tr>
+                <td>営業利益（本社経費含む）</td>
+                <td id="officeProfit1"></td>
+                <td id="officeProfitratio1"></td>
+                <td id="officeProfit2"></td>
+                <td id="officeProfitratio2"></td>
+                <td id="officeProfit3"></td>
+                <td id="officeProfitratio3"></td>
+                <td id="officeProfit4"></td>
+                <td id="officeProfitratio4"></td>
+                <td id="officeProfit5"></td>
+                <td id="officeProfitratio5"></td>
+                <td id="officeProfit10"></td>
+                <td id="officeProfitratio10"></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="note">※別途物流費が発生する場合は、「一般管理合計」に経費計上</p>
+    <p class="note">※物流費 │ <span id="logisticCost"></span></p>
+    <br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+
+        const salesTable = propertyData.salesTable || {};
+        document.getElementById("areaName").textContent = salesTable.areaName || "";
+
+        const deliveryDate = propertyData.deliveryDate || {};
+        document.getElementById("deliveryDate1").textContent = `${deliveryDate}年`;
+        document.getElementById("deliveryDate2").textContent = `${deliveryDate + 1}年`;
+        document.getElementById("deliveryDate3").textContent = `${deliveryDate + 2}年`;
+        document.getElementById("deliveryDate4").textContent = `${deliveryDate + 3}年`;
+        document.getElementById("deliveryDate5").textContent = `${deliveryDate + 4}年以降`;
+
+        const plSalesData = propertyData.plSalesData || {};
+        document.getElementById("sale1").textContent = Math.round(plSalesData.singleYear1 || 0).toLocaleString();
+        document.getElementById("sale2").textContent = Math.round(plSalesData.singleYear2 || 0).toLocaleString();
+        document.getElementById("sale3").textContent = Math.round(plSalesData.singleYear3 || 0).toLocaleString();
+        document.getElementById("sale4").textContent = Math.round(plSalesData.singleYear4 || 0).toLocaleString();
+        document.getElementById("sale5").textContent = Math.round(plSalesData.singleYear5 || 0).toLocaleString();
+        document.getElementById("sale10").textContent = Math.round(plSalesData.singleYear10 || 0).toLocaleString();
+
+        document.getElementById("dailySales1").textContent = Math.round(salesTable.daily1Sales || 0).toLocaleString();
+        document.getElementById("dailySales2").textContent = Math.round(salesTable.daily2Sales || 0).toLocaleString();
+        document.getElementById("dailySales3").textContent = Math.round(salesTable.daily3Sales || 0).toLocaleString();
+        document.getElementById("dailySales4").textContent = Math.round(salesTable.daily4Sales || 0).toLocaleString();
+        document.getElementById("dailySales5").textContent = Math.round(salesTable.daily5Sales || 0).toLocaleString();
+        const dailySales10 = plSalesData.singleYear10 / 30;
+        document.getElementById("dailySales10").textContent = Math.round(dailySales10).toLocaleString();
+
+        const profitData = propertyData.profitData || {};
+        document.getElementById("profit1").textContent = Math.round(profitData.singleYear1 || 0).toLocaleString();
+        document.getElementById("profit2").textContent = Math.round(profitData.singleYear2 || 0).toLocaleString();
+        document.getElementById("profit3").textContent = Math.round(profitData.singleYear3 || 0).toLocaleString();
+        document.getElementById("profit4").textContent = Math.round(profitData.singleYear4 || 0).toLocaleString();
+        document.getElementById("profit5").textContent = Math.round(profitData.singleYear5 || 0).toLocaleString();
+        document.getElementById("profit10").textContent = Math.round(profitData.singleYear10 || 0).toLocaleString();
+
+        const profitDataratio1 = ((parseFloat(profitData.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const profitDataratio2 = ((parseFloat(profitData.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const profitDataratio3 = ((parseFloat(profitData.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const profitDataratio4 = ((parseFloat(profitData.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const profitDataratio5 = ((parseFloat(profitData.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const profitDataratio10 = ((parseFloat(profitData.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("profitDataratio1").textContent = `${profitDataratio1.toFixed(1)}%`;
+        document.getElementById("profitDataratio2").textContent = `${profitDataratio2.toFixed(1)}%`;
+        document.getElementById("profitDataratio3").textContent = `${profitDataratio3.toFixed(1)}%`;
+        document.getElementById("profitDataratio4").textContent = `${profitDataratio4.toFixed(1)}%`;
+        document.getElementById("profitDataratio5").textContent = `${profitDataratio5.toFixed(1)}%`;
+        document.getElementById("profitDataratio10").textContent = `${profitDataratio10.toFixed(1)}%`;
+
+        const laborData = propertyData.laborData || {};
+        document.getElementById("labor1").textContent = Math.round(laborData.singleYear1 || 0).toLocaleString();
+        document.getElementById("labor2").textContent = Math.round(laborData.singleYear2 || 0).toLocaleString();
+        document.getElementById("labor3").textContent = Math.round(laborData.singleYear3 || 0).toLocaleString();
+        document.getElementById("labor4").textContent = Math.round(laborData.singleYear4 || 0).toLocaleString();
+        document.getElementById("labor5").textContent = Math.round(laborData.singleYear5 || 0).toLocaleString();
+        document.getElementById("labor10").textContent = Math.round(laborData.singleYear10 || 0).toLocaleString();
+
+        const laborDataratio1 = ((parseFloat(laborData.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const laborDataratio2 = ((parseFloat(laborData.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const laborDataratio3 = ((parseFloat(laborData.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const laborDataratio4 = ((parseFloat(laborData.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const laborDataratio5 = ((parseFloat(laborData.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const laborDataratio10 = ((parseFloat(laborData.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("laborDataratio1").textContent = `${laborDataratio1.toFixed(1)}%`;
+        document.getElementById("laborDataratio2").textContent = `${laborDataratio2.toFixed(1)}%`;
+        document.getElementById("laborDataratio3").textContent = `${laborDataratio3.toFixed(1)}%`;
+        document.getElementById("laborDataratio4").textContent = `${laborDataratio4.toFixed(1)}%`;
+        document.getElementById("laborDataratio5").textContent = `${laborDataratio5.toFixed(1)}%`;
+        document.getElementById("laborDataratio10").textContent = `${laborDataratio10.toFixed(1)}%`;
+
+        const sellingData = propertyData.sellingData || {};
+        document.getElementById("selling1").textContent = Math.round(sellingData.singleYear1 || 0).toLocaleString();
+        document.getElementById("selling2").textContent = Math.round(sellingData.singleYear2 || 0).toLocaleString();
+        document.getElementById("selling3").textContent = Math.round(sellingData.singleYear3 || 0).toLocaleString();
+        document.getElementById("selling4").textContent = Math.round(sellingData.singleYear4 || 0).toLocaleString();
+        document.getElementById("selling5").textContent = Math.round(sellingData.singleYear5 || 0).toLocaleString();
+        document.getElementById("selling10").textContent = Math.round(sellingData.singleYear10 || 0).toLocaleString();
+
+        const sellingDataratio1 = ((parseFloat(sellingData.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const sellingDataratio2 = ((parseFloat(sellingData.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const sellingDataratio3 = ((parseFloat(sellingData.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const sellingDataratio4 = ((parseFloat(sellingData.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const sellingDataratio5 = ((parseFloat(sellingData.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const sellingDataratio10 = ((parseFloat(sellingData.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("sellingDataratio1").textContent = `${sellingDataratio1.toFixed(2)}%`;
+        document.getElementById("sellingDataratio2").textContent = `${sellingDataratio2.toFixed(2)}%`;
+        document.getElementById("sellingDataratio3").textContent = `${sellingDataratio3.toFixed(2)}%`;
+        document.getElementById("sellingDataratio4").textContent = `${sellingDataratio4.toFixed(2)}%`;
+        document.getElementById("sellingDataratio5").textContent = `${sellingDataratio5.toFixed(2)}%`;
+        document.getElementById("sellingDataratio10").textContent = `${sellingDataratio10.toFixed(2)}%`;
+
+        const buildingCost = propertyData.buildingCost || {};
+        document.getElementById("building1").textContent = Math.round(buildingCost.singleYear1 || 0).toLocaleString();
+        document.getElementById("building2").textContent = Math.round(buildingCost.singleYear2 || 0).toLocaleString();
+        document.getElementById("building3").textContent = Math.round(buildingCost.singleYear3 || 0).toLocaleString();
+        document.getElementById("building4").textContent = Math.round(buildingCost.singleYear4 || 0).toLocaleString();
+        document.getElementById("building5").textContent = Math.round(buildingCost.singleYear5 || 0).toLocaleString();
+        document.getElementById("building10").textContent = Math.round(buildingCost.singleYear10 || 0).toLocaleString();
+
+        const buildingCostratio1 = ((parseFloat(buildingCost.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const buildingCostratio2 = ((parseFloat(buildingCost.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const buildingCostratio3 = ((parseFloat(buildingCost.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const buildingCostratio4 = ((parseFloat(buildingCost.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const buildingCostratio5 = ((parseFloat(buildingCost.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const buildingCostratio10 = ((parseFloat(buildingCost.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("buildingCostratio1").textContent = `${buildingCostratio1.toFixed(1)}%`;
+        document.getElementById("buildingCostratio2").textContent = `${buildingCostratio2.toFixed(1)}%`;
+        document.getElementById("buildingCostratio3").textContent = `${buildingCostratio3.toFixed(1)}%`;
+        document.getElementById("buildingCostratio4").textContent = `${buildingCostratio4.toFixed(1)}%`;
+        document.getElementById("buildingCostratio5").textContent = `${buildingCostratio5.toFixed(1)}%`;
+        document.getElementById("buildingCostratio10").textContent = `${buildingCostratio10.toFixed(1)}%`;
+
+        const depreciationCost = propertyData.depreciationCost || {};
+        document.getElementById("depreciationCost1").textContent = Math.round(depreciationCost.singleYear1 || 0).toLocaleString();
+        document.getElementById("depreciationCost2").textContent = Math.round(depreciationCost.singleYear2 || 0).toLocaleString();
+        document.getElementById("depreciationCost3").textContent = Math.round(depreciationCost.singleYear3 || 0).toLocaleString();
+        document.getElementById("depreciationCost4").textContent = Math.round(depreciationCost.singleYear4 || 0).toLocaleString();
+        document.getElementById("depreciationCost5").textContent = Math.round(depreciationCost.singleYear5 || 0).toLocaleString();
+        document.getElementById("depreciationCost10").textContent = Math.round(depreciationCost.singleYear10 || 0).toLocaleString();
+
+        const depreciationCostratio1 = ((parseFloat(depreciationCost.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const depreciationCostratio2 = ((parseFloat(depreciationCost.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const depreciationCostratio3 = ((parseFloat(depreciationCost.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const depreciationCostratio4 = ((parseFloat(depreciationCost.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const depreciationCostratio5 = ((parseFloat(depreciationCost.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const depreciationCostratio10 = ((parseFloat(depreciationCost.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("depreciationCostratio1").textContent = `${depreciationCostratio1.toFixed(1)}%`;
+        document.getElementById("depreciationCostratio2").textContent = `${depreciationCostratio2.toFixed(1)}%`;
+        document.getElementById("depreciationCostratio3").textContent = `${depreciationCostratio3.toFixed(1)}%`;
+        document.getElementById("depreciationCostratio4").textContent = `${depreciationCostratio4.toFixed(1)}%`;
+        document.getElementById("depreciationCostratio5").textContent = `${depreciationCostratio5.toFixed(1)}%`;
+        document.getElementById("depreciationCostratio10").textContent = `${depreciationCostratio10.toFixed(1)}%`;
+
+        const utilityData = propertyData.utilityData || {};
+        document.getElementById("utilityData1").textContent = Math.round(utilityData.singleYear1 || 0).toLocaleString();
+        document.getElementById("utilityData2").textContent = Math.round(utilityData.singleYear2 || 0).toLocaleString();
+        document.getElementById("utilityData3").textContent = Math.round(utilityData.singleYear3 || 0).toLocaleString();
+        document.getElementById("utilityData4").textContent = Math.round(utilityData.singleYear4 || 0).toLocaleString();
+        document.getElementById("utilityData5").textContent = Math.round(utilityData.singleYear5 || 0).toLocaleString();
+        document.getElementById("utilityData10").textContent = Math.round(utilityData.singleYear10 || 0).toLocaleString();
+
+        const utilityDataratio1 = ((parseFloat(utilityData.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const utilityDataratio2 = ((parseFloat(utilityData.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const utilityDataratio3 = ((parseFloat(utilityData.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const utilityDataratio4 = ((parseFloat(utilityData.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const utilityDataratio5 = ((parseFloat(utilityData.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const utilityDataratio10 = ((parseFloat(utilityData.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("utilityDataratio1").textContent = `${utilityDataratio1.toFixed(1)}%`;
+        document.getElementById("utilityDataratio2").textContent = `${utilityDataratio2.toFixed(1)}%`;
+        document.getElementById("utilityDataratio3").textContent = `${utilityDataratio3.toFixed(1)}%`;
+        document.getElementById("utilityDataratio4").textContent = `${utilityDataratio4.toFixed(1)}%`;
+        document.getElementById("utilityDataratio5").textContent = `${utilityDataratio5.toFixed(1)}%`;
+        document.getElementById("utilityDataratio10").textContent = `${utilityDataratio10.toFixed(1)}%`;
+
+        const rendCost = propertyData.rendCost || {};
+        document.getElementById("rendCost1").textContent = Math.round(rendCost.singleYear1 || 0).toLocaleString();
+        document.getElementById("rendCost2").textContent = Math.round(rendCost.singleYear2 || 0).toLocaleString();
+        document.getElementById("rendCost3").textContent = Math.round(rendCost.singleYear3 || 0).toLocaleString();
+        document.getElementById("rendCost4").textContent = Math.round(rendCost.singleYear4 || 0).toLocaleString();
+        document.getElementById("rendCost5").textContent = Math.round(rendCost.singleYear5 || 0).toLocaleString();
+        document.getElementById("rendCost10").textContent = Math.round(rendCost.singleYear10 || 0).toLocaleString();
+
+        const rendCostratio1 = ((parseFloat(rendCost.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const rendCostratio2 = ((parseFloat(rendCost.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const rendCostratio3 = ((parseFloat(rendCost.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const rendCostratio4 = ((parseFloat(rendCost.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const rendCostratio5 = ((parseFloat(rendCost.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const rendCostratio10 = ((parseFloat(rendCost.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("rendCostratio1").textContent = `${rendCostratio1.toFixed(1)}%`;
+        document.getElementById("rendCostratio2").textContent = `${rendCostratio2.toFixed(1)}%`;
+        document.getElementById("rendCostratio3").textContent = `${rendCostratio3.toFixed(1)}%`;
+        document.getElementById("rendCostratio4").textContent = `${rendCostratio4.toFixed(1)}%`;
+        document.getElementById("rendCostratio5").textContent = `${rendCostratio5.toFixed(1)}%`;
+        document.getElementById("rendCostratio10").textContent = `${rendCostratio10.toFixed(1)}%`;
+
+        const generalData = propertyData.generalData || {};
+        document.getElementById("generalData1").textContent = Math.round(generalData.singleYear1 || 0).toLocaleString();
+        document.getElementById("generalData2").textContent = Math.round(generalData.singleYear2 || 0).toLocaleString();
+        document.getElementById("generalData3").textContent = Math.round(generalData.singleYear3 || 0).toLocaleString();
+        document.getElementById("generalData4").textContent = Math.round(generalData.singleYear4 || 0).toLocaleString();
+        document.getElementById("generalData5").textContent = Math.round(generalData.singleYear5 || 0).toLocaleString();
+        document.getElementById("generalData10").textContent = Math.round(generalData.singleYear10 || 0).toLocaleString();
+
+        const generalDataratio1 = ((parseFloat(generalData.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const generalDataratio2 = ((parseFloat(generalData.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const generalDataratio3 = ((parseFloat(generalData.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const generalDataratio4 = ((parseFloat(generalData.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const generalDataratio5 = ((parseFloat(generalData.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const generalDataratio10 = ((parseFloat(generalData.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("generalDataratio1").textContent = `${generalDataratio1.toFixed(2)}%`;
+        document.getElementById("generalDataratio2").textContent = `${generalDataratio2.toFixed(2)}%`;
+        document.getElementById("generalDataratio3").textContent = `${generalDataratio3.toFixed(2)}%`;
+        document.getElementById("generalDataratio4").textContent = `${generalDataratio4.toFixed(2)}%`;
+        document.getElementById("generalDataratio5").textContent = `${generalDataratio5.toFixed(2)}%`;
+        document.getElementById("generalDataratio10").textContent = `${generalDataratio10.toFixed(2)}%`;
+
+        const mainOfficeCost = propertyData.mainOfficeCost || {};
+        document.getElementById("mainOfficeCost1").textContent = Math.round(mainOfficeCost.singleYear1 || 0).toLocaleString();
+        document.getElementById("mainOfficeCost2").textContent = Math.round(mainOfficeCost.singleYear2 || 0).toLocaleString();
+        document.getElementById("mainOfficeCost3").textContent = Math.round(mainOfficeCost.singleYear3 || 0).toLocaleString();
+        document.getElementById("mainOfficeCost4").textContent = Math.round(mainOfficeCost.singleYear4 || 0).toLocaleString();
+        document.getElementById("mainOfficeCost5").textContent = Math.round(mainOfficeCost.singleYear5 || 0).toLocaleString();
+        document.getElementById("mainOfficeCost10").textContent = Math.round(mainOfficeCost.singleYear10 || 0).toLocaleString();
+
+        const mainOfficeCostratio1 = ((parseFloat(mainOfficeCost.singleYear1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const mainOfficeCostratio2 = ((parseFloat(mainOfficeCost.singleYear2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const mainOfficeCostratio3 = ((parseFloat(mainOfficeCost.singleYear3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const mainOfficeCostratio4 = ((parseFloat(mainOfficeCost.singleYear4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const mainOfficeCostratio5 = ((parseFloat(mainOfficeCost.singleYear5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const mainOfficeCostratio10 = ((parseFloat(mainOfficeCost.singleYear10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("mainOfficeCostratio1").textContent = `${mainOfficeCostratio1.toFixed(2)}%`;
+        document.getElementById("mainOfficeCostratio2").textContent = `${mainOfficeCostratio2.toFixed(2)}%`;
+        document.getElementById("mainOfficeCostratio3").textContent = `${mainOfficeCostratio3.toFixed(2)}%`;
+        document.getElementById("mainOfficeCostratio4").textContent = `${mainOfficeCostratio4.toFixed(2)}%`;
+        document.getElementById("mainOfficeCostratio5").textContent = `${mainOfficeCostratio5.toFixed(2)}%`;
+        document.getElementById("mainOfficeCostratio10").textContent = `${mainOfficeCostratio10.toFixed(2)}%`;
+
+        // equipmentCosts
+        const equipment1 = ((parseFloat(buildingCost.singleYear1) || 0) + (parseFloat(depreciationCost.singleYear1) || 0) + (parseFloat(utilityData.singleYear1) || 0) + (parseFloat(rendCost.singleYear1) || 0) + 200);
+        const equipment2 = ((parseFloat(buildingCost.singleYear2) || 0) + (parseFloat(depreciationCost.singleYear2) || 0) + (parseFloat(utilityData.singleYear2) || 0) + (parseFloat(rendCost.singleYear2) || 0) + 200);
+        const equipment3 = ((parseFloat(buildingCost.singleYear3) || 0) + (parseFloat(depreciationCost.singleYear3) || 0) + (parseFloat(utilityData.singleYear3) || 0) + (parseFloat(rendCost.singleYear3) || 0) + 200);
+        const equipment4 = ((parseFloat(buildingCost.singleYear4) || 0) + (parseFloat(depreciationCost.singleYear4) || 0) + (parseFloat(utilityData.singleYear4) || 0) + (parseFloat(rendCost.singleYear4) || 0) + 200);
+        const equipment5 = ((parseFloat(buildingCost.singleYear5) || 0) + (parseFloat(depreciationCost.singleYear5) || 0) + (parseFloat(utilityData.singleYear5) || 0) + (parseFloat(rendCost.singleYear5) || 0) + 200);
+        const equipment10 = ((equipment1 + equipment2 + equipment3 + equipment4) + (equipment5 * (10 - 4))) / 10;
+        document.getElementById("equipmentCosts1").textContent = Math.round(equipment1 || 0).toLocaleString();
+        document.getElementById("equipmentCosts2").textContent = Math.round(equipment2 || 0).toLocaleString();
+        document.getElementById("equipmentCosts3").textContent = Math.round(equipment3 || 0).toLocaleString();
+        document.getElementById("equipmentCosts4").textContent = Math.round(equipment4 || 0).toLocaleString();
+        document.getElementById("equipmentCosts5").textContent = Math.round(equipment5 || 0).toLocaleString();
+        document.getElementById("equipmentCosts10").textContent = Math.round(equipment10 || 0).toLocaleString();
+
+        const equipmentratio1 = ((parseFloat(equipment1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const equipmentratio2 = ((parseFloat(equipment2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const equipmentratio3 = ((parseFloat(equipment3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const equipmentratio4 = ((parseFloat(equipment4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const equipmentratio5 = ((parseFloat(equipment5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const equipmentratio10 = ((parseFloat(equipment10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("equipmentratio1").textContent = `${equipmentratio1.toFixed(1)}%`;
+        document.getElementById("equipmentratio2").textContent = `${equipmentratio2.toFixed(1)}%`;
+        document.getElementById("equipmentratio3").textContent = `${equipmentratio3.toFixed(1)}%`;
+        document.getElementById("equipmentratio4").textContent = `${equipmentratio4.toFixed(1)}%`;
+        document.getElementById("equipmentratio5").textContent = `${equipmentratio5.toFixed(1)}%`;
+        document.getElementById("equipmentratio10").textContent = `${equipmentratio10.toFixed(1)}%`;
+
+        
+        const businessPlanData = propertyData.businessPlanData || {};
+        const logisticsCosts = businessPlanData.logisticsCosts || 0;
+        document.getElementById("logisticCost").textContent = Math.round(logisticsCosts || 0).toLocaleString();
+
+        // totalSelling
+        const totalSelling1 = ((parseFloat(laborData.singleYear1) || 0) + (parseFloat(sellingData.singleYear1) || 0) + (parseFloat(equipment1) || 0) + (parseFloat(logisticsCosts) || 0) + (parseFloat(generalData.singleYear1) || 0));
+        const totalSelling2 = ((parseFloat(laborData.singleYear2) || 0) + (parseFloat(sellingData.singleYear2) || 0) + (parseFloat(equipment2) || 0) + (parseFloat(logisticsCosts) || 0) + (parseFloat(generalData.singleYear2) || 0));
+        const totalSelling3 = ((parseFloat(laborData.singleYear3) || 0) + (parseFloat(sellingData.singleYear3) || 0) + (parseFloat(equipment3) || 0) + (parseFloat(logisticsCosts) || 0) + (parseFloat(generalData.singleYear3) || 0));
+        const totalSelling4 = ((parseFloat(laborData.singleYear4) || 0) + (parseFloat(sellingData.singleYear4) || 0) + (parseFloat(equipment4) || 0) + (parseFloat(logisticsCosts) || 0) + (parseFloat(generalData.singleYear4) || 0));
+        const totalSelling5 = ((parseFloat(laborData.singleYear5) || 0) + (parseFloat(sellingData.singleYear5) || 0) + (parseFloat(equipment5) || 0) + (parseFloat(logisticsCosts) || 0) + (parseFloat(generalData.singleYear5) || 0));
+        const totalSelling10 = ((totalSelling1 + totalSelling2 + totalSelling3 + totalSelling4) + (totalSelling5 * (10 - 4))) / 10;
+        document.getElementById("totalSelling1").textContent = Math.round(totalSelling1 || 0).toLocaleString();
+        document.getElementById("totalSelling2").textContent = Math.round(totalSelling2 || 0).toLocaleString();
+        document.getElementById("totalSelling3").textContent = Math.round(totalSelling3 || 0).toLocaleString();
+        document.getElementById("totalSelling4").textContent = Math.round(totalSelling4 || 0).toLocaleString();
+        document.getElementById("totalSelling5").textContent = Math.round(totalSelling5 || 0).toLocaleString();
+        document.getElementById("totalSelling10").textContent = Math.round(totalSelling10 || 0).toLocaleString();
+
+        const totalSellingratio1 = ((parseFloat(totalSelling1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const totalSellingratio2 = ((parseFloat(totalSelling2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const totalSellingratio3 = ((parseFloat(totalSelling3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const totalSellingratio4 = ((parseFloat(totalSelling4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const totalSellingratio5 = ((parseFloat(totalSelling5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const totalSellingratio10 = ((parseFloat(totalSelling10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("totalSellingratio1").textContent = `${totalSellingratio1.toFixed(1)}%`;
+        document.getElementById("totalSellingratio2").textContent = `${totalSellingratio2.toFixed(1)}%`;
+        document.getElementById("totalSellingratio3").textContent = `${totalSellingratio3.toFixed(1)}%`;
+        document.getElementById("totalSellingratio4").textContent = `${totalSellingratio4.toFixed(1)}%`;
+        document.getElementById("totalSellingratio5").textContent = `${totalSellingratio5.toFixed(1)}%`;
+        document.getElementById("totalSellingratio10").textContent = `${totalSellingratio10.toFixed(1)}%`;
+
+        // monthlyStoreProfit
+        const monthlyStoreProfit1 = ((parseFloat(profitData.singleYear1) || 0) - (parseFloat(totalSelling1) || 0));
+        const monthlyStoreProfit2 = ((parseFloat(profitData.singleYear2) || 0) - (parseFloat(totalSelling2) || 0));
+        const monthlyStoreProfit3 = ((parseFloat(profitData.singleYear3) || 0) - (parseFloat(totalSelling3) || 0));
+        const monthlyStoreProfit4 = ((parseFloat(profitData.singleYear4) || 0) - (parseFloat(totalSelling4) || 0));
+        const monthlyStoreProfit5 = ((parseFloat(profitData.singleYear5) || 0) - (parseFloat(totalSelling5) || 0));
+        const monthlyStoreProfit10 = ((monthlyStoreProfit1 + monthlyStoreProfit2 + monthlyStoreProfit3 + monthlyStoreProfit4) + (monthlyStoreProfit5 * (10 - 4))) / 10;
+        document.getElementById("monthlyStoreProfit1").textContent = (monthlyStoreProfit1 || 0).toFixed(2);
+        document.getElementById("monthlyStoreProfit2").textContent = (monthlyStoreProfit2 || 0).toFixed(2);
+        document.getElementById("monthlyStoreProfit3").textContent = (monthlyStoreProfit3 || 0).toFixed(2);
+        document.getElementById("monthlyStoreProfit4").textContent = (monthlyStoreProfit4 || 0).toFixed(2);
+        document.getElementById("monthlyStoreProfit5").textContent = (monthlyStoreProfit5 || 0).toFixed(2);
+        document.getElementById("monthlyStoreProfit10").textContent = (monthlyStoreProfit10 || 0).toFixed(2);
+
+        const monthlyStoreProfitratio1 = ((parseFloat(monthlyStoreProfit1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const monthlyStoreProfitratio2 = ((parseFloat(monthlyStoreProfit2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const monthlyStoreProfitratio3 = ((parseFloat(monthlyStoreProfit3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const monthlyStoreProfitratio4 = ((parseFloat(monthlyStoreProfit4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const monthlyStoreProfitratio5 = ((parseFloat(monthlyStoreProfit5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const monthlyStoreProfitratio10 = ((parseFloat(monthlyStoreProfit10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("monthlyStoreProfitratio1").textContent = `${monthlyStoreProfitratio1.toFixed(1)}%`;
+        document.getElementById("monthlyStoreProfitratio2").textContent = `${monthlyStoreProfitratio2.toFixed(1)}%`;
+        document.getElementById("monthlyStoreProfitratio3").textContent = `${monthlyStoreProfitratio3.toFixed(1)}%`;
+        document.getElementById("monthlyStoreProfitratio4").textContent = `${monthlyStoreProfitratio4.toFixed(1)}%`;
+        document.getElementById("monthlyStoreProfitratio5").textContent = `${monthlyStoreProfitratio5.toFixed(1)}%`;
+        document.getElementById("monthlyStoreProfitratio10").textContent = `${monthlyStoreProfitratio10.toFixed(1)}%`;
+
+        // officeProfit
+        const officeProfit1 = ((parseFloat(monthlyStoreProfit1) || 0) - (parseFloat(mainOfficeCost.singleYear1) || 0));
+        const officeProfit2 = ((parseFloat(monthlyStoreProfit2) || 0) - (parseFloat(mainOfficeCost.singleYear2) || 0));
+        const officeProfit3 = ((parseFloat(monthlyStoreProfit3) || 0) - (parseFloat(mainOfficeCost.singleYear3) || 0));
+        const officeProfit4 = ((parseFloat(monthlyStoreProfit4) || 0) - (parseFloat(mainOfficeCost.singleYear4) || 0));
+        const officeProfit5 = ((parseFloat(monthlyStoreProfit5) || 0) - (parseFloat(mainOfficeCost.singleYear5) || 0));
+        const officeProfit10 = ((officeProfit1 + officeProfit2 + officeProfit3 + officeProfit4) + (officeProfit5 * (10 - 4))) / 10;
+        document.getElementById("officeProfit1").textContent = Math.round(officeProfit1 || 0).toLocaleString();
+        document.getElementById("officeProfit2").textContent = Math.round(officeProfit2 || 0).toLocaleString();
+        document.getElementById("officeProfit3").textContent = Math.round(officeProfit3 || 0).toLocaleString();
+        document.getElementById("officeProfit4").textContent = Math.round(officeProfit4 || 0).toLocaleString();
+        document.getElementById("officeProfit5").textContent = Math.round(officeProfit5 || 0).toLocaleString();
+        document.getElementById("officeProfit10").textContent = Math.round(officeProfit10 || 0).toLocaleString();
+
+        const officeProfitratio1 = ((parseFloat(officeProfit1) || 0) / (parseFloat(plSalesData.singleYear1) || 0)) * 100;
+        const officeProfitratio2 = ((parseFloat(officeProfit2) || 0) / (parseFloat(plSalesData.singleYear2) || 0)) * 100;
+        const officeProfitratio3 = ((parseFloat(officeProfit3) || 0) / (parseFloat(plSalesData.singleYear3) || 0)) * 100;
+        const officeProfitratio4 = ((parseFloat(officeProfit4) || 0) / (parseFloat(plSalesData.singleYear4) || 0)) * 100;
+        const officeProfitratio5 = ((parseFloat(officeProfit5) || 0) / (parseFloat(plSalesData.singleYear5) || 0)) * 100;
+        const officeProfitratio10 = ((parseFloat(officeProfit10) || 0) / (parseFloat(plSalesData.singleYear10) || 0)) * 100;
+        document.getElementById("officeProfitratio1").textContent = `${officeProfitratio1.toFixed(1)}%`;
+        document.getElementById("officeProfitratio2").textContent = `${officeProfitratio2.toFixed(1)}%`;
+        document.getElementById("officeProfitratio3").textContent = `${officeProfitratio3.toFixed(1)}%`;
+        document.getElementById("officeProfitratio4").textContent = `${officeProfitratio4.toFixed(1)}%`;
+        document.getElementById("officeProfitratio5").textContent = `${officeProfitratio5.toFixed(1)}%`;
+        document.getElementById("officeProfitratio10").textContent = `${officeProfitratio10.toFixed(1)}%`;
+
+        const breakEvenPoint1 = (totalSelling1 / (profitDataratio1 / 100)) / 30.417;
+        const breakEvenPoint2 = (totalSelling2 / (profitDataratio2 / 100)) / 30.417;
+        const breakEvenPoint3 = (totalSelling3 / (profitDataratio3 / 100)) / 30.417;
+        const breakEvenPoint4 = (totalSelling4 / (profitDataratio4 / 100)) / 30.417;
+        const breakEvenPoint5 = (totalSelling5 / (profitDataratio5 / 100)) / 30.417;
+        const breakEvenPoint10 = (totalSelling10 / (profitDataratio10 / 100)) / 30.417;
+        document.getElementById("breakEvenPoint1").textContent = Math.round(breakEvenPoint1 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint2").textContent = Math.round(breakEvenPoint2 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint3").textContent = Math.round(breakEvenPoint3 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint4").textContent = Math.round(breakEvenPoint4 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint5").textContent = Math.round(breakEvenPoint5 || 0).toLocaleString();
+        document.getElementById("breakEvenPoint10").textContent = Math.round(breakEvenPoint10 || 0).toLocaleString();
+        
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+  displayData();
+
+  // 保存ボタンの設定
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();  // ページ遷移を防ぐ
+      saveDataToFirestore();
+    });
+  } else {
+    console.error("保存ボタンが見つかりません");
+  }
+
+  // Firestoreにデータを保存する関数
+  async function saveDataToFirestore() {
+    // 新しいドキュメントを作成
+    try {
+      if (propertyId) {
+        const docRef = doc(db, "properties", propertyId);
+
+        const breakEvenPoint3 = parseFloat(document.getElementById("breakEvenPoint3").textContent).toFixed(3) || 0;
+        const totalSelling3 = document.getElementById("totalSelling3").textContent || 0;
+        const monthlyStoreProfit1 = document.getElementById("monthlyStoreProfit1").textContent || 0;
+        const monthlyStoreProfit2 = document.getElementById("monthlyStoreProfit2").textContent || 0;
+        const monthlyStoreProfit3 = document.getElementById("monthlyStoreProfit3").textContent || 0;
+        const monthlyStoreProfit4 = document.getElementById("monthlyStoreProfit4").textContent || 0;
+        const monthlyStoreProfit5 = document.getElementById("monthlyStoreProfit5").textContent || 0;
+        const profitDataratio3 = document.getElementById("profitDataratio3").textContent || 0;
+        const equipment3 = document.getElementById("equipmentCosts3").textContent || 0;
+
+        // データを取得
+        const incomeData = {
+          breakEvenPoint3: breakEvenPoint3,
+          totalSelling3: totalSelling3,
+          monthlyStoreProfit1: monthlyStoreProfit1,
+          monthlyStoreProfit2: monthlyStoreProfit2,
+          monthlyStoreProfit3: monthlyStoreProfit3,
+          monthlyStoreProfit4: monthlyStoreProfit4,
+          monthlyStoreProfit5: monthlyStoreProfit5,
+          profitDataratio3: profitDataratio3,
+          equipment3: equipment3,
+        };
+        await setDoc(docRef, { incomeData }, { merge: true });
+        alert("データが保存されました");
+      } else {
+        alert("物件IDが指定されていません");
+    }  
+    } catch (error) {
+      alert("データの保存中にエラーが発生しました");
+      console.error("データ保存エラー:", error);
+    }
+  }
+</script>
+</body>
+</html>

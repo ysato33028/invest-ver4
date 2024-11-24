@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>既存店DB</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> <!-- xlsxライブラリ -->
+</head>
+<body>
+    <h2>既存店DB</h2>
+    <input type="file" id="file-upload" accept=".xlsx, .xls">
+    <button onclick="uploadExcel()">アップロード</button><br>
+    <div id="progress-container" style="display:none; width: 100%; background-color: #f3f3f3; border-radius: 10px; height: 5px; margin-top: 10px;">
+        <div id="progress-bar" style="width: 0%; height: 100%; background-color: #00aec9; border-radius: 10px;"></div>
+    </div>
+    
+    
+    <h2>既存店DBから類似店舗情報を検索</h2>
+    <p>検索したい店舗名をそれぞれ入力してください。　※類似店舗は<span id="similarStores"></span></p>
+    <input type="text" id="store-name-1" placeholder="店舗名1を入力">
+    <input type="text" id="store-name-2" placeholder="店舗名2を入力">
+    <input type="text" id="store-name-3" placeholder="店舗名3を入力">
+    <input type="text" id="store-name-4" placeholder="店舗名4を入力">
+    <button onclick="searchLaborCosts()">検索</button>
+    <br><br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button><br>
+    <br>
+    <h2>売上予測用</h2>
+    <table>
+        <tr>
+            <th>項目</th>
+            <th id="store1">店舗1</th>
+            <th id="store2">店舗2</th>
+            <th id="store3">店舗3</th>
+            <th id="store4">店舗4</th>
+        </tr>
+        <tr>
+            <td>立地パターン</td>
+            <td id="storeLocation1"></td>
+            <td id="storeLocation2"></td>
+            <td id="storeLocation3"></td>
+            <td id="storeLocation4"></td>
+        </tr>
+        <tr>
+            <td>駐車場</td>
+            <td id="parking1"></td>
+            <td id="parking2"></td>
+            <td id="parking3"></td>
+            <td id="parking4"></td>
+        </tr>
+        <tr>
+            <td>レイアウト</td>
+            <td id="layout1"></td>
+            <td id="layout2"></td>
+            <td id="layout3"></td>
+            <td id="layout4"></td>
+        </tr>
+        <tr>
+            <td>平均日販</td>
+            <td id="dailySales1"></td>
+            <td id="dailySales2"></td>
+            <td id="dailySales3"></td>
+            <td id="dailySales4"></td>
+        </tr>
+        <tr>
+            <td>ハフモデル世帯数</td>
+            <td id="households1"></td>
+            <td id="households2"></td>
+            <td id="households3"></td>
+            <td id="households4"></td>
+        </tr>
+        <tr>
+            <td>ハフモデルシェア率</td>
+            <td id="share1"></td>
+            <td id="share2"></td>
+            <td id="share3"></td>
+            <td id="share4"></td>
+        </tr>
+    </table>
+
+    <h2>損益分岐点予測用</h2>
+    <table>
+        <tr>
+            <th>項目</th>
+            <th id="store1">店舗1</th>
+            <th id="store2">店舗2</th>
+            <th id="store3">店舗3</th>
+            <th id="store4">店舗4</th>
+        </tr>
+        <tr>
+            <td>家賃</td>
+            <td id="rent1"></td>
+            <td id="rent2"></td>
+            <td id="rent3"></td>
+            <td id="rent4"></td>
+        </tr>
+        <tr>
+            <td>物流</td>
+            <td id="logistic1"></td>
+            <td id="logistic2"></td>
+            <td id="logistic3"></td>
+            <td id="logistic4"></td>
+        </tr>
+        <tr>
+            <td>人件費</td>
+            <td id="labor1"></td>
+            <td id="labor2"></td>
+            <td id="labor3"></td>
+            <td id="labor4"></td>
+        </tr>
+        <tr>
+            <td>他販管費</td>
+            <td id="otherSelling1"></td>
+            <td id="otherSelling2"></td>
+            <td id="otherSelling3"></td>
+            <td id="otherSelling4"></td>
+        </tr>
+        <tr>
+            <td>他販管費（％）</td>
+            <td id="otherSellingRatio1"></td>
+            <td id="otherSellingRatio2"></td>
+            <td id="otherSellingRatio3"></td>
+            <td id="otherSellingRatio4"></td>
+        </tr>
+        <tr>
+            <td>販売一般管理費合計</td>
+            <td id="selling1"></td>
+            <td id="selling2"></td>
+            <td id="selling3"></td>
+            <td id="selling4"></td>
+        </tr>
+        <tr>
+            <td>販売一般管理費合計（％）</td>
+            <td id="sellingRatio1"></td>
+            <td id="sellingRatio2"></td>
+            <td id="sellingRatio3"></td>
+            <td id="sellingRatio4"></td>
+        </tr>
+        <tr>
+            <td>営業利益</td>
+            <td id="profit1"></td>
+            <td id="profit2"></td>
+            <td id="profit3"></td>
+            <td id="profit4"></td>
+        </tr>
+        <tr>
+            <td>損益分岐点（日販）</td>
+            <td id="breakEvenPoint1"></td>
+            <td id="breakEvenPoint2"></td>
+            <td id="breakEvenPoint3"></td>
+            <td id="breakEvenPoint4"></td>
+        </tr>
+        <tr>
+            <td>賃借面積</td>
+            <td id="area1"></td>
+            <td id="area2"></td>
+            <td id="area3"></td>
+            <td id="area4"></td>
+        </tr>
+        <tr>
+            <td>坪単価</td>
+            <td id="pricePerTsubo1"></td>
+            <td id="pricePerTsubo2"></td>
+            <td id="pricePerTsubo3"></td>
+            <td id="pricePerTsubo4"></td>
+        </tr>
+        <tr>
+            <td>開店日</td>
+            <td id="opening1"></td>
+            <td id="opening2"></td>
+            <td id="opening3"></td>
+            <td id="opening4"></td>
+        </tr>
+        <tr>
+            <td>店舗年齢（年）</td>
+            <td id="storeAge1"></td>
+            <td id="storeAge2"></td>
+            <td id="storeAge3"></td>
+            <td id="storeAge4"></td>
+        </tr>
+    </table>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebaseの初期化
+        const firebaseConfig = {
+              apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+              authDomain: "mybas-61537.firebaseapp.com",
+              projectId: "mybas-61537",
+              storageBucket: "mybas-61537.firebasestorage.app",
+              messagingSenderId: "47149190856",
+              appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // URLから'id'パラメータを取得
+        const propertyId = getQueryParam('id');
+
+        // Firebaseの情報読み込み
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (propertyId) {
+                try {
+                    const docRef = doc(db, "properties", propertyId);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const propertyData = docSnap.data();
+
+                        // 類似店舗情報を<span>に表示
+                        const similarStoresElement = document.getElementById("similarStores");
+                        if (similarStoresElement) {
+                            similarStoresElement.textContent = propertyData.similarStores || "データなし";
+                        }
+
+                        // Firestoreのデータを表示
+                        const storesDB = propertyData.storesDB || {};
+                        Object.keys(storesDB).forEach((storeKey, index) => {
+                            const storeData = storesDB[storeKey];
+                            const storeNameField = document.getElementById(`store-name-${index + 1}`);
+                            if (storeNameField && storeData.storeName) {
+                                storeNameField.value = storeData.storeName; // 店舗名を反映
+                            }
+
+                            // テーブルのヘッダーに店舗名を反映
+                            const tableHeaders = document.querySelectorAll(`#store${index + 1}`);
+                            tableHeaders.forEach((header) => {
+                                header.textContent = storeData.storeName || `店舗${index + 1}`;
+                            });
+                        });
+                    } else {
+                        console.log("指定されたドキュメントが存在しません");
+                    }
+                } catch (error) {
+                    console.error("データの取得中にエラーが発生しました: ", error);
+                }
+            } else {
+                alert("物件IDが指定されていません");
+            }
+        });
+
+
+        // 保存ボタンの設定
+        const saveButton = document.getElementById("save-button");
+        if (saveButton) {
+            saveButton.addEventListener("click", function (event) {
+                event.preventDefault(); // ページ遷移を防ぐ
+                saveDataToFirestore();
+            });
+        } else {
+            console.error("保存ボタンが見つかりません");
+        }
+
+        // Firestoreにデータを保存する関数
+        async function saveDataToFirestore() {
+            try {
+                if (propertyId) {
+                    const docRef = doc(db, "properties", propertyId);
+
+                    // 入力された店舗名を取得（最大4店舗）
+                    const storeNames = [
+                        document.getElementById("store-name-1").value.trim(),
+                        document.getElementById("store-name-2").value.trim(),
+                        document.getElementById("store-name-3").value.trim(),
+                        document.getElementById("store-name-4").value.trim(),
+                    ].filter(Boolean); // 空の店舗名を除外
+
+                    // 各店舗のデータを取得
+                    const storeData = storeNames.map((storeName, index) => {
+                        const i = index + 1; // インデックス補正（1から始まる）
+                        return {
+                            storeName: storeName,
+                            storeLocation: document.getElementById(`storeLocation${i}`)?.textContent || "",
+                            parking: document.getElementById(`parking${i}`)?.textContent || "",
+                            layout: document.getElementById(`layout${i}`)?.textContent || "",
+                            dailySales: document.getElementById(`dailySales${i}`)?.textContent || "",
+                            households: document.getElementById(`households${i}`)?.textContent || "",
+                            share: document.getElementById(`share${i}`)?.textContent || "",
+                            rent: document.getElementById(`rent${i}`)?.textContent || "",
+                            logistic: document.getElementById(`logistic${i}`)?.textContent || "",
+                            labor: document.getElementById(`labor${i}`)?.textContent || "",
+                            otherSelling: document.getElementById(`otherSelling${i}`)?.textContent || "",
+                            otherSellingRatio: document.getElementById(`otherSellingRatio${i}`)?.textContent || "",
+                            selling: document.getElementById(`selling${i}`)?.textContent || "",
+                            sellingRatio: document.getElementById(`sellingRatio${i}`)?.textContent || "",
+                            profit: document.getElementById(`profit${i}`)?.textContent || "",
+                            breakEvenPoint: document.getElementById(`breakEvenPoint${i}`)?.textContent || "",
+                            area: document.getElementById(`area${i}`)?.textContent || "",
+                            pricePerTsubo: document.getElementById(`pricePerTsubo${i}`)?.textContent || "",
+                            opening: document.getElementById(`opening${i}`)?.textContent || "",
+                            storeAge: document.getElementById(`storeAge${i}`)?.textContent || "",
+                        };
+                    });
+
+                    const storesDB = storeData.reduce((acc, data, index) => {
+                        acc[`store${index + 1}`] = data;
+                        return acc;
+                    }, {});
+
+                    if (Object.keys(storesDB).length > 0) {
+                        await setDoc(docRef, { storesDB }, { merge: true });
+                        alert("データが保存されました");
+                    } else {
+                        alert("保存するデータがありません");
+                    }
+                } else {
+                    alert("物件IDが指定されていません");
+                }
+            } catch (error) {
+                console.error("データ保存エラー:", error);
+                alert("データの保存中にエラーが発生しました");
+            }
+        }
+
+
+        // エクセルファイルをアップロードしてFirebaseに登録する関数
+        async function uploadExcel() {
+            const fileInput = document.getElementById("file-upload");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("エクセルファイルを選択してください。");
+                return;
+            }
+
+            // プログレスバーの初期設定
+            const progressContainer = document.getElementById("progress-container");
+            const progressBar = document.getElementById("progress-bar");
+            progressContainer.style.display = "block"; // プログレスバーを表示
+            progressBar.style.width = "0%"; // 初期状態は0%
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                // Firebaseにアップロード
+                const dbRef = collection(db, "storesDB");
+                const totalRows = jsonData.length;
+                let uploadedRows = 0; // uploadedRows を for ループの外で宣言
+
+                for (const row of jsonData) {
+                    const storeName = row["店　名"];
+
+                    try {
+                        // `店舗名`が一致するドキュメントを検索
+                        const q = query(dbRef, where("店　名", "==", storeName));
+                        const querySnapshot = await getDocs(q);
+
+                        if (!querySnapshot.empty) {
+                            // `店舗名`が存在する場合は上書き
+                            querySnapshot.forEach(async (doc) => {
+                                const docRef = doc.ref;
+                                await setDoc(docRef, row, { merge: true });
+                                console.log("既存のデータが更新されました: ", row);
+                            });
+                        } else {
+                            // `店舗名`が存在しない場合は新規追加
+                            await addDoc(dbRef, row);
+                            console.log("新しいデータが追加されました: ", row);
+                        }
+                        // 進捗を更新
+                        uploadedRows++;
+                        const progress = (uploadedRows / totalRows) * 100;
+                        progressBar.style.width = `${progress}%`; // プログレスバーを更新
+                    } catch (error) {
+                        console.error("データ追加/更新エラー: ", error);
+                    }
+                }
+                alert("データが正常にアップロードされました！");
+                progressContainer.style.display = "none"; // プログレスバーを非表示にする
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+
+        // 開店日を変換する関数
+        function convertSerialDate(serialDate) {
+            if (!serialDate || isNaN(serialDate)) {
+                return null; // 不正な入力はnullを返す
+            }
+            // Excelのシリアル日付をミリ秒に変換（基準: 1900年1月1日）
+            const epoch = new Date(1900, 0, 1);  // 1900年1月1日
+            const milliseconds = (serialDate - 2) * 86400000; // シリアル日付をミリ秒に変換
+            const date = new Date(epoch.getTime() + milliseconds);
+            
+            // 有効な日付かチェック
+            if (isNaN(date.getTime())) {
+                return null; // 無効な日付の場合はnull
+            }
+            return date; // 正常な日付を返す
+        }
+
+        // 年度の開始月（3月）を考慮して、現在の日付から年度初月を計算する関数
+        function getFiscalStartDate() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth() + 1; // 月は0から始まるため+1
+            // 現在が3月未満の場合、前年の3月1日を基準にする
+            return new Date(currentMonth < 3 ? currentYear - 1 : currentYear, 2, 1); // 年, 月-1, 日
+        }
+
+        // 店舗年齢を計算する関数
+        function calculateStoreAge(openingDateSerial) {
+            const fiscalStartDate = getFiscalStartDate();
+            const openingDate = convertSerialDate(openingDateSerial);
+
+            // 開店日が無効なら年齢を"0年0ヶ月"に設定
+            if (!openingDate) {
+                return "0年0ヶ月";
+            }
+
+            // 開店日から年度開始日までの差分を計算
+            let diffYears = fiscalStartDate.getFullYear() - openingDate.getFullYear();
+            let diffMonths = fiscalStartDate.getMonth() - openingDate.getMonth();
+
+            // 月差が負の場合、1年引いて月差を補正
+            if (diffMonths < 0) {
+                diffYears -= 1;
+                diffMonths += 12;
+            }
+
+            return `${diffYears}年${diffMonths}ヶ月`;
+        }
+
+        // HTML要素に値をセットする関数
+        function setElementValue(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                if (value && value instanceof Date) {
+                    element.value = value.toISOString().split('T')[0]; // 日付をYYYY-MM-DD形式でセット
+                } else {
+                    element.textContent = value || "データなし";  // 数値や文字列の場合
+                }
+            }
+        }
+
+        // 複数店舗の検索関数
+        async function searchLaborCosts() {
+            const storeNames = [
+                document.getElementById("store-name-1").value.trim(),
+                document.getElementById("store-name-2").value.trim(),
+                document.getElementById("store-name-3").value.trim(),
+                document.getElementById("store-name-4").value.trim(),
+            ].filter(Boolean); // 空の入力を除外
+
+            if (storeNames.length === 0) {
+                alert("少なくとも1店舗を入力してください。");
+                return;
+            }
+
+            const dbRef = collection(db, "storesDB");
+
+            for (let i = 0; i < storeNames.length; i++) {
+                const storeName = storeNames[i];
+                const q = query(dbRef, where("店　名", "==", storeName));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+
+                        // HTML要素にデータを反映する関数
+                        function setElementValue(id, value) {
+                            const element = document.getElementById(id);
+                            if (element) {
+                                element.textContent = value || "データなし";
+                            }
+                        }
+
+                        // 動的キー検索関数
+                        function findKeyByPartialName(partialName) {
+                            return Object.keys(data).find((key) => key.includes(partialName));
+                        }
+
+                        // 必要なプロパティ名を部分文字列で検索
+                        const dailySalesKey = findKeyByPartialName(`累計日販`);
+                        const householdsKey = findKeyByPartialName("世帯数");
+                        const shareKey = findKeyByPartialName("シェア率");
+                        const laborKey = findKeyByPartialName("人件費");
+
+                        // 対応するHTML IDに値をセット
+                        setElementValue(`store${i + 1}`, data["店　名"]);
+                        setElementValue(`storeLocation${i + 1}`, data["店舗立地"]);
+                        setElementValue(`parking${i + 1}`, data["駐車場"]);
+                        setElementValue(`layout${i + 1}`, data["レイアウト"]);
+                        setElementValue(`dailySales${i + 1}`, Number(data[dailySalesKey] || 0).toFixed(2));
+                        setElementValue(`households${i + 1}`, Number(data[householdsKey] || 0).toFixed(2));
+                        setElementValue(`share${i + 1}`, Number((data[shareKey] * 100) || 0).toFixed(4));
+                        setElementValue(`rent${i + 1}`, Number((data["賃料"] / 1000) || 0).toFixed(2));
+                        setElementValue(`labor${i + 1}`, Number(data[laborKey] || 0).toFixed(2));
+                        setElementValue(`selling${i + 1}`, Number(data["販売一般管理費合計"] || 0).toFixed(2));
+                        setElementValue(`profit${i + 1}`, Number(data["営業利益"] || 0).toFixed(2));
+                        setElementValue(`area${i + 1}`, Number(data["坪数"] || 0).toFixed(2));
+
+                        // 開店日のシリアル日付を変換して表示
+                        const openingDate = data["開店日"];
+                        const formattedOpeningDate = openingDate ? convertSerialDate(openingDate) : null;
+
+                        // 日付が正しい場合は表示用にフォーマット
+                        setElementValue(
+                            `opening${i + 1}`,
+                            formattedOpeningDate ? formattedOpeningDate.toISOString().split("T")[0] : "データなし"
+                        );
+
+                        // 物流が存在しない場合でも0をセット
+                        setElementValue(`logistic${i + 1}`, data["物流"] || "0"); // 物流にデータがない場合は0
+
+                        // 他販管費計算
+                        const otherSelling = (
+                            (Number(data["販売一般管理費合計"]) || 0) -
+                            (Number(data["賃料"] / 1000) || 0) -
+                            (Number(data[laborKey]) || 0)
+                        );
+                        setElementValue(`otherSelling${i + 1}`, (isNaN(otherSelling) ? 0 : otherSelling).toFixed(2));
+
+                        // 他販管費構成比
+                        const otherSellingRatio = (
+                            otherSelling / (Number(data[dailySalesKey] || 0) * 30) * 100
+                        );
+                        setElementValue(`otherSellingRatio${i + 1}`, (isNaN(otherSellingRatio) ? 0 : otherSellingRatio).toFixed(2));
+
+                        // 販管費計構成比
+                        const sellingRatio = (
+                            Number(data["販売一般管理費合計"] || 0) / (Number(data[dailySalesKey] || 0) * 30) * 100
+                        );
+                        setElementValue(`sellingRatio${i + 1}`, (isNaN(sellingRatio) ? 0 : sellingRatio).toFixed(2));
+
+                        // 損益分岐点
+                        const profitRatio = Number(data["営業総利益率"] || 0).toFixed(4);
+                        const breakEvenPoint = (
+                            Number((data["販売一般管理費合計"] || 0) / profitRatio / 30.417)
+                        );
+                        setElementValue(`breakEvenPoint${i + 1}`, (isNaN(breakEvenPoint) ? 0 : breakEvenPoint).toFixed(2));
+
+                        // 坪単価
+                        const pricePerTsubo = (
+                            ((Number(data["賃料"] / 1000) || 0) / Number(data["坪数"] || 0)) * 1000
+                        );
+                        setElementValue(`pricePerTsubo${i + 1}`, (isNaN(pricePerTsubo) ? 0 : pricePerTsubo).toFixed(2));
+
+                        // 店舗年齢を計算して表示
+                        const storeAgeText = calculateStoreAge(openingDate);
+                        setElementValue(`storeAge${i + 1}`, storeAgeText);
+
+
+                    });
+                } else {
+                    alert(`店舗名「${storeName}」のデータは見つかりませんでした。`);
+                }
+            }
+        }
+
+        // グローバルに関数を登録
+        window.uploadExcel = uploadExcel;
+        window.searchLaborCosts = searchLaborCosts;
+
+    </script>
+</body>
+</html>

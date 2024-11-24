@@ -1,0 +1,518 @@
+/*画面分割の設定*/
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 50%;
+    margin: 10px;
+}
+
+/*サイトタイトル*/
+h1 {
+  position: relative;
+  color: #158b2b;
+  font-size: 20px;
+  padding: 10px 0;
+  text-align: center;
+  margin: 1.5em 0;
+}
+h1:before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  width: 150px;
+  height: 58px;
+  border-radius: 50%;
+  border: 5px solid #a6ddb0;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+/* ログアウトボタンを右上に配置 */
+#logout-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* アイコン画像のスタイル */
+#logout-icon {
+  width: 60px; /* 画像のサイズ調整 */
+  height: 60px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ログアウト文字のスタイル */
+#logout-text {
+  font-size: 10px;
+  color: #555; /* 文字の色 */
+  margin-top: 2px;
+}
+
+/*検索・店舗一覧タイトル*/
+h2 {
+  position: relative;
+  padding: 1.5rem 1rem;
+}
+
+h2:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  content: '';
+  background-image: -webkit-repeating-linear-gradient(135deg, #000, #000 1px, transparent 2px, transparent 5px);
+  background-image: repeating-linear-gradient(-45deg, #218F66, #218F66 1px, transparent 2px, transparent 5px);
+  background-size: 7px 7px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/*入力タイトル*/
+h3 {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem 2rem 1.5rem 130px;
+  word-break: break-all;
+  border-top: 3px solid #218F66;
+  border-radius: 12px 0 0 0;
+}
+
+h3 span {
+  font-size: 20px;
+  font-size: 2.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  padding: 3px 20px;
+  color: #fff;
+  border-radius: 10px 0 20px 10px;
+  background: #218F66;
+}
+
+/*検索結果タイトル*/
+h4 {
+  padding: 1rem 2rem;
+  border-left: 4px solid #000;
+}
+
+/*入力フォーム*/
+input {
+  width:70%;/*横幅*/
+  padding:10px;/*プレースホルダーの位置調整*/
+  border-radius:8px;/*左側の角を少し丸める*/      
+  background:#eee;/*検背景カラー*/
+  border:none;/*枠線を消す*/ 
+  outline:0;/*クリック時の青い枠線消す*/    
+}
+
+input[type="text"]:focus {
+  background:#FFFFFF;
+  border-color: #FF6699;
+  box-shadow: 0 0 8px 0 #FF6699;
+}
+
+input[type="number"]:focus {
+  background:#FFFFFF;
+  border-color: #FF6699;
+  box-shadow: 0 0 8px 0 #FF6699;
+}
+
+/*カウンター非表示*/
+input[type="number"]::-webkit-outer-spin-button, 
+input[type="number"]::-webkit-inner-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+} 
+
+input[type="file"]: {
+  background:#FFFFFF;
+  border-color: #FF6699;
+  box-shadow: 0 0 8px 0 #FF6699;
+}
+
+/*テーブルデザイン*/
+table {
+ width: 100%;
+ border-collapse: collapse;
+ border-spacing: 0;
+ border-top: solid 1px #432032;
+}
+tr:nth-child(2n+1) {
+ background: #FDF4EB;
+}
+th, td {
+ padding: 10px;
+ text-align: center;
+ border-bottom: solid 1px #432032;
+}
+th {
+  text-align: center;
+  background-color: #218F66;
+  color: white;
+}
+
+/* リストのデフォルトの箇条書きマークを消す */
+ul {
+  list-style-type: none;
+  padding: 0; /* 左側の余白も削除 */
+}
+
+/*保存ボタンデザイン*/
+#save {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #F21F12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#save:hover {
+  background-color: #FF6666;
+  animation: anima-save 1s;
+}
+
+@keyframes anima-save {
+    0% {
+        box-shadow: 0 0 0 0 rgb(255 0 0 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+/*シミュレーターボタンデザイン*/
+#simulate {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #F21F12;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#simulate:hover {
+  background-color: #FF6666;
+  animation: anima-simulate 1s;
+}
+
+@keyframes anima-simulate {
+    0% {
+        box-shadow: 0 0 0 0 rgb(255 0 0 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+/*登録一覧ボタンデザイン*/
+#list-all {
+    display: absolute;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin:0 auto;
+    padding: .6em 2em;
+    background-color: #7C6428;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#list-all:hover {
+  background-color: #7C6428;
+  animation: anima-list-all 1s;
+}
+
+@keyframes anima-list-all {
+    0% {
+        box-shadow: 0 0 0 0 rgb(124 100 40 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+/*フォーム全体を中央へ*/
+#search-form{
+  display: flex; 
+  height:50px;/*高さ*/  
+}
+
+/*入力フォーム*/
+#search{
+  width: 250px;/*横幅*/
+  padding:0 15px;/*プレースホルダーの位置調整*/
+  border-radius:4px 0 0 4px;/*左側の角を少し丸める*/      
+  background:#eee;/*検背景カラー*/
+  border:none;/*枠線を消す*/ 
+  outline:0;/*クリック時の青い枠線消す*/    
+}
+
+/*検索ボタン*/
+#search-button{
+  width:100px;/*横幅*/ 
+  border-radius:0 4px 4px 0;/*右側の角を少し丸める*/ 
+  background:#218F66;/*背景カラー*/ 
+  border:none;/*枠線を消す*/ 
+  color:#fff;/*テキストカラー*/ 
+  font-size:16px;/*フォントサイズ指定*/ 
+  cursor: pointer;/*マウスを乗せると指差しポインターになる*/
+}
+
+/*検索ボタンマウスオーバー時*/
+#search-button:hover {
+  background: #008000;/*背景カラー変更*/
+  animation: anima-search-button 1s;
+}
+
+@keyframes anima-search-button {
+    0% {
+        box-shadow: 0 0 0 0 rgb(0 128 0 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+.btn-upload {
+    display: absolute;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #218F66;
+    border-radius: 5px;
+    background-color: #218F66;
+    color: #fff;
+    font-size: 1em;
+}
+
+.btn-upload:hover {
+    animation: anima-btn-upload 1s;
+    color: #218F66;
+    background-color: #fff;
+}
+
+.btn-DB {
+    display: absolute;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #218F66;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #218F66;
+    font-size: 1em;
+}
+
+.btn-DB:hover {
+    animation: anima-btn-upload 1s;
+    color: #fff;
+    background-color: #218F66;
+}
+
+.btn-edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 150px;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #d02545;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #d02545;
+    font-size: 1em;
+}
+
+.btn-edit:hover {
+    animation: anima-btn-edit 1s;
+    color: #fff;
+    background-color: #d02545;
+}
+
+@keyframes anima-btn-edit {
+    0% {
+        box-shadow: 0 0 0 0 rgb(208 37 69 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+.btn-detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 150px;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #d02545;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #d02545;
+    font-size: 1em;
+}
+
+.btn-detail:hover {
+    animation: anima-btn-edit 1s;
+    color: #fff;
+    background-color: #d02545;
+}
+
+@keyframes anima-btn-detail {
+    0% {
+        box-shadow: 0 0 0 0 rgb(208 37 69 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+.btn-delete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 150px;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #808080;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #808080;
+    font-size: 1em;
+}
+
+.btn-delete:hover {
+    animation: anima-btn-delete 1s;
+    color: #fff;
+    background-color: #808080;
+}
+
+@keyframes anima-btn-delete {
+    0% {
+        box-shadow: 0 0 0 0 rgb(192 192 192 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+/*PPTボタンデザイン*/
+.btn-ppt {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #432032;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-ppt:hover {
+  background-color: #432032;
+  animation: anima-btn-ppt 1s;
+}
+
+@keyframes anima-btn-ppt {
+    0% {
+        box-shadow: 0 0 0 0 rgb(67 32 50 / 50%);
+    }
+    100% {
+        box-shadow: 0 0 0 1.2em rgb(0 0 0 / 0%);
+    }
+}
+
+.selectdiv {
+  position: relative;
+  /*Don't really need this just for demo styling*/
+  
+  float: left;
+  min-width: 200px;
+  margin: 0px 15%;
+}
+
+/* IE11 hide native button (thanks Matt!) */
+select::-ms-expand {
+display: none;
+}
+
+.selectdiv:after {
+  content: '<>';
+  font: 16px "Consolas", monospace;
+  color: #333;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  right: 11px;
+  /*Adjust for position however you want*/
+  
+  top: 8px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #999;
+  /*left line */
+  
+  position: absolute;
+  pointer-events: none;
+}
+
+.selectdiv select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Add some styling */
+  
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: 40px;
+  float: right;
+  padding: 0px 24px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  -ms-word-break: normal;
+  word-break: normal;
+}

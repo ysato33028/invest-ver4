@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>減価償却費</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .year-header {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+</head>
+<body>
+<h1>減価償却費（一律） │ <span id="name"></span></h1>
+
+  <table>
+      <tr>
+        <th>項目</th>
+        <th>入力 or リスト</th>
+        <th>入力内容</th>
+      </tr>
+      <tr>
+        <td>建築工事</td>
+        <td>エントリーシート</td>
+        <td class="required" id="buildingCost"></td>
+      </tr>
+      <tr>
+        <td>一般工事</td>
+        <td>工事費用</td>
+        <td class="required" id="generalConstructionCost"></td>
+      </tr>
+      <tr>
+        <td>冷凍冷蔵・什器</td>
+        <td>工事費用</td>
+        <td class="required" id="refrigerationEquipmentConstructionTotal"></td>
+      </tr>
+      <tr>
+        <td>建築・備品</td>
+        <td>工事費用</td>
+        <td class="required" id="buildingsEquipment"></td>
+      </tr>
+      <tr>
+        <td>陳列器具什器</td>
+        <td>工事費用</td>
+        <td class="required" id="displayFixtures"></td>
+      </tr>
+      <tr>
+        <td>看板工事</td>
+        <td>工事費用</td>
+        <td class="required" id="signboard"></td>
+      </tr>
+      <tr>
+        <td>その他備品・設計費用</td>
+        <td>工事費用</td>
+        <td class="required" id="other"></td>
+      </tr>
+      <tr>
+        <td>標準外工事</td>
+        <td>工事費用</td>
+        <td class="required" id="nonstandard"></td>
+      </tr>
+      <tr>
+        <td>システム費用</td>
+        <td>固定</td>
+        <td class="required" id="systemCost">2990</td>
+      </tr>
+      <tr>
+        <td>通常レジ増設費用</td>
+        <td>入力</td>
+        <td class="required"><input type="number" id="addRegisters" value="0" step="0.01"></td>
+      </tr>
+      <tr>
+        <td>セルフレジ増設費用</td>
+        <td>入力</td>
+        <td class="required"><input type="number" id="addSelfRegisters" value="0" step="0.01"></td>
+      </tr>
+      <tr>
+        <td>合計</td>
+        <td>計算</td>
+        <td class="required" id="totalCost"></td>
+      </tr>
+  </table><br>
+  <button id="calculateButton">計算する</button>
+
+  <h2>単年PL</h2>
+  <table>
+  <thead>
+    <tr>
+      <th>年度</th>
+      <th>単年PL</th>
+    </tr>
+  </thead>
+    <tr>
+      <th>1年目</th>
+      <td id="singleYear1"></td>
+    </tr>
+    <tr>
+      <th>2年目</th>
+      <td id="singleYear2"></td>
+    </tr>
+    <tr>
+      <th>3年目</th>
+      <td id="singleYear3"></td>
+    </tr>
+    <tr>
+      <th>4年目</th>
+      <td id="singleYear4"></td>
+    </tr>
+    <tr>
+      <th>5年目</th>
+      <td id="singleYear5"></td>
+    </tr>
+    <tr>
+      <th>10年合計</th>
+      <td id="singleYear10"></td>
+    </tr>
+</table>
+
+  <br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 月度指数と営業日
+  const monthIndices = [
+    { month: 3, index: 0.973253301, days: 31 },
+    { month: 4, index: 0.999759904, days: 30 },
+    { month: 5, index: 1.000912365, days: 31 },
+    { month: 6, index: 1.022232893, days: 30 },
+    { month: 7, index: 1.04182473, days: 31 },
+    { month: 8, index: 1.013589436, days: 31 },
+    { month: 9, index: 1.026266507, days: 30 },
+    { month: 10, index: 1.009555822, days: 31 },
+    { month: 11, index: 0.985354142, days: 30 },
+    { month: 12, index: 0.962304921, days: 31 },
+    { month: 1, index: 0.962304922, days: 31 },
+    { month: 2, index: 1.002641056, days: 28 }
+  ];
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+
+        // 建築工事
+        const buildingCost = parseFloat(propertyData.buildingConstructionCosts) / 1000 || 0;
+
+        // 一般工事
+        const interiorInvestmentData = propertyData.interiorInvestmentCostsTotals;
+
+        const temporaryConstructionTotal = parseFloat(interiorInvestmentData.temporaryConstructionTotal) || 0;
+        const demolitionWorkTotal = parseFloat(interiorInvestmentData.demolitionWorkTotal) || 0;
+        const floorConstructionTotal = parseFloat(interiorInvestmentData.floorConstructionTotal) || 0;
+        const waterproofTotal = parseFloat(interiorInvestmentData.waterproofTotal) || 0;
+        const tileWorkTotal = parseFloat(interiorInvestmentData.tileWorkTotal) || 0;
+        const metalworkTotal = parseFloat(interiorInvestmentData.metalworkTotal) || 0;
+        const plasteringWorkTotal = parseFloat(interiorInvestmentData.plasteringWorkTotal) || 0;
+        const sashConstructionTotal = parseFloat(interiorInvestmentData.sashConstructionTotal) || 0;
+        const paintingWorkTotal = parseFloat(interiorInvestmentData.paintingWorkTotal) || 0;
+        const lightsteelboardConstructionTotal = parseFloat(interiorInvestmentData.lightsteelboardConstructionTotal) || 0;
+        const interiorAndExteriorConstructionTotal = parseFloat(interiorInvestmentData.interiorAndExteriorConstructionTotal) || 0;
+        const miscellaneousWorkTotal = parseFloat(interiorInvestmentData.miscellaneousWorkTotal) || 0;
+        const exteriorConstructionTotal = parseFloat(interiorInvestmentData.exteriorConstructionTotal) || 0;
+        const newdesignConstructionTotal = parseFloat(interiorInvestmentData.newdesignConstructionTotal) || 0;
+        const electricalInstallationTotal = parseFloat(interiorInvestmentData.electricalInstallationTotal) || 0;
+        const waterSupplyAndDrainageFacilitiesTotal = parseFloat(interiorInvestmentData.waterSupplyAndDrainageFacilitiesTotal) || 0;
+
+        const airconditioningAndVentilationWorkTotal = parseFloat(interiorInvestmentData.airconditioningAndVentilationWorkTotal) || 0;
+        const partitionConstructionTotal = parseFloat(interiorInvestmentData.partitionConstructionTotal) || 0;
+
+        // 内装工事経費込+空調換気工事+間仕切工事 税抜きの合計
+        const interiorConstruction = temporaryConstructionTotal + demolitionWorkTotal + floorConstructionTotal + waterproofTotal + tileWorkTotal + metalworkTotal + plasteringWorkTotal + sashConstructionTotal + paintingWorkTotal + lightsteelboardConstructionTotal + interiorAndExteriorConstructionTotal + miscellaneousWorkTotal + exteriorConstructionTotal + newdesignConstructionTotal + electricalInstallationTotal + waterSupplyAndDrainageFacilitiesTotal;
+        const interiorConstructionTax = interiorConstruction * 1.1;
+
+        const generalConstruction = interiorConstructionTax + airconditioningAndVentilationWorkTotal + partitionConstructionTotal;
+        const generalConstructionCost = generalConstruction * 1.06;
+        console.log(generalConstructionCost)
+
+        // 冷凍冷蔵・什器
+        const refrigerationEquipmentConstructionTotal = parseFloat(interiorInvestmentData.refrigerationEquipmentConstructionTotal) || 0;
+        console.log(refrigerationEquipmentConstructionTotal)
+
+        // 建築・備品
+        const lightingFixtureDeliveryTotal = parseFloat(interiorInvestmentData.lightingFixtureDeliveryTotal) || 0;
+        const shutterConstructionTotal = parseFloat(interiorInvestmentData.shutterConstructionTotal) || 0;
+        const flooringDeliveryTotal = parseFloat(interiorInvestmentData.flooringDeliveryTotal) || 0;
+        const rollerBlindsTotal = parseFloat(interiorInvestmentData.rollerBlindsTotal) || 0;
+
+        const buildingsEquipment = lightingFixtureDeliveryTotal + shutterConstructionTotal + flooringDeliveryTotal + rollerBlindsTotal;
+        console.log(buildingsEquipment)
+
+        // 陳列器具什器
+        const fixtureConstructionTotal = parseFloat(interiorInvestmentData.fixtureConstructionTotal) || 0;
+        const refrigeratedCaseTotal = parseFloat(interiorInvestmentData.refrigeratedCaseTotal) || 0;
+
+        const displayFixtures = fixtureConstructionTotal + refrigeratedCaseTotal;
+        console.log(displayFixtures)
+
+        // 看板工事
+        const signboard = parseFloat(interiorInvestmentData.signConstructionTotal) || 0;
+        console.log(signboard)
+
+        // その他備品・設計費用
+        const equipmentDelivery1Total = parseFloat(interiorInvestmentData.equipmentDelivery1Total) || 0;
+        const equipmentDelivery2Total = parseFloat(interiorInvestmentData.equipmentDelivery2Total) || 0;
+        const photocatalystConstructionTotal = parseFloat(interiorInvestmentData.photocatalystConstructionTotal) || 0;
+
+        const other = equipmentDelivery1Total + equipmentDelivery2Total + photocatalystConstructionTotal + 30 + 593 + 593;
+        console.log(other)
+
+        // 標準外工事
+        const advanceDismantlingTotal = parseFloat(interiorInvestmentData.advanceDismantlingTotal) || 0;
+        const changeOfUseTotal = parseFloat(interiorInvestmentData.changeOfUseTotal) || 0;
+        const bConstructionCostTotal = parseFloat(interiorInvestmentData.bConstructionCostTotal) || 0;
+        const automaticFireAlarmCostTotal = parseFloat(interiorInvestmentData.automaticFireAlarmCostTotal) || 0;
+        const poleSignboardCostTotal = parseFloat(interiorInvestmentData.poleSignboardCostTotal) || 0;
+
+        const nonstandard = advanceDismantlingTotal + changeOfUseTotal + bConstructionCostTotal + automaticFireAlarmCostTotal + poleSignboardCostTotal;
+        console.log(nonstandard)
+
+        document.getElementById("buildingCost").textContent = buildingCost.toFixed(2);
+        document.getElementById("generalConstructionCost").textContent = generalConstructionCost.toFixed(2);
+        document.getElementById("refrigerationEquipmentConstructionTotal").textContent = refrigerationEquipmentConstructionTotal.toFixed(2);
+        document.getElementById("buildingsEquipment").textContent = buildingsEquipment.toFixed(2);
+        document.getElementById("displayFixtures").textContent = displayFixtures.toFixed(2);
+        document.getElementById("signboard").textContent = signboard.toFixed(2);
+        document.getElementById("other").textContent = other.toFixed(2);
+        document.getElementById("nonstandard").textContent = nonstandard.toFixed(2);
+
+        // マップ内の情報取得
+        const depreciationCost = propertyData.depreciationCost || {};
+        document.getElementById("addRegisters").value = depreciationCost.addRegisters || 0;
+        document.getElementById("addSelfRegisters").value = depreciationCost.addSelfRegisters || 0;
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+
+  function calculateTotal() {
+    // Firebaseからのデータ
+      const buildingCost = parseFloat(document.getElementById("buildingCost").textContent) || 0;
+      const generalConstructionCost = parseFloat(document.getElementById("generalConstructionCost").textContent) || 0;
+      const refrigerationEquipmentConstructionTotal = parseFloat(document.getElementById("refrigerationEquipmentConstructionTotal").textContent) || 0;
+      const buildingsEquipment = parseFloat(document.getElementById("buildingsEquipment").textContent) || 0;
+      const displayFixtures = parseFloat(document.getElementById("displayFixtures").textContent) || 0;
+      const signboard = parseFloat(document.getElementById("signboard").textContent) || 0;
+      const other = parseFloat(document.getElementById("other").textContent) || 0;
+      const nonstandard = parseFloat(document.getElementById("nonstandard").textContent) || 0;
+
+      // 固定値
+      const systemCost = parseFloat(document.getElementById("systemCost").textContent) || 0;
+
+      // ユーザー入力値
+      const addRegisters = parseFloat(document.getElementById("addRegisters").value) || 0;
+      const addSelfRegisters = parseFloat(document.getElementById("addSelfRegisters").value) || 0;
+
+      // 単価
+      const registerUnitPrice = 850;
+      const selfRegisterUnitPrice = 451;
+
+      // 合計計算
+      const total = 
+        buildingCost +
+        generalConstructionCost +
+        refrigerationEquipmentConstructionTotal +
+        buildingsEquipment +
+        displayFixtures +
+        signboard +
+        other +
+        nonstandard +
+        (addRegisters * registerUnitPrice) +
+        (addSelfRegisters * selfRegisterUnitPrice) +
+        systemCost;
+
+      document.getElementById("totalCost").textContent = total.toFixed(2);
+
+      // マップ内の情報取得
+      const monthTotal = parseFloat(total) / 120 || 0;
+
+      document.getElementById("singleYear1").textContent = monthTotal.toFixed(2);
+      document.getElementById("singleYear2").textContent = monthTotal.toFixed(2);
+      document.getElementById("singleYear3").textContent = monthTotal.toFixed(2);
+      document.getElementById("singleYear4").textContent = monthTotal.toFixed(2);
+      document.getElementById("singleYear5").textContent = monthTotal.toFixed(2);
+      document.getElementById("singleYear10").textContent = monthTotal.toFixed(2);
+  }
+
+  // イベントリスナー
+  document.getElementById("calculateButton").addEventListener("click", calculateTotal);
+
+  // 初期データの表示
+  displayData();
+
+  // 保存ボタンの設定
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();  // ページ遷移を防ぐ
+      saveDataToFirestore();
+    });
+  } else {
+    console.error("保存ボタンが見つかりません");
+  }
+
+  // Firestoreにデータを保存する関数
+  async function saveDataToFirestore() {
+    // 新しいドキュメントを作成
+    try {
+      if (propertyId) {
+        const docRef = doc(db, "properties", propertyId);
+
+        const buildingCost = parseFloat(document.getElementById("buildingCost").textContent) || 0;
+        const generalConstructionCost = parseFloat(document.getElementById("generalConstructionCost").textContent) || 0;
+        const refrigerationEquipmentConstructionTotal = parseFloat(document.getElementById("refrigerationEquipmentConstructionTotal").textContent) || 0;
+        const buildingsEquipment = parseFloat(document.getElementById("buildingsEquipment").textContent) || 0;
+        const displayFixtures = parseFloat(document.getElementById("displayFixtures").textContent) || 0;
+        const signboard = parseFloat(document.getElementById("signboard").textContent) || 0;
+        const other = parseFloat(document.getElementById("other").textContent) || 0;
+        const nonstandard = parseFloat(document.getElementById("nonstandard").textContent) || 0;
+
+        // ユーザー入力値
+        const addRegisters = parseFloat(document.getElementById("addRegisters").value) || 0;
+        const addSelfRegisters = parseFloat(document.getElementById("addSelfRegisters").value) || 0;
+        const total = parseFloat(document.getElementById("totalCost").textContent) || 0;
+
+        const singleYear1 = parseFloat(document.getElementById("singleYear1").textContent).toFixed(3) || 0;
+        const singleYear2 = parseFloat(document.getElementById("singleYear2").textContent).toFixed(3) || 0;
+        const singleYear3 = parseFloat(document.getElementById("singleYear3").textContent).toFixed(3) || 0;
+        const singleYear4 = parseFloat(document.getElementById("singleYear4").textContent).toFixed(3) || 0;
+        const singleYear5 = parseFloat(document.getElementById("singleYear5").textContent).toFixed(3) || 0;
+        const singleYear10 = parseFloat(document.getElementById("singleYear10").textContent).toFixed(3) || 0;
+
+        // データを取得
+        const depreciationCost = {
+          buildingCost: buildingCost,
+          generalConstructionCost: generalConstructionCost,
+          refrigerationEquipmentConstructionTotal: refrigerationEquipmentConstructionTotal,
+          buildingsEquipment: buildingsEquipment,
+          displayFixtures: displayFixtures,
+          signboard: signboard,
+          other: other,
+          nonstandard: nonstandard,
+          addRegisters: addRegisters,
+          addSelfRegisters: addSelfRegisters,  
+          total: total,
+          singleYear1: singleYear1,  
+          singleYear2: singleYear2,          
+          singleYear3: singleYear3,
+          singleYear4: singleYear4,
+          singleYear5: singleYear5,
+          singleYear10: singleYear10,
+        };
+        await setDoc(docRef, { depreciationCost }, { merge: true });
+        alert("データが保存されました");
+      } else {
+        alert("物件IDが指定されていません");
+    }  
+    } catch (error) {
+      alert("データの保存中にエラーが発生しました");
+      console.error("データ保存エラー:", error);
+    }
+  }
+</script>
+</body>
+</html>

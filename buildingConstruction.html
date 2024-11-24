@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建物建築費</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .year-header {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<h1>建築費（一律） │ <span id="name"></span></h1>
+
+  <h2>単年PL</h2>
+  <table>
+  <thead>
+    <tr>
+      <th>年度</th>
+      <th>単年PL</th>
+    </tr>
+  </thead>
+    <tr>
+      <th>1年目</th>
+      <td id="singleYear1"></td>
+    </tr>
+    <tr>
+      <th>2年目</th>
+      <td id="singleYear2"></td>
+    </tr>
+    <tr>
+      <th>3年目</th>
+      <td id="singleYear3"></td>
+    </tr>
+    <tr>
+      <th>4年目</th>
+      <td id="singleYear4"></td>
+    </tr>
+    <tr>
+      <th>5年目</th>
+      <td id="singleYear5"></td>
+    </tr>
+    <tr>
+      <th>10年合計</th>
+      <td id="singleYear10"></td>
+    </tr>
+</table>
+
+  <br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 月度指数と営業日
+  const monthIndices = [
+    { month: 3, index: 0.973253301, days: 31 },
+    { month: 4, index: 0.999759904, days: 30 },
+    { month: 5, index: 1.000912365, days: 31 },
+    { month: 6, index: 1.022232893, days: 30 },
+    { month: 7, index: 1.04182473, days: 31 },
+    { month: 8, index: 1.013589436, days: 31 },
+    { month: 9, index: 1.026266507, days: 30 },
+    { month: 10, index: 1.009555822, days: 31 },
+    { month: 11, index: 0.985354142, days: 30 },
+    { month: 12, index: 0.962304921, days: 31 },
+    { month: 1, index: 0.962304922, days: 31 },
+    { month: 2, index: 1.002641056, days: 28 }
+  ];
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+
+        // マップ内の情報取得
+        const buildingCost = parseFloat(propertyData.buildingConstructionCosts) / 1000 || 0;
+
+        console.log(buildingCost);
+
+        document.getElementById("singleYear1").textContent = (buildingCost / 240).toFixed(2);
+        document.getElementById("singleYear2").textContent = (buildingCost / 240).toFixed(2);
+        document.getElementById("singleYear3").textContent = (buildingCost / 240).toFixed(2);
+        document.getElementById("singleYear4").textContent = (buildingCost / 240).toFixed(2);
+        document.getElementById("singleYear5").textContent = (buildingCost / 240).toFixed(2);
+        document.getElementById("singleYear10").textContent = (buildingCost / 240).toFixed(2);
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+  displayData();
+
+  // 保存ボタンの設定
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();  // ページ遷移を防ぐ
+      saveDataToFirestore();
+    });
+  } else {
+    console.error("保存ボタンが見つかりません");
+  }
+
+  // Firestoreにデータを保存する関数
+  async function saveDataToFirestore() {
+    // 新しいドキュメントを作成
+    try {
+      if (propertyId) {
+        const docRef = doc(db, "properties", propertyId);
+
+        const singleYear1 = parseFloat(document.getElementById("singleYear1").textContent).toFixed(3) || 0;
+        const singleYear2 = parseFloat(document.getElementById("singleYear2").textContent).toFixed(3) || 0;
+        const singleYear3 = parseFloat(document.getElementById("singleYear3").textContent).toFixed(3) || 0;
+        const singleYear4 = parseFloat(document.getElementById("singleYear4").textContent).toFixed(3) || 0;
+        const singleYear5 = parseFloat(document.getElementById("singleYear5").textContent).toFixed(3) || 0;
+        const singleYear10 = parseFloat(document.getElementById("singleYear10").textContent).toFixed(3) || 0;
+
+        // データを取得
+        const buildingCost = {
+          singleYear1: singleYear1,  
+          singleYear2: singleYear2,          
+          singleYear3: singleYear3,
+          singleYear4: singleYear4,
+          singleYear5: singleYear5,
+          singleYear10: singleYear10,
+        };
+        await setDoc(docRef, { buildingCost }, { merge: true });
+        alert("データが保存されました");
+      } else {
+        alert("物件IDが指定されていません");
+    }  
+    } catch (error) {
+      alert("データの保存中にエラーが発生しました");
+      console.error("データ保存エラー:", error);
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>経営計画書作成</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>経営計画書作成 │ <span id="name"></span></h1>
+    
+    
+
+    <br><br>
+    <button id="exportButton">Excelをダウンロード</button>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // Firebaseの初期化
+    const firebaseConfig = {
+          apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+          authDomain: "mybas-61537.firebaseapp.com",
+          projectId: "mybas-61537",
+          storageBucket: "mybas-61537.firebasestorage.app",
+          messagingSenderId: "47149190856",
+          appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // URLからidパラメータを取得
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // URLから'id'パラメータを取得
+    const propertyId = getQueryParam('id');
+    const docId = "commonData";
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displayData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      const dbRef = doc(db, "laborCostRatio", docId);
+      const dbSnap = await getDoc(dbRef);
+
+      if (docSnap.exists() && dbSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firebase からのデータ取得
+        const ratioData = dbSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+        const manager = propertyData.manager || "";
+
+        const businessPlanData = propertyData.businessPlanData || {};
+        const overview  = businessPlanData.overview || "";
+        const consumerCharacteristics  = businessPlanData.consumerCharacteristics || "";
+
+        const household = businessPlanData.household || "";
+        const population = businessPlanData.population || "";
+        const averagePopulation = businessPlanData.averagePopulation || "";
+
+        const contractArea = propertyData.contractArea || "";
+        const shopArea = propertyData.shopArea || "";
+        const deliveryDate = `${(propertyData.deliveryDate)}年`;
+        const deliveryMonth = `${(propertyData.deliveryMonth)}月`;
+        const delivery = deliveryDate + deliveryMonth;
+        console.log(delivery)
+        
+        const openSelect = businessPlanData.openSelect || "";
+        const endSelect = businessPlanData.endSelect || "";
+
+        const plSalesData = propertyData.plSalesData || {};
+        const sales = plSalesData.singleYear3 || 0;
+
+        const profitData = propertyData.profitData || {};
+        const profit = profitData.singleYear3 || 0;
+
+        const laborData = propertyData.laborData || {};
+        const labor = laborData.singleYear3 || 0;
+
+        const sellingData = propertyData.sellingData || {};
+        const selling = sellingData.singleYear3 || 0;
+
+        const rent = propertyData.rent / 1000 || "";
+
+        const incomeData = propertyData.incomeData || {};
+        const equipment = parseFloat(
+            (incomeData.equipment3 || "").replace(/,/g, "")
+        );
+
+        const generalData = propertyData.generalData || {};
+        const general = generalData.singleYear3 || 0;
+
+        // データ元から値を取得し、カンマを削除して数値に変換
+        const totalSelling3Value = parseFloat(
+            (incomeData.totalSelling3 || "").replace(/,/g, "")
+        );
+
+        const monthlyStoreProfit = incomeData.monthlyStoreProfit3 || 0;
+
+        const salesTable = propertyData.salesTable || {};
+        const dailySale = salesTable.daily3Sales || 0;
+        const aiForecastSales = salesTable.aiForecastSales || 0;
+        const logisticsCosts = businessPlanData.logisticsCosts || 0;
+
+        const laborCost = propertyData.laborCost || {};
+        const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
+        const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
+        const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
+        const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
+        const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
+        const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
+
+        const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
+        const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
+        const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
+        const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
+        const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
+        const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
+        
+        const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
+        const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
+        const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
+        const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
+        const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
+        const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
+
+        const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
+        const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
+        const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
+        const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
+        const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
+        const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
+
+        const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
+        const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
+        const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
+        const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
+        const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
+        const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
+
+        const judgmentData = propertyData.judgmentData || {};
+        const lastNegativeMonth = judgmentData.lastNegativeMonth.replace("ヶ月", "") || "";
+
+        const layout = propertyData.layout;
+        const propertyType = propertyData.propertyType;
+        const layoutPattern = layout + propertyType;
+
+        const locationPattern = salesTable.locationPattern || "";
+
+        const parkingSpacesSelect = businessPlanData.parkingSpacesSelect || "";
+        const numberofParkingSpaces = businessPlanData.numberofParkingSpaces || 0;
+
+        const depreciationCost = propertyData.depreciationCost || {};
+        const buildingCost = depreciationCost.buildingCost || 0;
+        const generalConstructionCost = depreciationCost.generalConstructionCost || 0;
+        const refrigerationEquipmentConstructionTotal = depreciationCost.refrigerationEquipmentConstructionTotal || 0;
+        const buildingsEquipment = depreciationCost.buildingsEquipment || 0;
+        const displayFixtures = depreciationCost.displayFixtures || 0;
+        const signboard = depreciationCost.signboard || 0;
+        const other = depreciationCost.other || 0;
+        const nonstandard = depreciationCost.nonstandard || 0;
+        const total = depreciationCost.total || 0;
+
+        const addRegisters = depreciationCost.addRegisters || 0;
+        const addSelfRegisters = depreciationCost.addSelfRegisters || 0;
+
+        const brokerageFeeValue = parseFloat(rent * propertyData.brokerageFee.replace("か月", "")) || 0;
+        const consultingFeesValue = parseFloat(rent * propertyData.consultingFees.replace("か月", "")) || 0;
+        const consultingValue = brokerageFeeValue + consultingFeesValue;
+        const keyMoneyValue = parseFloat(rent * propertyData.keyMoney.replace("か月", "")) || 0;
+        const deposit = Number(propertyData.deposit / 1000 || 0);
+
+        const constructionCooperationFunds = propertyData.constructionCooperationFunds || 0;
+        const paymentFrequencySelect = businessPlanData.paymentFrequencySelect || 0;
+
+        const year = propertyData.deliveryDate || "";
+
+        const daily1Sales = salesTable.daily1Sales || 0;
+        const daily2Sales = salesTable.daily2Sales || 0;
+        const daily3Sales = salesTable.daily3Sales || 0;
+        const daily4Sales = salesTable.daily4Sales || 0;
+        const daily5Sales = salesTable.daily5Sales || 0;
+
+        const year1Sales = salesTable.year1Sales.replace(/,/g, "") || 0;
+        const year2Sales = salesTable.year2Sales.replace(/,/g, "") || 0;
+        const year3Sales = salesTable.year3Sales.replace(/,/g, "") || 0;
+        const year4Sales = salesTable.year4Sales.replace(/,/g, "") || 0;
+        const year5Sales = salesTable.year5Sales.replace(/,/g, "") || 0;
+
+        const remainingMonths = salesTable.remainingMonths || 0;
+        const totalStoreProfit1 = incomeData.monthlyStoreProfit1 * salesTable.remainingMonths;
+        const totalStoreProfit2 = incomeData.monthlyStoreProfit2 * 12;
+        const totalStoreProfit3 = incomeData.monthlyStoreProfit3 * 12;
+        const totalStoreProfit4 = incomeData.monthlyStoreProfit4 * 12;
+        const totalStoreProfit5 = incomeData.monthlyStoreProfit5 * 12;
+
+        const contractPeriodSelect = businessPlanData.contractPeriodSelect || 0;
+
+
+        console.log(contractPeriodSelect)
+
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+  displayData();
+
+  async function exportToExcel() {
+    // 1. フォーマット済みのExcelファイルを取得
+    const response = await fetch("【原本】経営計画書.xlsx");
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+
+    // 2. Firebaseデータを挿入
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+
+    // セルにデータを書き込む
+    sheet["I2"].v = { v: name };
+    sheet["P4"].v = { v: manager };
+
+    sheet["D6"].v = { v: overview };
+    sheet["D8"].v = { v: consumerCharacteristics };
+
+    sheet["E12"].v = { v: household };
+    sheet["G12"].v = { v: population };
+    sheet["I12"].v = { v: averagePopulation };
+
+    
+    sheet["D15"].v = { v: delivery };
+    sheet["G15"].v = { v: openSelect };
+    sheet["J15"].v = { v: endSelect };
+
+    sheet["F18"].v = { v: contractArea };
+    sheet["K18"].v = { v: shopArea };
+
+    sheet["F22"].v = { v: sales };
+    sheet["F23"].v = { v: profit };
+    sheet["F24"].v = { v: labor };
+    sheet["F25"].v = { v: selling };
+    sheet["F26"].v = { v: rent };
+    sheet["F27"].v = { v: equipment };
+    sheet["F28"].v = { v: general };
+    sheet["F29"].v = { v: totalSelling3Value };
+    sheet["F30"].v = { v: monthlyStoreProfit };
+
+    sheet["K22"].v = { v: dailySale };
+    sheet["K23"].v = { v: aiForecastSales };
+    sheet["J27"].v = { v: logisticsCosts };
+
+    sheet["P23"].v = { v: totalLaborCosts1 };
+    sheet["P24"].v = { v: employeeLaborCosts1 };
+    sheet["P25"].v = { v: coEmployeeLaborCosts1 };
+    sheet["P26"].v = { v: avgSalaryData1 };
+    sheet["P27"].v = { v: dailyWorkingHours1 };
+    sheet["Q23"].v = { v: averagetotalLabor };
+    sheet["Q24"].v = { v: averageEmployeeLabor };
+    sheet["Q25"].v = { v: averageCoEmployeeLabor };
+    sheet["Q26"].v = { v: averageAvgSalary };
+    sheet["Q27"].v = { v: averageDailyWorkingHours };
+
+    sheet["H34"].v = { v: lastNegativeMonth };
+    sheet["L34"].v = { v: layoutPattern };
+    sheet["Q34"].v = { v: locationPattern };
+
+    sheet["L35"].v = { v: parkingSpacesSelect };
+    sheet["Q35"].v = { v: numberofParkingSpaces };
+
+    sheet["G37"].v = { v: buildingCost };
+    sheet["G38"].v = { v: generalConstructionCost };
+    sheet["G39"].v = { v: refrigerationEquipmentConstructionTotal };
+    sheet["G40"].v = { v: buildingsEquipment };
+    sheet["G41"].v = { v: displayFixtures };
+    sheet["G42"].v = { v: signboard };
+    sheet["G43"].v = { v: other };
+    sheet["G44"].v = { v: nonstandard };
+    sheet["G47"].v = { v: total };
+
+    sheet["G47"].v = { v: addRegisters };
+    sheet["G47"].v = { v: addSelfRegisters };
+
+    sheet["K48"].v = { v: consultingValue };
+    sheet["N48"].v = { v: keyMoneyValue };
+    sheet["K49"].v = { v: deposit };
+
+    sheet["N48"].v = { v: keyMoneyValue };
+    sheet["K49"].v = { v: deposit };
+    
+    sheet["K50"].v = { v: constructionCooperationFunds };
+    sheet["N50"].v = { v: paymentFrequencySelect };
+
+    sheet["I54"].v = { v: remainingMonths };
+
+    sheet["F55"].v = { v: year };
+    sheet["F56"].v = { v: year1Sales };
+    sheet["H56"].v = { v: year2Sales };
+    sheet["J56"].v = { v: year3Sales };
+    sheet["L56"].v = { v: year4Sales };
+    sheet["N56"].v = { v: year5Sales };
+    sheet["F57"].v = { v: totalStoreProfit1 };
+    sheet["H57"].v = { v: totalStoreProfit2 };
+    sheet["J57"].v = { v: totalStoreProfit3 };
+    sheet["L57"].v = { v: totalStoreProfit4 };
+    sheet["N57"].v = { v: totalStoreProfit5 };
+    sheet["F58"].v = { v: daily1Sales };
+    sheet["H58"].v = { v: daily2Sales };
+    sheet["J58"].v = { v: daily3Sales };
+    sheet["L58"].v = { v: daily4Sales };
+    sheet["N58"].v = { v: daily5Sales };
+
+    sheet["G61"].v = { v: contractPeriodSelect };
+
+
+    // 3. ファイルをエクスポート
+    const updatedFile = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([updatedFile], { type: "application/octet-stream" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `【${name}】経営計画書.xlsx`;
+    link.click();
+  }
+  // ボタンのクリックでExcelを生成する例
+  document.getElementById("exportButton").addEventListener("click", exportToExcel);
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

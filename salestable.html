@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>売上予測シミュレーション</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; }
+    label, select, input, button { display: block; margin: 8px 0; }
+    table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+  </style>
+</head>
+<body>
+
+  <h1>売上予測表 │ <span id="name"></span></h1>
+
+  <form id="sales-form">
+    <table>
+      <tr>
+        <th>入力項目</th>
+        <th>入力 or リスト</th>
+        <th>入力内容</th>
+      </tr>
+      <tr>
+        <td>開店月度</td>
+        <td>エントリーシート</td>
+        <td class="required" id="opening-month"></td>
+      </tr>
+      <tr>
+        <td>引渡年</td>
+        <td>エントリーシート</td>
+        <td class="required" id="deliveryDate-year"></td>
+      </tr>
+      <tr>
+        <td>エリア選択</td>
+        <td>リスト</td>
+        <td class="required">
+          <select id="area-type" required>
+            <option value="existing">既存エリア</option>
+            <option value="new">新エリア</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>売上予測の選択</td>
+        <td>リスト</td>
+        <td class="required">
+          <select id="sales-forecast" required>
+            <option value="new">新予測</option>
+            <option value="ai">AI予測</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>新予測売上（日販, 千円）</td>
+        <td>売上予測データ</td>
+        <td class="required" id="estimated-sales"></td>
+      </tr>
+      <tr>
+        <td>AI予測売上（日販, 千円）</td>
+        <td>入力</td>
+        <td class="required"><input type="number" id="ai-forecast-sales" name="ai-forecast-sales" placeholder="AI予測の売上を入力"></td>
+      </tr>
+      <tr>
+        <td>開店月度を含めない本年度残り月数</td>
+        <td>エントリーシート</td>
+        <td class="required" id="months-Remaining"></td>
+      </tr>
+      <tr>
+        <td>立地パターン</td>
+        <td>リスト</td>
+        <td class="required">
+          <select id="locationPattern" required>
+            <option value="住宅街立地">住宅街立地</option>
+            <option value="ショッピング立地">ショッピング立地</option>
+            <option value="ビジネス立地">ビジネス立地</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>契約期間</td>
+        <td>経営計画書</td>
+        <td class="required" id="contractPeriodSelect"></td>
+      </tr>
+      <tr>
+        <td>契約形態</td>
+        <td>経営計画書</td>
+        <td class="required" id="contractTypeSelect"></td>
+      </tr>
+      <tr>
+        <td>地代家賃</td>
+        <td>エントリーシート</td>
+        <td class="required" id="rent"></td>
+      </tr>
+      <tr>
+        <td>開店時間</td>
+        <td>経営計画書</td>
+        <td class="required" id="openSelect"></td>
+      </tr>
+      <tr>
+        <td>閉店時間</td>
+        <td>経営計画書</td>
+        <td class="required" id="endSelect"></td>
+      </tr>
+      <tr>
+        <td>営業時間</td>
+        <td>売上予測</td>
+        <td class="required" id="opening-hours"></td>
+      </tr>
+    </table>
+
+    <button id="calculate-button">計算する</button>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+  </form>
+
+  <h2>売上高（年間）（千円）</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>年度</th>
+        <th id="year-1">1年目</th>
+        <th id="year-2">2年目</th>
+        <th id="year-3">3年目</th>
+        <th id="year-4">4年目</th>
+        <th id="year-5">5年目</th>
+      </tr>
+    </thead>
+    <tbody id="dailysales-table">
+      <tr>
+        <td>売上高（日販）</td>
+        <td id="daily1-sales">-</td>
+        <td id="daily2-sales">-</td>
+        <td id="daily3-sales">-</td>
+        <td id="daily4-sales">-</td>
+        <td id="daily5-sales">-</td>
+      </tr>
+    </tbody>
+    <tbody id="yearsales-table">
+      <tr>
+        <td>売上高（年間）</td>
+        <td id="year1-sales">-</td>
+        <td id="year2-sales">-</td>
+        <td id="year3-sales">-</td>
+        <td id="year4-sales">-</td>
+        <td id="year5-sales">-</td>
+      </tr>
+    </tbody>
+  </table>
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+
+  // 残り月数の条件式
+  function calculateRemainingMonths(openingMonth) {
+    const monthsMapping = {
+      3: 11, 4: 10, 5: 9, 6: 8, 7: 7,
+      8: 6, 9: 5, 10: 4, 11: 3, 12: 2,
+      1: 1, 2: 12
+    };
+    return monthsMapping[openingMonth] || 0;
+  }
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displaySalesTablesData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+        document.getElementById("opening-month").textContent = propertyData.plannedOpeningDate || "";
+        document.getElementById("deliveryDate-year").textContent = propertyData.deliveryDate || "";
+        const plannedOpeningDate = propertyData.plannedOpeningDate || 0;
+        const remainingMonths = calculateRemainingMonths(plannedOpeningDate);
+        document.getElementById("months-Remaining").textContent = remainingMonths;
+        document.getElementById("rent").textContent = (propertyData.rent / 1000).toFixed(0) || "";
+        // `deliveryDate` の取得と年度の反映
+        const deliveryDate = parseInt(propertyData.deliveryDate, 10);
+        if (!isNaN(deliveryDate)) {
+            document.getElementById("year-1").textContent = deliveryDate;
+            document.getElementById("year-2").textContent = deliveryDate + 1;
+            document.getElementById("year-3").textContent = deliveryDate + 2;
+            document.getElementById("year-4").textContent = deliveryDate + 3;
+            document.getElementById("year-5").textContent = deliveryDate + 4;
+        }
+  
+        // マップ内の情報取得
+        const salesForecastingData = propertyData.salesForecastingData || {};
+        document.getElementById("estimated-sales").textContent = salesForecastingData.estimatedSales || 0;
+        document.getElementById("opening-hours").textContent = salesForecastingData.openingHours || "";
+
+        // マップ内の情報取得
+        const businessPlanData = propertyData.businessPlanData || {};
+        document.getElementById("contractPeriodSelect").textContent = businessPlanData.contractPeriodSelect || 0;
+        document.getElementById("contractTypeSelect").textContent = businessPlanData.contractTypeSelect || "";
+        document.getElementById("openSelect").textContent = businessPlanData.openSelect || "";
+        document.getElementById("endSelect").textContent = businessPlanData.endSelect || "";        
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+
+  // データ表示
+  displaySalesTablesData();
+
+  // 年度指数
+  const yearIndices = {
+    existing: [0.829, 0.93, 1.0, 1.08, 1.15],
+    new: [0.75, 0.88, 1.0, 1.08, 1.15]
+  };
+
+  // 月度指数と営業日
+  const monthIndices = [
+    { month: 3, index: 0.973253301, days: 31 },
+    { month: 4, index: 0.999759904, days: 30 },
+    { month: 5, index: 1.000912365, days: 31 },
+    { month: 6, index: 1.022232893, days: 30 },
+    { month: 7, index: 1.04182473, days: 31 },
+    { month: 8, index: 1.013589436, days: 31 },
+    { month: 9, index: 1.026266507, days: 30 },
+    { month: 10, index: 1.009555822, days: 31 },
+    { month: 11, index: 0.985354142, days: 30 },
+    { month: 12, index: 0.962304922, days: 31 },
+    { month: 1, index: 0.962304922, days: 31 },
+    { month: 2, index: 1.002641056, days: 28 }
+  ];
+
+  function calculateSales() {
+    const openingMonth = parseInt(document.getElementById("opening-month").textContent);
+    const deliveryDateYear = parseInt(document.getElementById("deliveryDate-year").textContent);
+    const areaType = document.getElementById("area-type").value;
+    const salesForecast = document.getElementById("sales-forecast").value;
+    const estimatedSales = parseInt(document.getElementById("estimated-sales").textContent) || 0;
+    const aiSales = parseInt(document.getElementById("ai-forecast-sales").value || 0);
+
+    // 売上予測に応じた売上値の選択
+    const selectedSales = salesForecast === 'new' ? estimatedSales : aiSales;
+    // 選択したエリアタイプに基づく年度指数
+    const indices = yearIndices[areaType];
+
+    // 日販売上結果表示
+    for (let year = 0; year < 5; year++) {
+      const dailySales = selectedSales * indices[year];
+      document.getElementById(`daily${year + 1}-sales`).textContent = dailySales.toFixed(3);
+    }
+
+    // 1年目の日販売上
+    const dailySalesFirstYear = selectedSales * indices[0];
+
+    // 1年目の売上計算
+    const firstYearSales = [];
+    let targetMonths = [];
+
+    // 開店月が2月～11月の場合、翌年の1月、2月を含めた対象月
+    if (openingMonth >= 2 && openingMonth <= 11) {
+      for (let month = openingMonth + 1; month <= 12; month++) {
+        targetMonths.push(month);
+      }
+      targetMonths.push(1, 2); // 翌年の1月と2月を追加
+    } 
+    // 開店月が12月の場合、翌年の1月、2月を含めた対象月
+    else if (openingMonth === 12) {
+      targetMonths.push(1, 2); // 翌年の1月と2月のみ
+    } 
+    // 開店月が1月の場合、翌月として2月のみを対象月に追加
+    else if (openingMonth === 1) {
+      targetMonths.push(2); // 翌月の2月のみ
+    }
+
+    // 1年目の売上を計算
+    targetMonths.forEach((month) => {
+      const monthData = monthIndices.find(m => m.month === month);
+      if (monthData) {
+        const adjustedSales = selectedSales * monthData.index * monthData.days;
+
+        // 年度指数を掛け合わせた売上を追加
+        firstYearSales.push(adjustedSales * indices[0]);
+      }
+    });
+
+    // 1年目の合計売上を計算
+    const totalFirstYearSales = Math.round(firstYearSales.reduce((a, b) => a + b, 0));
+
+    // 1年目の合計売上を表示
+    document.getElementById("year1-sales").textContent = totalFirstYearSales.toLocaleString();
+
+    // 開始月と終了月の設定
+    const startMonth = 3; // 固定の3月スタート
+    const endMonth = openingMonth; // 開店月を終了月に設定
+
+    // 各年の売上を計算する関数
+    function calculateYearlySales(dailySalesFirstYear, indices, startMonth, endMonth, yearsToCalculate) {
+      const yearlySales = [];
+
+      for (let year = 1; year <= yearsToCalculate; year++) {
+        const yearSales = [];
+        const dailySalesPreviousYear = selectedSales * indices[year - 1];
+        const dailySalesCurrentYear = selectedSales * indices[year];
+
+        // 3月からendMonthまでの売上計算
+        for (let month = startMonth; month <= endMonth; month++) {
+          const monthData = monthIndices.find(m => m.month === month);
+          if (monthData) {
+            const adjustedSales = dailySalesPreviousYear * monthData.index * monthData.days;
+            yearSales.push(adjustedSales);
+          }
+        }
+
+        // endMonthの翌月から翌年2月までの追加月を設定
+        const additionalMonths = [];
+        for (let month = endMonth + 1; ; month++) {
+          if (month > 12) month -= 12; // 12月を超えたら1月に戻る
+          additionalMonths.push(month);
+          if (month === 2) break; // 翌年2月で終了
+        }
+
+        // endMonthの翌月から翌年2月までの売上計算（当年の日販売上を使用）
+        additionalMonths.forEach((month) => {
+          const monthData = monthIndices.find(m => m.month === month);
+          if (monthData) {
+            const adjustedSales = dailySalesCurrentYear * monthData.index * monthData.days;
+            yearSales.push(adjustedSales);
+          }
+        });
+
+        // 各年の売上合計を計算して保存
+        const totalYearSales = Math.round(yearSales.reduce((a, b) => a + b, 0));
+        yearlySales.push(totalYearSales);
+      }
+
+      return yearlySales;
+    }
+
+    // 売上を計算して表示
+    const yearlySales = calculateYearlySales(dailySalesFirstYear, indices, startMonth, endMonth, 5);
+    yearlySales.forEach((sales, index) => {
+      const yearSalesElement = document.getElementById(`year${index + 2}-sales`);
+      if (yearSalesElement) {
+        yearSalesElement.textContent = sales.toLocaleString();
+      } else {
+        
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const calculateButton = document.getElementById("calculate-button");
+    if (calculateButton) {
+      calculateButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        calculateSales();
+        alert("計算が完了しました");
+      });
+    } else {
+      console.error("計算ボタンが見つかりません");
+    }
+  });
+
+  // 保存ボタンの設定
+  const saveButton = document.getElementById("save-button");
+  if (saveButton) {
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();  // ページ遷移を防ぐ
+      saveDataToFirestore();
+    });
+  } else {
+    console.error("保存ボタンが見つかりません");
+  }
+
+  // Firestoreにデータを保存する関数
+  async function saveDataToFirestore() {
+    // 新しいドキュメントを作成
+    try {
+      if (propertyId) {
+        const docRef = doc(db, "properties", propertyId);
+
+        // Select要素から選ばれた値を取得
+        const areaType = document.getElementById("area-type").value;
+        const areaName = areaType === "existing" ? "既存エリア" : "新エリア";
+
+        const salesForecastType = document.getElementById("sales-forecast").value;
+        const salesForecastName = salesForecastType === "new" ? "新予測" : "AI予測";
+
+        const aiForecastSales = document.getElementById("ai-forecast-sales").textContent || 0;
+        const locationPattern = document.getElementById("locationPattern").value;
+
+        const daily1Sales = parseFloat(document.getElementById("daily1-sales").textContent).toFixed(3) || 0;
+        const daily2Sales = parseFloat(document.getElementById("daily2-sales").textContent).toFixed(3) || 0;
+        const daily3Sales = parseFloat(document.getElementById("daily3-sales").textContent).toFixed(3) || 0;
+        const daily4Sales = parseFloat(document.getElementById("daily4-sales").textContent).toFixed(3) || 0;
+        const daily5Sales = parseFloat(document.getElementById("daily5-sales").textContent).toFixed(3) || 0;
+
+        const year1Sales = document.getElementById("year1-sales").textContent || 0;
+        const year2Sales = document.getElementById("year2-sales").textContent || 0;
+        const year3Sales = document.getElementById("year3-sales").textContent || 0;
+        const year4Sales = document.getElementById("year4-sales").textContent || 0;
+        const year5Sales = document.getElementById("year5-sales").textContent || 0;
+
+        const remainingMonths = document.getElementById("months-Remaining").textContent || 0;
+
+        // データを取得
+        const salesTable = {
+          areaName: areaName,  
+          salesForecastName: salesForecastName,          
+          aiForecastSales: aiForecastSales,
+          locationPattern: locationPattern,
+          daily1Sales: daily1Sales,
+          daily2Sales: daily2Sales,
+          daily3Sales: daily3Sales,
+          daily4Sales: daily4Sales,
+          daily5Sales: daily5Sales,
+          year1Sales: year1Sales,
+          year2Sales: year2Sales,
+          year3Sales: year3Sales,
+          year4Sales: year4Sales,
+          year5Sales: year5Sales,
+          remainingMonths: remainingMonths,
+        };
+        await setDoc(docRef, { salesTable }, { merge: true });
+        alert("データが保存されました");
+      } else {
+        alert("物件IDが指定されていません");
+    }  
+    } catch (error) {
+      alert("データの保存中にエラーが発生しました");
+      console.error("データ保存エラー:", error);
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人件費表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>人件費 │ <span id="name"></span></h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>項目</th>
+                <th id="year-1">1</th>
+                <th id="year-2">2</th>
+                <th id="year-3">3</th>
+                <th id="year-4">4</th>
+                <th id="year-5">5</th>
+                <th id="year-6">6</th>
+            </tr>
+            <tr>
+                <th id="area-name"></th>
+                <th>1年目</th>
+                <th>2年目</th>
+                <th>3年目</th>
+                <th>4年目</th>
+                <th>5年目</th>
+                <th>6年目以降</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>平均日販（千円）</td>        
+                <td id="year1-sales">-</td>
+                <td id="year2-sales">-</td>
+                <td id="year3-sales">-</td>
+                <td id="year4-sales">-</td>
+                <td id="year5-sales">-</td>
+                <td id="year6-sales">-</td>
+              </tr>
+            </tr>
+            <tr>
+                <td>人件費総額(千円）</td>
+                <td id="totalLaborCosts1">-</td>
+                <td id="totalLaborCosts2">-</td>
+                <td id="totalLaborCosts3">-</td>
+                <td id="totalLaborCosts4">-</td>
+                <td id="totalLaborCosts5">-</td>
+                <td id="totalLaborCosts6">-</td>
+            </tr>
+            <tr>
+                <td>社員人件費（千円）</td>
+                <td>
+                　<select id="employeeLaborCosts1" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+                <td>
+                　<select id="employeeLaborCosts2" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="employeeLaborCosts3" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="employeeLaborCosts4" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="employeeLaborCosts5" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="employeeLaborCosts6" required>
+                    <option value="330">330</option>
+                    <option value="165">165</option>
+                    <option value="0">0</option>
+                  </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Co社員人件費（千円）</td>
+                <td id="co-employeeLaborCosts1"></td>
+                <td id="co-employeeLaborCosts2"></td>
+                <td id="co-employeeLaborCosts3"></td>
+                <td id="co-employeeLaborCosts4"></td>
+                <td id="co-employeeLaborCosts5"></td>
+                <td id="co-employeeLaborCosts6"></td>
+            </tr>
+            <tr>
+                <td>Co社員時給（円）</td>
+                <td id="avg-salary1">-</td>
+                <td id="avg-salary2">-</td>
+                <td id="avg-salary3">-</td>
+                <td id="avg-salary4">-</td>
+                <td id="avg-salary5">-</td>
+                <td id="avg-salary6">-</td>
+            </tr>
+            <tr>
+                <td>１日の労働時間（H)<br>(売上日販別）</td>
+                <td id="dailyWorkingHours1">-</td>
+                <td id="dailyWorkingHours2">-</td>
+                <td id="dailyWorkingHours3">-</td>
+                <td id="dailyWorkingHours4">-</td>
+                <td id="dailyWorkingHours5">-</td>
+                <td id="dailyWorkingHours6">-</td>
+            </tr>
+            <tr>
+                <td>派遣・請負人件費<br>※上記人件費総額に含む</td>
+                <td id="dispatchCost1">-</td>
+                <td id="dispatchCost2">-</td>
+                <td id="dispatchCost3">-</td>
+                <td id="dispatchCost4">-</td>
+                <td id="dispatchCost5">-</td>
+                <td id="dispatchCost6">-</td>
+            </tr>
+            <tr>
+                <td>派遣・請負労働時間</td>
+                <td id="dispatchHours1">-</td>
+                <td id="dispatchHours2">-</td>
+                <td id="dispatchHours3">-</td>
+                <td id="dispatchHours4">-</td>
+                <td id="dispatchHours5">-</td>
+                <td id="dispatchHours6">-</td>
+            </tr>
+            <tr>
+                <td>オールセルフレジ調整時間(H)</td>
+                <td colspan="5"></td>
+                <td><input type="number" id="allSelfRegisters" placeholder=""></td>
+            </tr>
+            <tr>
+                <td>営業時間延刻（H）</td>
+                <td colspan="5"></td>
+                <td id="extended-hours">-</td>
+            </tr>
+        </tbody>
+    </table><br>
+    <button id="calculateButton">計算する</button>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+<script type="module">
+  // Firebase App (必須)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+  // Firebaseの初期化
+  const firebaseConfig = {
+    apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+    authDomain: "mybas-61537.firebaseapp.com", 
+    projectId: "mybas-61537",
+    storageBucket: "mybas-61537.firebasestorage.app",
+    messagingSenderId: "47149190856",
+    appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // URLからidパラメータを取得
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // URLから'd'パラメータを取得
+  const propertyId = getQueryParam('id');
+  const docId = "commonData";
+
+// 労働コスト比率を取得する関数
+function getLaborCostRatio(sales, ratioData) {
+    if (sales > 1201) {
+        return ratioData.laborCostRatio1201;
+    } else if (sales > 1200) {
+        return ratioData.laborCostRatio1200;
+    } else if (sales > 1150) {
+        return ratioData.laborCostRatio1150;
+    } else if (sales > 1100) {
+        return ratioData.laborCostRatio1100;
+    } else if (sales > 1050) {
+        return ratioData.laborCostRatio1050;
+    } else if (sales > 1000) {
+        return ratioData.laborCostRatio1000;
+    } else if (sales > 950) {
+        return ratioData.laborCostRatio950;
+    } else if (sales > 900) {
+        return ratioData.laborCostRatio900;
+    } else if (sales > 850) {
+        return ratioData.laborCostRatio850;
+    } else if (sales > 800) {
+        return ratioData.laborCostRatio800;
+    } else if (sales > 750) {
+        return ratioData.laborCostRatio750;
+    } else if (sales > 700) {
+        return ratioData.laborCostRatio700;
+    } else if (sales > 650) {
+        return ratioData.laborCostRatio650;
+    } else if (sales > 600) {
+        return ratioData.laborCostRatio600;
+    } else if (sales > 550) {
+        return ratioData.laborCostRatio550;
+    } else if (sales > 500) {
+        return ratioData.laborCostRatio500;
+    } else if (sales > 450) {
+        return ratioData.laborCostRatio450;
+    } else if (sales > 400) {
+        return ratioData.laborCostRatio400;
+    } else if (sales > 350) {
+        return ratioData.laborCostRatio350;
+    } else if (sales > 101) {
+        return ratioData.laborCostRatio101;
+    } else {
+        return ratioData.laborCostRatio0;
+    }
+}
+
+  // Firestoreから指定IDのデータを取得して表示
+  async function displaylobarCostData() {
+    if (!propertyId) {
+      document.getElementById("name").textContent = "IDが指定されていません";
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      const docSnap = await getDoc(docRef);
+
+      const dbRef = doc(db, "laborCostRatio", docId);
+      const dbSnap = await getDoc(dbRef);
+
+      if (docSnap.exists() && dbSnap.exists()) {
+        const propertyData = docSnap.data();
+
+        // Firebase からのデータ取得
+        const ratioData = dbSnap.data();
+
+        // Firestoreのデータを表示
+        document.getElementById("name").textContent = propertyData.name || "";
+        const deliveryDate = parseInt(propertyData.deliveryDate, 10);
+        if (!isNaN(deliveryDate)) {
+            document.getElementById("year-1").textContent = deliveryDate;
+            document.getElementById("year-2").textContent = deliveryDate + 1;
+            document.getElementById("year-3").textContent = deliveryDate + 2;
+            document.getElementById("year-4").textContent = deliveryDate + 3;
+            document.getElementById("year-5").textContent = deliveryDate + 4;
+            document.getElementById("year-6").textContent = deliveryDate + 5;
+
+
+        // マップ内の情報取得
+        const salesTable = propertyData.salesTable || {};
+        document.getElementById("area-name").textContent = salesTable.areaName;
+        document.getElementById("year1-sales").textContent = salesTable.daily1Sales;
+        document.getElementById("year2-sales").textContent = salesTable.daily2Sales;
+        document.getElementById("year3-sales").textContent = salesTable.daily3Sales;
+        document.getElementById("year4-sales").textContent = salesTable.daily4Sales;
+        document.getElementById("year5-sales").textContent = salesTable.daily5Sales;
+        // 6年目は5年目日販売上を採用
+        document.getElementById("year6-sales").textContent = salesTable.daily5Sales;
+
+        const laborCostData = ratioData.laborCostData || 0; // ここで正しく定義
+
+        // マップ内の情報取得
+        const laborCostDB = propertyData.laborCostDB || {};
+        const avgSalary = laborCostDB.avgSalary || 0;
+        const avgSalaryData = avgSalary * laborCostData * 1.25;
+        document.getElementById("avg-salary1").textContent = avgSalaryData.toFixed(2);
+        document.getElementById("avg-salary2").textContent = avgSalaryData.toFixed(2);
+        document.getElementById("avg-salary3").textContent = avgSalaryData.toFixed(2);
+        document.getElementById("avg-salary4").textContent = avgSalaryData.toFixed(2);
+        document.getElementById("avg-salary5").textContent = avgSalaryData.toFixed(2);
+        document.getElementById("avg-salary6").textContent = avgSalaryData.toFixed(2);
+
+        document.getElementById("dispatchCost1").textContent = laborCostDB.dispatchCost || 0;
+        document.getElementById("dispatchCost2").textContent = laborCostDB.dispatchCost || 0;
+        document.getElementById("dispatchCost3").textContent = laborCostDB.dispatchCost || 0;
+        document.getElementById("dispatchCost4").textContent = laborCostDB.dispatchCost || 0;
+        document.getElementById("dispatchCost5").textContent = laborCostDB.dispatchCost || 0;
+        document.getElementById("dispatchCost6").textContent = laborCostDB.dispatchCost || 0;
+
+        document.getElementById("dispatchHours1").textContent = laborCostDB.dispatchHours || 0;
+        document.getElementById("dispatchHours2").textContent = laborCostDB.dispatchHours || 0;
+        document.getElementById("dispatchHours3").textContent = laborCostDB.dispatchHours || 0;
+        document.getElementById("dispatchHours4").textContent = laborCostDB.dispatchHours || 0;
+        document.getElementById("dispatchHours5").textContent = laborCostDB.dispatchHours || 0;
+        document.getElementById("dispatchHours6").textContent = laborCostDB.dispatchHours || 0;
+
+        const laborCost = propertyData.laborCost || {};
+        document.getElementById("employeeLaborCosts1").value = laborCost.employeeLaborCosts1 || "";
+        document.getElementById("employeeLaborCosts2").value = laborCost.employeeLaborCosts2 || "";
+        document.getElementById("employeeLaborCosts3").value = laborCost.employeeLaborCosts3 || "";
+        document.getElementById("employeeLaborCosts4").value = laborCost.employeeLaborCosts4 || "";
+        document.getElementById("employeeLaborCosts5").value = laborCost.employeeLaborCosts5 || "";
+        document.getElementById("employeeLaborCosts6").value = laborCost.employeeLaborCosts6 || "";
+
+        // マップ内の情報取得
+        const salesForecastingData = propertyData.salesForecastingData || {};
+        const openingHours = Number(salesForecastingData.openingHours) || 0; // 数値に変換
+
+        // 営業時間延刻の条件式に基づいて計算
+        let extendedHoursResult;
+        if (openingHours === 14) {
+            extendedHoursResult = -1;
+        } else if (openingHours === 15) {
+            extendedHoursResult = 0;
+        } else if (openingHours === 16) {
+            extendedHoursResult = 1;
+        } else if (openingHours === 17) {
+            extendedHoursResult = 2;
+        } else {
+            extendedHoursResult = "営業時間が設定範囲外です";
+        }
+
+        document.getElementById("extended-hours").textContent = extendedHoursResult;
+
+        const daily1Sales = salesTable.daily1Sales || 0;
+        const daily2Sales = salesTable.daily2Sales || 0;
+        const daily3Sales = salesTable.daily3Sales || 0;
+        const daily4Sales = salesTable.daily4Sales || 0;
+        const daily5Sales = salesTable.daily5Sales || 0;
+
+        // 計算する関数を定義
+        function calculateWorkingHours() {
+            // allSelfRegistersから入力された値を取得
+            const allSelfRegistersValue = Number(document.getElementById("allSelfRegisters").value) || 0;
+
+            // dailyWorkingHours1を計算
+            const dailyWorkingHours1 = (getLaborCostRatio(daily1Sales, ratioData) - allSelfRegistersValue + (extendedHoursResult * 2));
+            const dailyWorkingHours2 = (getLaborCostRatio(daily2Sales, ratioData) - allSelfRegistersValue + (extendedHoursResult * 2));
+            const dailyWorkingHours3 = (getLaborCostRatio(daily3Sales, ratioData) - allSelfRegistersValue + (extendedHoursResult * 2));
+            const dailyWorkingHours4 = (getLaborCostRatio(daily4Sales, ratioData) - allSelfRegistersValue + (extendedHoursResult * 2));
+            const dailyWorkingHours5 = (getLaborCostRatio(daily5Sales, ratioData) - allSelfRegistersValue + (extendedHoursResult * 2));
+
+            document.getElementById("dailyWorkingHours1").textContent = dailyWorkingHours1.toFixed(2);
+            document.getElementById("dailyWorkingHours2").textContent = dailyWorkingHours2.toFixed(2);
+            document.getElementById("dailyWorkingHours3").textContent = dailyWorkingHours3.toFixed(2);
+            document.getElementById("dailyWorkingHours4").textContent = dailyWorkingHours4.toFixed(2);
+            document.getElementById("dailyWorkingHours5").textContent = dailyWorkingHours5.toFixed(2);
+            document.getElementById("dailyWorkingHours6").textContent = dailyWorkingHours5.toFixed(2);
+            const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
+
+            const employeeLaborCosts1 = avgSalaryData * dailyWorkingHours1 * 30 / 1000;
+            const employeeLaborCosts2 = avgSalaryData * dailyWorkingHours2 * 30 / 1000;
+            const employeeLaborCosts3 = avgSalaryData * dailyWorkingHours3 * 30 / 1000;
+            const employeeLaborCosts4 = avgSalaryData * dailyWorkingHours4 * 30 / 1000;
+            const employeeLaborCosts5 = avgSalaryData * dailyWorkingHours5 * 30 / 1000;
+            const employeeLaborCosts6 = avgSalaryData * dailyWorkingHours5 * 30 / 1000;
+
+            document.getElementById("co-employeeLaborCosts1").textContent = employeeLaborCosts1.toFixed(0);
+            document.getElementById("co-employeeLaborCosts2").textContent = employeeLaborCosts2.toFixed(0);
+            document.getElementById("co-employeeLaborCosts3").textContent = employeeLaborCosts3.toFixed(0);
+            document.getElementById("co-employeeLaborCosts4").textContent = employeeLaborCosts4.toFixed(0);
+            document.getElementById("co-employeeLaborCosts5").textContent = employeeLaborCosts5.toFixed(0);
+            document.getElementById("co-employeeLaborCosts6").textContent = employeeLaborCosts5.toFixed(0);
+
+            // `employeeLaborCosts1` で選択された値を取得して数値に変換
+            const selectedValue1 = Number(document.getElementById("employeeLaborCosts1").value) || 0;
+            const selectedValue2 = Number(document.getElementById("employeeLaborCosts2").value) || 0;
+            const selectedValue3 = Number(document.getElementById("employeeLaborCosts3").value) || 0;
+            const selectedValue4 = Number(document.getElementById("employeeLaborCosts4").value) || 0;
+            const selectedValue5 = Number(document.getElementById("employeeLaborCosts5").value) || 0;
+            const selectedValue6 = Number(document.getElementById("employeeLaborCosts6").value) || 0;
+
+            // 計算結果に選択値を足して合計
+            const totalLaborCosts1 = employeeLaborCosts1 + selectedValue1;
+            const totalLaborCosts2 = employeeLaborCosts2 + selectedValue2;
+            const totalLaborCosts3 = employeeLaborCosts3 + selectedValue3;
+            const totalLaborCosts4 = employeeLaborCosts4 + selectedValue4;
+            const totalLaborCosts5 = employeeLaborCosts5 + selectedValue5;
+            const totalLaborCosts6 = employeeLaborCosts6 + selectedValue6;
+
+            // `totalLaborCosts1` に合計値を表示
+            document.getElementById("totalLaborCosts1").textContent = totalLaborCosts1.toFixed(2);
+            document.getElementById("totalLaborCosts2").textContent = totalLaborCosts2.toFixed(2);
+            document.getElementById("totalLaborCosts3").textContent = totalLaborCosts3.toFixed(2);
+            document.getElementById("totalLaborCosts4").textContent = totalLaborCosts4.toFixed(2);
+            document.getElementById("totalLaborCosts5").textContent = totalLaborCosts5.toFixed(2);
+            document.getElementById("totalLaborCosts6").textContent = totalLaborCosts5.toFixed(2);
+            const averageTotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts6) / 5;
+            }
+
+            // 「計算する」ボタンにクリックイベントを追加
+            document.getElementById("calculateButton").addEventListener("click", calculateWorkingHours);
+
+        }
+
+      } else {
+        console.error("データが見つかりません");
+      }
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+    }
+  }
+
+  displaylobarCostData();
+
+async function saveDataToFirestore() {
+    try {
+        if (propertyId) {
+            const docRef = doc(db, "properties", propertyId);
+
+            // Correctly assigning variables using `=`, not `:`
+            const totalLaborCosts1 = document.getElementById("totalLaborCosts1").textContent || 0;
+            const totalLaborCosts2 = document.getElementById("totalLaborCosts2").textContent || 0;
+            const totalLaborCosts3 = document.getElementById("totalLaborCosts3").textContent || 0;
+            const totalLaborCosts4 = document.getElementById("totalLaborCosts4").textContent || 0;
+            const totalLaborCosts5 = document.getElementById("totalLaborCosts5").textContent || 0;
+            const employeeLaborCosts1 = document.getElementById("employeeLaborCosts1").value;
+            const employeeLaborCosts2 = document.getElementById("employeeLaborCosts2").value;
+            const employeeLaborCosts3 = document.getElementById("employeeLaborCosts3").value;
+            const employeeLaborCosts4 = document.getElementById("employeeLaborCosts4").value;
+            const employeeLaborCosts5 = document.getElementById("employeeLaborCosts5").value;
+            const employeeLaborCosts6 = document.getElementById("employeeLaborCosts6").value;
+            const allSelfRegistersValue = document.getElementById("allSelfRegisters").value;
+            const dailyWorkingHours1 = document.getElementById("dailyWorkingHours1").textContent || 0;
+            const dailyWorkingHours2 = document.getElementById("dailyWorkingHours2").textContent || 0;
+            const dailyWorkingHours3 = document.getElementById("dailyWorkingHours3").textContent || 0;
+            const dailyWorkingHours4 = document.getElementById("dailyWorkingHours4").textContent || 0;
+            const dailyWorkingHours5 = document.getElementById("dailyWorkingHours5").textContent || 0;
+            const coEmployeeLaborCosts1 = document.getElementById("co-employeeLaborCosts1").textContent || 0;
+            const coEmployeeLaborCosts2 = document.getElementById("co-employeeLaborCosts2").textContent || 0;
+            const coEmployeeLaborCosts3 = document.getElementById("co-employeeLaborCosts3").textContent || 0;
+            const coEmployeeLaborCosts4 = document.getElementById("co-employeeLaborCosts4").textContent || 0;
+            const coEmployeeLaborCosts5 = document.getElementById("co-employeeLaborCosts5").textContent || 0;
+            const avgSalaryData1 = document.getElementById("avg-salary1").textContent || 0;
+            const avgSalaryData2 = document.getElementById("avg-salary2").textContent || 0;
+            const avgSalaryData3 = document.getElementById("avg-salary3").textContent || 0;
+            const avgSalaryData4 = document.getElementById("avg-salary4").textContent || 0;
+            const avgSalaryData5 = document.getElementById("avg-salary5").textContent || 0;
+
+
+
+            // Collecting all input values dynamically
+            const laborCost = {
+                totalLaborCosts1: totalLaborCosts1,
+                totalLaborCosts2: totalLaborCosts2,
+                totalLaborCosts3: totalLaborCosts3,
+                totalLaborCosts4: totalLaborCosts4,
+                totalLaborCosts5: totalLaborCosts5,
+                employeeLaborCosts1: employeeLaborCosts1,
+                employeeLaborCosts2: employeeLaborCosts2,
+                employeeLaborCosts3: employeeLaborCosts3,
+                employeeLaborCosts4: employeeLaborCosts4,
+                employeeLaborCosts5: employeeLaborCosts5,
+                employeeLaborCosts6: employeeLaborCosts6,
+                allSelfRegistersValue: allSelfRegistersValue,
+                dailyWorkingHours1: dailyWorkingHours1,
+                dailyWorkingHours2: dailyWorkingHours2,
+                dailyWorkingHours3: dailyWorkingHours3,
+                dailyWorkingHours4: dailyWorkingHours4,
+                dailyWorkingHours5: dailyWorkingHours5,
+                coEmployeeLaborCosts1: coEmployeeLaborCosts1,
+                coEmployeeLaborCosts2: coEmployeeLaborCosts2,
+                coEmployeeLaborCosts3: coEmployeeLaborCosts3,
+                coEmployeeLaborCosts4: coEmployeeLaborCosts4,
+                coEmployeeLaborCosts5: coEmployeeLaborCosts5,
+                avgSalaryData1: avgSalaryData1,
+                avgSalaryData2: avgSalaryData2,
+                avgSalaryData3: avgSalaryData3,
+                avgSalaryData4: avgSalaryData4,
+                avgSalaryData5: avgSalaryData5,
+                
+            };
+
+            // Saving data to Firebase
+            await setDoc(docRef, { laborCost }, { merge: true });
+            alert("データが保存されました");
+        } else {
+            alert("物件IDが指定されていません");
+        }
+    } catch (error) {
+        alert("データの保存中にエラーが発生しました");
+        console.error("データ保存エラー:", error);
+    }
+}
+
+
+// Set up Save button event
+document.getElementById("save-button").addEventListener("click", function(event) {
+    event.preventDefault();
+    saveDataToFirestore();
+});
+  
+</script>
+</body>
+</html>

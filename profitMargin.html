@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>営業総利益率</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .required {
+            background-color: #fdd9b5;
+        }
+    </style>
+</head>
+<body>
+    <h2>営業総利益率【経営計画数値】</h2>
+
+    <!-- 日販表 -->
+    <table>
+        <thead>
+            <tr>
+                <th>日販</th>
+                <th>営業総利益率</th>
+                <th>日販</th>
+                <th>営業総利益率</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1001～</td>
+                <td><input type="number" id="profitMargin-ratio1001" value="" step="0.01"></td>
+                <td>～700</td>
+                <td><input type="number" id="profitMargin-ratio700" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～1000</td>
+                <td><input type="number" id="profitMargin-ratio1000" value="" step="0.01"></td>
+                <td>～650</td>
+                <td><input type="number" id="profitMargin-ratio650" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～950</td>
+                <td><input type="number" id="profitMargin-ratio950" value="" step="0.01"></td>
+                <td>～600</td>
+                <td><input type="number" id="profitMargin-ratio600" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～900</td>
+                <td><input type="number" id="profitMargin-ratio900" value="" step="0.01"></td>
+                <td>～550</td>
+                <td><input type="number" id="profitMargin-ratio550" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～850</td>
+                <td><input type="number" id="profitMargin-ratio850" value="" step="0.01"></td>
+                <td>～500</td>
+                <td><input type="number" id="profitMargin-ratio500" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～800</td>
+                <td><input type="number" id="profitMargin-ratio800" value="" step="0.01"></td>
+                <td>～450</td>
+                <td><input type="number" id="profitMargin-ratio450" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td>～750</td>
+                <td><input type="number" id="profitMargin-ratio750" value="" step="0.01"></td>
+                <td>～400</td>
+                <td><input type="number" id="profitMargin-ratio400" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>～350</td>
+                <td><input type="number" id="profitMargin-ratio350" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>～301</td>
+                <td><input type="number" id="profitMargin-ratio301" value="" step="0.01"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>1</td>
+                <td><input type="number" id="profitMargin-ratio1" value="" step="0.01"></td>
+            </tr>
+        </tbody>
+    </table><br>
+    <button id="save-button">データを保存</button>
+    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+// Firebaseの初期化
+const firebaseConfig = {
+      apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+      authDomain: "mybas-61537.firebaseapp.com",
+      projectId: "mybas-61537",
+      storageBucket: "mybas-61537.firebasestorage.app",
+      messagingSenderId: "47149190856",
+      appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 固定ドキュメントIDを使用（例: "commonData"）
+const docId = "commonData"; // Firebaseのコレクション内の固定ID
+
+// ページ読み込み時にFirebaseからデータを取得し、入力フォームに表示
+document.addEventListener("DOMContentLoaded", async () => {
+    
+    try {
+        const docRef = doc(db, "profitMarginRatio", docId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            // フィールドにデータを反映
+            document.getElementById("profitMargin-ratio1001").value = data.profitMarginRatio1001 || "";
+            document.getElementById("profitMargin-ratio1000").value = data.profitMarginRatio1000 || "";
+            document.getElementById("profitMargin-ratio950").value = data.profitMarginRatio950 || "";
+            document.getElementById("profitMargin-ratio900").value = data.profitMarginRatio900 || "";
+            document.getElementById("profitMargin-ratio850").value = data.profitMarginRatio850 || "";
+            document.getElementById("profitMargin-ratio800").value = data.profitMarginRatio800 || "";
+            document.getElementById("profitMargin-ratio750").value = data.profitMarginRatio750 || "";
+            document.getElementById("profitMargin-ratio700").value = data.profitMarginRatio700 || "";
+            document.getElementById("profitMargin-ratio650").value = data.profitMarginRatio650 || "";
+            document.getElementById("profitMargin-ratio600").value = data.profitMarginRatio600 || "";
+            document.getElementById("profitMargin-ratio550").value = data.profitMarginRatio550 || "";
+            document.getElementById("profitMargin-ratio500").value = data.profitMarginRatio500 || "";
+            document.getElementById("profitMargin-ratio450").value = data.profitMarginRatio450 || "";
+            document.getElementById("profitMargin-ratio400").value = data.profitMarginRatio400 || "";
+            document.getElementById("profitMargin-ratio350").value = data.profitMarginRatio350 || "";
+            document.getElementById("profitMargin-ratio301").value = data.profitMarginRatio301 || "";
+            document.getElementById("profitMargin-ratio1").value = data.profitMarginRatio1 || "";
+            
+        } else {
+            console.log("指定されたドキュメントが存在しません");
+        }
+    } catch (error) {
+        console.error("データの取得中にエラーが発生しました: ", error);
+    }
+
+});
+
+ // Save data to Firebase function
+async function saveDataToFirestore() {
+    try {
+        const docRef = doc(db, "profitMarginRatio", docId);
+
+        // Collecting all input values dynamically
+        const profitMarginData = {
+            profitMarginRatio1001: document.getElementById("profitMargin-ratio1001").value,
+            profitMarginRatio1000: document.getElementById("profitMargin-ratio1000").value,
+            profitMarginRatio950: document.getElementById("profitMargin-ratio950").value,
+            profitMarginRatio900: document.getElementById("profitMargin-ratio900").value,
+            profitMarginRatio850: document.getElementById("profitMargin-ratio850").value,
+            profitMarginRatio800: document.getElementById("profitMargin-ratio800").value,
+            profitMarginRatio750: document.getElementById("profitMargin-ratio750").value,
+            profitMarginRatio700: document.getElementById("profitMargin-ratio700").value,
+            profitMarginRatio650: document.getElementById("profitMargin-ratio650").value,
+            profitMarginRatio600: document.getElementById("profitMargin-ratio600").value,
+            profitMarginRatio550: document.getElementById("profitMargin-ratio550").value,
+            profitMarginRatio500: document.getElementById("profitMargin-ratio500").value,
+            profitMarginRatio450: document.getElementById("profitMargin-ratio450").value,
+            profitMarginRatio400: document.getElementById("profitMargin-ratio400").value,
+            profitMarginRatio350: document.getElementById("profitMargin-ratio350").value,
+            profitMarginRatio301: document.getElementById("profitMargin-ratio301").value,
+            profitMarginRatio1: document.getElementById("profitMargin-ratio1").value
+        };
+
+        // Saving data to Firebase
+        await setDoc(docRef, profitMarginData, { merge: true });
+        alert("データが保存されました");
+    } catch (error) {
+        alert("データの保存中にエラーが発生しました");
+        console.error("データ保存エラー:", error);
+    }
+}
+
+// Set up Save button event
+document.getElementById("save-button").addEventListener("click", (event) => {
+    event.preventDefault();
+    saveDataToFirestore();
+});
+</script>
+</body>
+</html>

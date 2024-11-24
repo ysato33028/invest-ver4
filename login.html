@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="login_styles.css">
+  <title>まいばすけっと投資回収シミュレーション</title>
+</head>
+<body>
+  <div class="glass-container">
+    <div class="login-box">
+    <form id="login-form">
+      <h2>投資回収appにログイン</h2>
+        <input type="email" id="email" name="email" required placeholder="Email">
+        <input type="password" id="password" name="password" required placeholder="Password">
+        <button type="submit">ログイン</button>
+        <p>ログインボタンを押すとポップアップが出ます</p>
+    </form>
+  </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+        authDomain: "mybas-61537.firebaseapp.com",
+        projectId: "mybas-61537",
+        storageBucket: "mybas-61537.firebasestorage.app",
+        messagingSenderId: "47149190856",
+        appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+    };
+
+    // Firebaseの初期化
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ログインフォームの処理
+    document.getElementById("login-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        alert("ログインに成功しました");
+        window.location.href = "index.html"; // ダッシュボードページにリダイレクト
+      } catch (error) {
+        console.error("ログインに失敗しました:", error);
+        alert("ログインに失敗しました。再度お試しください。");
+      }
+    });
+  </script>
+</body>
+</html>
