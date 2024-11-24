@@ -364,118 +364,181 @@
           }
       }
 
-      document.getElementById("exportButton").addEventListener("click", function() {
-        // エクスポートするためのデータを定義
-          const exportData = {
-            name: propertyData.name || "",
-            manager: propertyData.manager || "",
-            overview: propertyData.businessPlanData?.overview || "",
-            consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
-            household: businessPlanData.household || "",
-            population: businessPlanData.population || "",
-            averagePopulation: businessPlanData.averagePopulation || "",
-            contractArea: propertyData.contractArea || "",
-            shopArea: propertyData.shopArea || "",
-            delivery: `${propertyData.deliveryDate || ""}年${propertyData.deliveryMonth || ""}月`,
-            openSelect: businessPlanData.openSelect || "",
-            endSelect: businessPlanData.endSelect || "",
-            sales: propertyData.plSalesData?.singleYear3 || 0,
-            profit: propertyData.profitData?.singleYear3 || 0,
-            labor: propertyData.laborData?.singleYear3 || 0,
-            selling: propertyData.sellingData?.singleYear3 || 0,
-            rent: propertyData.rent / 1000 || "",
-            equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
-            general: propertyData.generalData?.singleYear3 || 0,
-            totalSelling3Value: parseFloat((propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
-            monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
-            dailySale: propertyData.salesTable?.daily3Sales || 0,
-            aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
-            logisticsCosts: businessPlanData.logisticsCosts || 0,
-            judgmentData: propertyData.judgmentData?.lastNegativeMonth?.replace("ヶ月", "") || "",
-            layoutPattern: (propertyData.layout || "") + (propertyData.propertyType || ""),
-            locationPattern: propertyData.salesTable?.locationPattern || "",
-            parkingSpacesSelect: businessPlanData.parkingSpacesSelect || "",
-            numberofParkingSpaces: businessPlanData.numberofParkingSpaces || 0,
-            depreciationCost: {
-              buildingCost: propertyData.depreciationCost?.buildingCost || 0,
-              generalConstructionCost: propertyData.depreciationCost?.generalConstructionCost || 0,
-              refrigerationEquipmentConstructionTotal: propertyData.depreciationCost?.refrigerationEquipmentConstructionTotal || 0,
-              buildingsEquipment: propertyData.depreciationCost?.buildingsEquipment || 0,
-              displayFixtures: propertyData.depreciationCost?.displayFixtures || 0,
-              signboard: propertyData.depreciationCost?.signboard || 0,
-              other: propertyData.depreciationCost?.other || 0,
-              nonstandard: propertyData.depreciationCost?.nonstandard || 0,
-              total: propertyData.depreciationCost?.total || 0,
-              addRegisters: propertyData.depreciationCost?.addRegisters || 0,
-              addSelfRegisters: propertyData.depreciationCost?.addSelfRegisters || 0,
-            },
-            brokerageFeeValue: parseFloat(propertyData.rent * (propertyData.brokerageFee?.replace("か月", "") || 0)),
-            consultingFeesValue: parseFloat(propertyData.rent * (propertyData.consultingFees?.replace("か月", "") || 0)),
-            keyMoneyValue: parseFloat(propertyData.rent * (propertyData.keyMoney?.replace("か月", "") || 0)),
-            deposit: Number(propertyData.deposit / 1000 || 0),
-            constructionCooperationFunds: propertyData.constructionCooperationFunds || 0,
-            paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
-            year: propertyData.deliveryDate || "",
-            dailySales: {
-              daily1: propertyData.salesTable?.daily1Sales || 0,
-              daily2: propertyData.salesTable?.daily2Sales || 0,
-              daily3: propertyData.salesTable?.daily3Sales || 0,
-              daily4: propertyData.salesTable?.daily4Sales || 0,
-              daily5: propertyData.salesTable?.daily5Sales || 0,
-            },
-            yearlySales: {
-              year1: parseFloat((propertyData.salesTable?.year1Sales || "0").replace(/,/g, "")),
-              year2: parseFloat((propertyData.salesTable?.year2Sales || "0").replace(/,/g, "")),
-              year3: parseFloat((propertyData.salesTable?.year3Sales || "0").replace(/,/g, "")),
-              year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
-              year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
-            },
-            remainingMonths: propertyData.salesTable?.remainingMonths || 0,
-            totalStoreProfit: {
-              year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
-              year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
-              year3: propertyData.incomeData?.monthlyStoreProfit3 * 12,
-              year4: propertyData.incomeData?.monthlyStoreProfit4 * 12,
-              year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
-            },
-            contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
 
-            // 追加した労働コスト関連
-            laborCosts: {
-              totalLaborCosts1,
-              totalLaborCosts2,
-              totalLaborCosts3,
-              totalLaborCosts4,
-              totalLaborCosts5,
-              averagetotalLabor,
-              employeeLaborCosts1,
-              employeeLaborCosts2,
-              employeeLaborCosts3,
-              employeeLaborCosts4,
-              employeeLaborCosts5,
-              averageEmployeeLabor,
-              coEmployeeLaborCosts1,
-              coEmployeeLaborCosts2,
-              coEmployeeLaborCosts3,
-              coEmployeeLaborCosts4,
-              coEmployeeLaborCosts5,
-              averageCoEmployeeLabor,
-              avgSalaryData1,
-              avgSalaryData2,
-              avgSalaryData3,
-              avgSalaryData4,
-              avgSalaryData5,
-              averageAvgSalary,
-              dailyWorkingHours1,
-              dailyWorkingHours2,
-              dailyWorkingHours3,
-              dailyWorkingHours4,
-              dailyWorkingHours5,
-              averageDailyWorkingHours,
-            }
-          };
-        exportToExcel(exportData);
-      });
+    document.getElementById("exportButton").addEventListener("click", function() {
+      if (!propertyId) {
+          document.getElementById("name").textContent = "IDが指定されていません";
+          return;
+      }
+
+      try {
+          const docRef = doc(db, "properties", propertyId);
+          const docSnap = await getDoc(docRef);
+
+          const dbRef = doc(db, "laborCostRatio", docId);
+          const dbSnap = await getDoc(dbRef);
+
+          if (docSnap.exists() && dbSnap.exists()) {
+              const propertyData = docSnap.data();
+
+              const businessPlanData = propertyData.businessPlanData || {};
+
+              // 必要なデータをFirestoreから抽出し、表示用に加工
+              const laborCost = propertyData.laborCost || {};
+              const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
+              const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
+              const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
+              const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
+              const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
+              const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
+
+              const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
+              const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
+              const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
+              const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
+              const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
+              const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
+
+              const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
+              const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
+              const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
+              const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
+              const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
+              const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
+
+              const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
+              const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
+              const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
+              const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
+              const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
+              const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
+
+              const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
+              const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
+              const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
+              const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
+              const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
+              const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
+
+              // 必要なデータをFirestoreから抽出し、表示用に加工
+              const data = {
+                name: propertyData.name || "",
+                manager: propertyData.manager || "",
+                overview: propertyData.businessPlanData?.overview || "",
+                consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
+                household: businessPlanData.household || "",
+                population: businessPlanData.population || "",
+                averagePopulation: businessPlanData.averagePopulation || "",
+                contractArea: propertyData.contractArea || "",
+                shopArea: propertyData.shopArea || "",
+                delivery: `${propertyData.deliveryDate || ""}年${propertyData.deliveryMonth || ""}月`,
+                openSelect: businessPlanData.openSelect || "",
+                endSelect: businessPlanData.endSelect || "",
+                sales: propertyData.plSalesData?.singleYear3 || 0,
+                profit: propertyData.profitData?.singleYear3 || 0,
+                labor: propertyData.laborData?.singleYear3 || 0,
+                selling: propertyData.sellingData?.singleYear3 || 0,
+                rent: propertyData.rent / 1000 || "",
+                equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
+                general: propertyData.generalData?.singleYear3 || 0,
+                totalSelling3Value: parseFloat((propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
+                monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
+                dailySale: propertyData.salesTable?.daily3Sales || 0,
+                aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
+                logisticsCosts: businessPlanData.logisticsCosts || 0,
+                judgmentData: propertyData.judgmentData?.lastNegativeMonth?.replace("ヶ月", "") || "",
+                layoutPattern: (propertyData.layout || "") + (propertyData.propertyType || ""),
+                locationPattern: propertyData.salesTable?.locationPattern || "",
+                parkingSpacesSelect: businessPlanData.parkingSpacesSelect || "",
+                numberofParkingSpaces: businessPlanData.numberofParkingSpaces || 0,
+                depreciationCost: {
+                  buildingCost: propertyData.depreciationCost?.buildingCost || 0,
+                  generalConstructionCost: propertyData.depreciationCost?.generalConstructionCost || 0,
+                  refrigerationEquipmentConstructionTotal: propertyData.depreciationCost?.refrigerationEquipmentConstructionTotal || 0,
+                  buildingsEquipment: propertyData.depreciationCost?.buildingsEquipment || 0,
+                  displayFixtures: propertyData.depreciationCost?.displayFixtures || 0,
+                  signboard: propertyData.depreciationCost?.signboard || 0,
+                  other: propertyData.depreciationCost?.other || 0,
+                  nonstandard: propertyData.depreciationCost?.nonstandard || 0,
+                  total: propertyData.depreciationCost?.total || 0,
+                  addRegisters: propertyData.depreciationCost?.addRegisters || 0,
+                  addSelfRegisters: propertyData.depreciationCost?.addSelfRegisters || 0,
+                },
+                brokerageFeeValue: parseFloat(propertyData.rent * (propertyData.brokerageFee?.replace("か月", "") || 0)),
+                consultingFeesValue: parseFloat(propertyData.rent * (propertyData.consultingFees?.replace("か月", "") || 0)),
+                keyMoneyValue: parseFloat(propertyData.rent * (propertyData.keyMoney?.replace("か月", "") || 0)),
+                deposit: Number(propertyData.deposit / 1000 || 0),
+                constructionCooperationFunds: propertyData.constructionCooperationFunds || 0,
+                paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
+                year: propertyData.deliveryDate || "",
+                dailySales: {
+                  daily1: propertyData.salesTable?.daily1Sales || 0,
+                  daily2: propertyData.salesTable?.daily2Sales || 0,
+                  daily3: propertyData.salesTable?.daily3Sales || 0,
+                  daily4: propertyData.salesTable?.daily4Sales || 0,
+                  daily5: propertyData.salesTable?.daily5Sales || 0,
+                },
+                yearlySales: {
+                  year1: parseFloat((propertyData.salesTable?.year1Sales || "0").replace(/,/g, "")),
+                  year2: parseFloat((propertyData.salesTable?.year2Sales || "0").replace(/,/g, "")),
+                  year3: parseFloat((propertyData.salesTable?.year3Sales || "0").replace(/,/g, "")),
+                  year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
+                  year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
+                },
+                remainingMonths: propertyData.salesTable?.remainingMonths || 0,
+                totalStoreProfit: {
+                  year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
+                  year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
+                  year3: propertyData.incomeData?.monthlyStoreProfit3 * 12,
+                  year4: propertyData.incomeData?.monthlyStoreProfit4 * 12,
+                  year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
+                },
+                contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
+
+                // 追加した労働コスト関連
+                laborCosts: {
+                  totalLaborCosts1,
+                  totalLaborCosts2,
+                  totalLaborCosts3,
+                  totalLaborCosts4,
+                  totalLaborCosts5,
+                  averagetotalLabor,
+                  employeeLaborCosts1,
+                  employeeLaborCosts2,
+                  employeeLaborCosts3,
+                  employeeLaborCosts4,
+                  employeeLaborCosts5,
+                  averageEmployeeLabor,
+                  coEmployeeLaborCosts1,
+                  coEmployeeLaborCosts2,
+                  coEmployeeLaborCosts3,
+                  coEmployeeLaborCosts4,
+                  coEmployeeLaborCosts5,
+                  averageCoEmployeeLabor,
+                  avgSalaryData1,
+                  avgSalaryData2,
+                  avgSalaryData3,
+                  avgSalaryData4,
+                  avgSalaryData5,
+                  averageAvgSalary,
+                  dailyWorkingHours1,
+                  dailyWorkingHours2,
+                  dailyWorkingHours3,
+                  dailyWorkingHours4,
+                  dailyWorkingHours5,
+                  averageDailyWorkingHours,
+                }
+              };
+
+          // Excelファイルを作成
+          exportToExcel(data);
+          } else {
+              console.error("データが見つかりません");
+          }
+      } catch (error) {
+          console.error("エラーが発生しました:", error);
+      }
+    }
 
       // ページ読み込み時にデータを表示
       displayData();
