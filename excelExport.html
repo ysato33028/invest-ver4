@@ -72,19 +72,82 @@
               if (docSnap.exists() && dbSnap.exists()) {
                   const propertyData = docSnap.data();
 
-                  // Firebaseからのデータ取得
-                  const name = propertyData.name || "";
-                  document.getElementById("name").textContent = name || "";
-                  const manager = propertyData.manager || "";
-
                   const businessPlanData = propertyData.businessPlanData || {};
 
-                  // 必要なデータを抽出
+
+                  // 必要なデータをFirestoreから抽出し、表示用に加工
                   const data = {
-                      name: propertyData.name || "",
-                      manager: propertyData.manager || "",
-                      overview: propertyData.businessPlanData?.overview || "",
-                      consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
+                    name: propertyData.name || "",
+                    manager: propertyData.manager || "",
+                    overview: propertyData.businessPlanData?.overview || "",
+                    consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
+                    household: businessPlanData.household || "",
+                    population: businessPlanData.population || "",
+                    averagePopulation: businessPlanData.averagePopulation || "",
+                    contractArea: propertyData.contractArea || "",
+                    shopArea: propertyData.shopArea || "",
+                    delivery: `${propertyData.deliveryDate || ""}年${propertyData.deliveryMonth || ""}月`,
+                    openSelect: businessPlanData.openSelect || "",
+                    endSelect: businessPlanData.endSelect || "",
+                    sales: propertyData.plSalesData?.singleYear3 || 0,
+                    profit: propertyData.profitData?.singleYear3 || 0,
+                    labor: propertyData.laborData?.singleYear3 || 0,
+                    selling: propertyData.sellingData?.singleYear3 || 0,
+                    rent: propertyData.rent / 1000 || "",
+                    equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
+                    general: propertyData.generalData?.singleYear3 || 0,
+                    monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
+                    dailySale: propertyData.salesTable?.daily3Sales || 0,
+                    aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
+                    logisticsCosts: businessPlanData.logisticsCosts || 0,
+                    judgmentData: propertyData.judgmentData?.lastNegativeMonth?.replace("ヶ月", "") || "",
+                    layoutPattern: (propertyData.layout || "") + (propertyData.propertyType || ""),
+                    locationPattern: propertyData.salesTable?.locationPattern || "",
+                    parkingSpacesSelect: businessPlanData.parkingSpacesSelect || "",
+                    numberofParkingSpaces: businessPlanData.numberofParkingSpaces || 0,
+                    depreciationCost: {
+                      buildingCost: propertyData.depreciationCost?.buildingCost || 0,
+                      generalConstructionCost: propertyData.depreciationCost?.generalConstructionCost || 0,
+                      refrigerationEquipmentConstructionTotal: propertyData.depreciationCost?.refrigerationEquipmentConstructionTotal || 0,
+                      buildingsEquipment: propertyData.depreciationCost?.buildingsEquipment || 0,
+                      displayFixtures: propertyData.depreciationCost?.displayFixtures || 0,
+                      signboard: propertyData.depreciationCost?.signboard || 0,
+                      other: propertyData.depreciationCost?.other || 0,
+                      nonstandard: propertyData.depreciationCost?.nonstandard || 0,
+                      total: propertyData.depreciationCost?.total || 0,
+                      addRegisters: propertyData.depreciationCost?.addRegisters || 0,
+                      addSelfRegisters: propertyData.depreciationCost?.addSelfRegisters || 0,
+                    },
+                    brokerageFeeValue: parseFloat(propertyData.rent * (propertyData.brokerageFee?.replace("か月", "") || 0)),
+                    consultingFeesValue: parseFloat(propertyData.rent * (propertyData.consultingFees?.replace("か月", "") || 0)),
+                    keyMoneyValue: parseFloat(propertyData.rent * (propertyData.keyMoney?.replace("か月", "") || 0)),
+                    deposit: Number(propertyData.deposit / 1000 || 0),
+                    constructionCooperationFunds: propertyData.constructionCooperationFunds || 0,
+                    paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
+                    year: propertyData.deliveryDate || "",
+                    dailySales: {
+                      daily1: salesTable.daily1Sales || 0,
+                      daily2: salesTable.daily2Sales || 0,
+                      daily3: salesTable.daily3Sales || 0,
+                      daily4: salesTable.daily4Sales || 0,
+                      daily5: salesTable.daily5Sales || 0,
+                    },
+                    yearlySales: {
+                      year1: parseFloat((salesTable.year1Sales || "0").replace(/,/g, "")),
+                      year2: parseFloat((salesTable.year2Sales || "0").replace(/,/g, "")),
+                      year3: parseFloat((salesTable.year3Sales || "0").replace(/,/g, "")),
+                      year4: parseFloat((salesTable.year4Sales || "0").replace(/,/g, "")),
+                      year5: parseFloat((salesTable.year5Sales || "0").replace(/,/g, "")),
+                    },
+                    remainingMonths: salesTable.remainingMonths || 0,
+                    totalStoreProfit: {
+                      year1: incomeData.monthlyStoreProfit1 * (salesTable.remainingMonths || 0),
+                      year2: incomeData.monthlyStoreProfit2 * 12,
+                      year3: incomeData.monthlyStoreProfit3 * 12,
+                      year4: incomeData.monthlyStoreProfit4 * 12,
+                      year5: incomeData.monthlyStoreProfit5 * 12,
+                    },
+                    contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
                   };
 
               // HTMLにデータを表示
@@ -108,15 +171,73 @@
               // 1. 新しいワークブックの作成
               const wb = XLSX.utils.book_new();
 
-              // 2. ワークシートのデータ構造
               const worksheetData = [
-                  ["項目", "内容"],
-                  ["店舗名", data.name],
-                  ["作成者", data.manager],
-                  ["概要", data.overview],
-                  ["生活者特性", data.consumerCharacteristics],
-                  // 必要に応じて他の項目をここに追加可能
+                ["項目", "内容"],
+                ["店舗名", data.name],
+                ["作成者", data.manager],
+                ["概要", data.overview],
+                ["生活者特性", data.consumerCharacteristics],
+                ["世帯数", data.household],
+                ["人口", data.population],
+                ["平均人口", data.averagePopulation],
+                ["契約面積", data.contractArea],
+                ["店舗面積", data.shopArea],
+                ["引渡し", data.delivery],
+                ["開店日", data.openSelect],
+                ["閉店日", data.endSelect],
+                ["売上", data.sales],
+                ["利益", data.profit],
+                ["人件費", data.labor],
+                ["販売費", data.selling],
+                ["家賃", data.rent],
+                ["設備費", data.equipment],
+                ["一般費用", data.general],
+                ["月間店舗利益", data.monthlyStoreProfit],
+                ["日次売上", data.dailySale],
+                ["AI予測売上", data.aiForecastSales],
+                ["物流コスト", data.logisticsCosts],
+                ["最終赤字月", data.judgmentData],
+                ["レイアウトパターン", data.layoutPattern],
+                ["立地パターン", data.locationPattern],
+                ["駐車場選択", data.parkingSpacesSelect],
+                ["駐車場台数", data.numberofParkingSpaces],
+                ["建物費", data.depreciationCost.buildingCost],
+                ["一般建設費", data.depreciationCost.generalConstructionCost],
+                ["冷蔵設備総計", data.depreciationCost.refrigerationEquipmentConstructionTotal],
+                ["建物付帯設備", data.depreciationCost.buildingsEquipment],
+                ["展示備品", data.depreciationCost.displayFixtures],
+                ["看板", data.depreciationCost.signboard],
+                ["その他", data.depreciationCost.other],
+                ["非標準設備", data.depreciationCost.nonstandard],
+                ["減価償却総計", data.depreciationCost.total],
+                ["追加レジ数", data.depreciationCost.addRegisters],
+                ["追加セルフレジ数", data.depreciationCost.addSelfRegisters],
+                ["仲介手数料", data.brokerageFeeValue],
+                ["コンサルティング費用", data.consultingFeesValue],
+                ["礼金", data.keyMoneyValue],
+                ["敷金", data.deposit],
+                ["建設協力金", data.constructionCooperationFunds],
+                ["支払頻度", data.paymentFrequencySelect],
+                ["年次", data.year],
+                ["日次売上1年目", data.dailySales.daily1],
+                ["日次売上2年目", data.dailySales.daily2],
+                ["日次売上3年目", data.dailySales.daily3],
+                ["日次売上4年目", data.dailySales.daily4],
+                ["日次売上5年目", data.dailySales.daily5],
+                ["年間売上1年目", data.yearlySales.year1],
+                ["年間売上2年目", data.yearlySales.year2],
+                ["年間売上3年目", data.yearlySales.year3],
+                ["年間売上4年目", data.yearlySales.year4],
+                ["年間売上5年目", data.yearlySales.year5],
+                ["残月数", data.remainingMonths],
+                ["1年目店舗利益", data.totalStoreProfit.year1],
+                ["2年目店舗利益", data.totalStoreProfit.year2],
+                ["3年目店舗利益", data.totalStoreProfit.year3],
+                ["4年目店舗利益", data.totalStoreProfit.year4],
+                ["5年目店舗利益", data.totalStoreProfit.year5],
+                ["契約期間選択", data.contractPeriodSelect],
               ];
+
 
               // 3. ワークシートの作成
               const ws = XLSX.utils.aoa_to_sheet(worksheetData);
