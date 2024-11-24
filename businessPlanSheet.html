@@ -353,8 +353,12 @@
 
     // セルに値を設定する際、セルが未定義の場合は初期化する
     function setCellValue(sheet, cellAddress, value) {
+      if (typeof value !== "string" && typeof value !== "number" && value !== null) {
+        throw new Error(`無効な値: ${value}`);
+      }
+
       if (!sheet[cellAddress]) {
-        sheet[cellAddress] = {}; // セルが未定義の場合はオブジェクトを初期化
+        sheet[cellAddress] = {}; // セルが未定義の場合は初期化
       }
       sheet[cellAddress].v = value || ""; // 値を設定（未定義なら空文字列）
     }
