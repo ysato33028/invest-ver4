@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>経営計画書作成</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>経営計画書作成 │ <span id="name"></span></h1>    
+
+    <br><br>
+    <button id="exportButton">Excelをダウンロード</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebaseの初期化
+        const firebaseConfig = {
+            apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+            authDomain: "mybas-61537.firebaseapp.com",
+            projectId: "mybas-61537",
+            storageBucket: "mybas-61537.firebasestorage.app",
+            messagingSenderId: "47149190856",
+            appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // URLから'id'パラメータを取得
+        const propertyId = getQueryParam('id');
+        const docId = "commonData";
+
+        // Firestoreから指定IDのデータを取得して表示
+        async function displayData() {
+            if (!propertyId) {
+                document.getElementById("name").textContent = "IDが指定されていません";
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "properties", propertyId);
+                const docSnap = await getDoc(docRef);
+
+                const dbRef = doc(db, "laborCostRatio", docId);
+                const dbSnap = await getDoc(dbRef);
+
+                if (docSnap.exists() && dbSnap.exists()) {
+                    const propertyData = docSnap.data();
+
+                    // Firebaseからのデータ取得
+                    const name = propertyData.name || "";
+                    document.getElementById("name").textContent = name || "";
+
+                    // Excelファイルを作成
+                    exportToExcel(name);  // nameをExcelに書き込む
+                } else {
+                    console.error("データが見つかりません");
+                }
+            } catch (error) {
+                console.error("エラーが発生しました:", error);
+            }
+        }
+
+        // Excelにデータを書き込む関数
+        function exportToExcel(name) {
+            try {
+                // 1. 新しいワークブックの作成
+                const wb = XLSX.utils.book_new();
+
+                // 2. ワークシートの作成
+                const ws = XLSX.utils.aoa_to_sheet([["店舗名", name]]);  // Excelシートに「店舗名」と取得したnameを書き込む
+
+                // 3. ワークブックにワークシートを追加
+                XLSX.utils.book_append_sheet(wb, ws, "経営計画書");
+
+                // 4. Excelファイルをエクスポート
+                const blob = XLSX.write(wb, { bookType: "xlsx", type: "blob" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `【${name || "店舗名未定"}】経営計画書.xlsx`;
+                link.click();
+            } catch (error) {
+                console.error("エクスポートエラー:", error);
+                alert(`エクスポート中にエラーが発生しました: ${error.message}`);
+            }
+        }
+
+        // ページ読み込み時にデータを表示
+        displayData();
+    </script>
+</body>
+</html>
