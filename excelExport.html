@@ -102,7 +102,7 @@
               const binaryArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
               // 5. バイナリデータからBlobを作成
-              const blob = new Blob([binaryArray], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+              const blob = new Blob([binaryArray], { type: "application/octet-stream" });
 
               // 6. Blobをダウンロードリンクとして処理
               const link = document.createElement("a");
@@ -114,7 +114,6 @@
               alert(`エクスポート中にエラーが発生しました: ${error.message}`);
           }
       }
-
 
       // ページ読み込み時にデータを表示
       displayData();
