@@ -73,6 +73,8 @@
                   const propertyData = docSnap.data();
 
                   const businessPlanData = propertyData.businessPlanData || {};
+                  const salesTable = propertyData.salesTable || {};
+                  const incomeData = propertyData.incomeData || {};
 
 
                   // 必要なデータをFirestoreから抽出し、表示用に加工
