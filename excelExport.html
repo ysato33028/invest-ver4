@@ -74,6 +74,42 @@
 
                   const businessPlanData = propertyData.businessPlanData || {};
 
+                  // 必要なデータをFirestoreから抽出し、表示用に加工
+                  const laborCost = propertyData.laborCost || {};
+                  const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
+                  const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
+                  const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
+                  const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
+                  const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
+                  const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
+
+                  const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
+                  const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
+                  const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
+                  const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
+                  const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
+                  const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
+
+                  const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
+                  const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
+                  const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
+                  const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
+                  const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
+                  const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
+
+                  const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
+                  const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
+                  const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
+                  const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
+                  const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
+                  const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
+
+                  const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
+                  const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
+                  const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
+                  const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
+                  const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
+                  const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
 
                   // 必要なデータをFirestoreから抽出し、表示用に加工
                   const data = {
@@ -96,6 +132,7 @@
                     rent: propertyData.rent / 1000 || "",
                     equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
                     general: propertyData.generalData?.singleYear3 || 0,
+                    totalSelling3Value: (propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
                     monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
                     dailySale: propertyData.salesTable?.daily3Sales || 0,
                     aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
@@ -148,6 +185,40 @@
                       year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
                     },
                     contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
+
+                    // 追加した労働コスト関連
+                    laborCosts: {
+                      totalLaborCosts1,
+                      totalLaborCosts2,
+                      totalLaborCosts3,
+                      totalLaborCosts4,
+                      totalLaborCosts5,
+                      averagetotalLabor,
+                      employeeLaborCosts1,
+                      employeeLaborCosts2,
+                      employeeLaborCosts3,
+                      employeeLaborCosts4,
+                      employeeLaborCosts5,
+                      averageEmployeeLabor,
+                      coEmployeeLaborCosts1,
+                      coEmployeeLaborCosts2,
+                      coEmployeeLaborCosts3,
+                      coEmployeeLaborCosts4,
+                      coEmployeeLaborCosts5,
+                      averageCoEmployeeLabor,
+                      avgSalaryData1,
+                      avgSalaryData2,
+                      avgSalaryData3,
+                      avgSalaryData4,
+                      avgSalaryData5,
+                      averageAvgSalary,
+                      dailyWorkingHours1,
+                      dailyWorkingHours2,
+                      dailyWorkingHours3,
+                      dailyWorkingHours4,
+                      dailyWorkingHours5,
+                      averageDailyWorkingHours,
+                    }
                   };
 
               // HTMLにデータを表示
@@ -192,6 +263,7 @@
                 ["家賃", data.rent],
                 ["設備費", data.equipment],
                 ["一般費用", data.general],
+                ["販売一般管理費計", data.totalSelling3Value],
                 ["月間店舗利益", data.monthlyStoreProfit],
                 ["日次売上", data.dailySale],
                 ["AI予測売上", data.aiForecastSales],
@@ -236,6 +308,21 @@
                 ["4年目店舗利益", data.totalStoreProfit.year4],
                 ["5年目店舗利益", data.totalStoreProfit.year5],
                 ["契約期間選択", data.contractPeriodSelect],
+                // 労働コスト関連を追加
+                ["総人件費1", data.laborCosts.totalLaborCosts1],
+                ["平均総人件費", data.laborCosts.averagetotalLabor],
+                
+                ["社員人件費1", data.laborCosts.employeeLaborCosts1],
+                ["平均社員人件費", data.laborCosts.averageEmployeeLabor],
+                
+                ["共同社員人件費1", data.laborCosts.coEmployeeLaborCosts1],
+                ["平均共同社員人件費", data.laborCosts.averageCoEmployeeLabor],
+                
+                ["平均給与1", data.laborCosts.avgSalaryData1],
+                ["平均給与", data.laborCosts.averageAvgSalary],
+                
+                ["日次労働時間1", data.laborCosts.dailyWorkingHours1],
+                ["平均日次労働時間", data.laborCosts.averageDailyWorkingHours],
               ];
 
 
