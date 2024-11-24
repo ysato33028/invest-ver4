@@ -365,8 +365,94 @@
       }
 
       document.getElementById("exportButton").addEventListener("click", function() {
-        // ここでエクスポート処理を開始
-        exportToExcel(data);
+        // エクスポートするためのサンプルデータを定義
+        const sampleData = {
+          name: "店舗名サンプル",
+          manager: "担当者名",
+          overview: "この店舗は、テスト用の店舗です。",
+          consumerCharacteristics: "一般消費者",
+          household: 500,
+          population: 1500,
+          averagePopulation: 3000,
+          contractArea: "1000m²",
+          shopArea: "500m²",
+          delivery: "2024-01-01",
+          openSelect: "2024-02-01",
+          endSelect: "2029-02-01",
+          sales: 100000,
+          profit: 20000,
+          labor: 5000,
+          selling: 3000,
+          rent: 20000,
+          equipment: 5000,
+          general: 10000,
+          totalSelling3Value: 15000,
+          monthlyStoreProfit: 5000,
+          dailySale: 1000,
+          aiForecastSales: 1100,
+          logisticsCosts: 500,
+          judgmentData: "2025-03-01",
+          layoutPattern: "L字型",
+          locationPattern: "商業街",
+          parkingSpacesSelect: "あり",
+          numberofParkingSpaces: 20,
+          depreciationCost: {
+            buildingCost: 10000,
+            generalConstructionCost: 5000,
+            refrigerationEquipmentConstructionTotal: 3000,
+            buildingsEquipment: 2000,
+            displayFixtures: 1000,
+            signboard: 500,
+            other: 200,
+            nonstandard: 300,
+            total: 25000,
+            addRegisters: 3,
+            addSelfRegisters: 2
+          },
+          brokerageFeeValue: 1000,
+          consultingFeesValue: 2000,
+          keyMoneyValue: 15000,
+          deposit: 10000,
+          constructionCooperationFunds: 5000,
+          paymentFrequencySelect: "月次",
+          year: 2024,
+          dailySales: {
+            daily1: 500,
+            daily2: 600,
+            daily3: 700,
+            daily4: 800,
+            daily5: 900
+          },
+          yearlySales: {
+            year1: 180000,
+            year2: 200000,
+            year3: 220000,
+            year4: 240000,
+            year5: 260000
+          },
+          remainingMonths: 24,
+          totalStoreProfit: {
+            year1: 10000,
+            year2: 12000,
+            year3: 14000,
+            year4: 16000,
+            year5: 18000
+          },
+          contractPeriodSelect: "5年",
+          laborCosts: {
+            totalLaborCosts1: 10000,
+            averagetotalLabor: 12000,
+            employeeLaborCosts1: 5000,
+            averageEmployeeLabor: 6000,
+            coEmployeeLaborCosts1: 4000,
+            averageCoEmployeeLabor: 5000,
+            avgSalaryData1: 3000,
+            averageAvgSalary: 3500,
+            dailyWorkingHours1: 8,
+            averageDailyWorkingHours: 7.5
+          }
+        };
+        exportToExcel(sampleData);
       });
 
       // ページ読み込み時にデータを表示
