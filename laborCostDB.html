@@ -178,9 +178,9 @@
                 for (const row of jsonData) {
                     const storeName = row["店舗名"];
                     if (!storeName || typeof storeName !== "string" || storeName.trim() === "") {
-                        console.warn("無効な店舗名の行をスキップ:", row);
-                        continue;
-                    }
+                    console.warn("無効な店舗名の行をスキップ:", row);
+                    continue;
+                }
 
                     try {
                         // `店舗名`が一致するドキュメントを検索
@@ -235,6 +235,8 @@
                     });
             } else {
                 alert("該当する店舗が見つかりません。");
+            } catch (error) {
+                console.error("データ追加/更新エラー: ", error);
             }
         }
 
