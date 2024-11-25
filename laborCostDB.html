@@ -233,10 +233,12 @@
                         document.getElementById("dispatch-cost").textContent = (data["派遣・請負額（円）"] || 0).toFixed(2);
                         document.getElementById("dispatch-hours").textContent = (data["月間派遣・請負人時（時間）"] || 0).toFixed(2);
                     });
-            } else {
-                alert("該当する店舗が見つかりません。");
+                } else {
+                    alert("該当する店舗が見つかりません。");
+                }
             } catch (error) {
-                console.error("データ追加/更新エラー: ", error);
+                console.error("検索エラー:", error);
+                alert("検索中にエラーが発生しました。");
             }
         }
 
