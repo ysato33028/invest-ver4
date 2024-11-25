@@ -315,7 +315,7 @@
 
         // 投資回収が未達成の場合、次にoperatingCF2, operatingCF3, ..., operatingCF8 を順次加算
         let monthCount = 0;  // 月のカウント
-        let totalMonths = plannedOpeningDateCount;  // 初期月を含めてカウントを開始
+        let totalMonths = plannedOpeningDateCount - 1;  // 初期月を含めてカウントを開始
 
         // 投資回収計算処理
         while (investCF < 0) {
@@ -326,7 +326,7 @@
             monthCount++; // 現在のループ内のカウントを増加
             totalMonths++; // 総月数を増加
 
-            console.log(`営業CFを加算した後の投資額: ${investCF} (月数: ${totalMonths})`);
+            console.log(`営業CFを加算した後の${totalMonths}ヶ月の投資額: ${investCF}`);
 
             // 回収達成時の処理
             if (investCF >= 0) {
