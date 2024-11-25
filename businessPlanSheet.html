@@ -368,87 +368,127 @@
   displayData();
 
 // ボタンのクリックイベントを設定
-document.getElementById("exportButton").addEventListener("click", function(data) {
-// サンプルデータ
-const Data = {
-    name: data.name,
-    manager: data.manager,
-    overview: data.overview,
-    consumerCharacteristics: data.consumerCharacteristics,
-    household: data.household,
-    population: data.population,
-    averagePopulation: data.averagePopulation,
-    contractArea: data.contractArea,
-    shopArea: data.shopArea,
-    delivery: data.delivery,
-    openSelect: data.openSelect,
-    endSelect: data.endSelect,
-    sales: data.sales,
-    profit: data.profit,
-    labor: data.labor,
-    selling: data.selling,
-    rent: data.rent,
-    equipment: data.equipment,
-    general: data.general,
-    totalSelling3Value: data.totalSelling3Value,
-    monthlyStoreProfit: data.monthlyStoreProfit,
-    dailySale: data.dailySale,
-    aiForecastSales: data.aiForecastSales,
-    logisticsCosts: data.logisticsCosts,
-    judgmentData: data.judgmentData,
-    layoutPattern: data.layoutPattern,
-    locationPattern: data.locationPattern,
-    parkingSpacesSelect: data.parkingSpacesSelect,
-    numberofParkingSpaces: data.numberofParkingSpaces,
-    buildingCost: data.depreciationCost.buildingCost,
-    generalConstructionCost: data.depreciationCost.generalConstructionCost,
-    refrigerationEquipmentConstructionTotal: data.depreciationCost.refrigerationEquipmentConstructionTotal,
-    buildingsEquipment: data.depreciationCost.buildingsEquipment,
-    displayFixtures: data.depreciationCost.displayFixtures,
-    signboard: data.depreciationCost.signboard,
-    other: data.depreciationCost.other,
-    nonstandard: data.depreciationCost.nonstandard,
-    depreciationCosttotal: data.depreciationCost.total,
-    addRegisters: data.depreciationCost.addRegisters,
-    addSelfRegisters: data.depreciationCost.addSelfRegisters,
-    brokerageFeeValue: data.brokerageFeeValue,
-    consultingFeesValue: data.consultingFeesValue,
-    keyMoneyValue: data.keyMoneyValue,
-    deposit: data.deposit,
-    constructionCooperationFunds: data.constructionCooperationFunds,
-    paymentFrequencySelect: data.paymentFrequencySelect,
-    year: data.year,
-    daily1: data.dailySales.daily1,
-    daily2: data.dailySales.daily2,
-    daily3: data.dailySales.daily3,
-    daily4: data.dailySales.daily4,
-    daily5: data.dailySales.daily5,
-    year1: data.yearlySales.year1,
-    year2: data.yearlySales.year2,
-    year3: data.yearlySales.year3,
-    year4: data.yearlySales.year4,
-    year5: data.yearlySales.year5,
-    remainingMonths: data.remainingMonths,
-    totalStoreProfityear1: data.totalStoreProfit.year1,
-    totalStoreProfityear2: data.totalStoreProfit.year2,
-    totalStoreProfityear3: data.totalStoreProfit.year3,
-    totalStoreProfityear4: data.totalStoreProfit.year4,
-    totalStoreProfityear5: data.totalStoreProfit.year5,
-    contractPeriodSelect: data.contractPeriodSelect,
-    totalLaborCosts1: data.laborCosts.totalLaborCosts1,
-    averagetotalLabor: data.laborCosts.averagetotalLabor,
-    employeeLaborCosts1: data.laborCosts.employeeLaborCosts1,
-    averageEmployeeLabor: data.laborCosts.averageEmployeeLabor,
-    coEmployeeLaborCosts1: data.laborCosts.coEmployeeLaborCosts1,
-    averageCoEmployeeLabor: data.laborCosts.averageCoEmployeeLabor,
-    avgSalaryData1: data.laborCosts.avgSalaryData1,
-    averageAvgSalary: data.laborCosts.averageAvgSalary,
-    dailyWorkingHours1: data.laborCosts.dailyWorkingHours1,
-    averageDailyWorkingHours: data.laborCosts.averageDailyWorkingHours,
-};
+document.getElementById("exportButton").addEventListener("click", function() {
+    const fileInput = document.getElementById("fileInput"); // ファイル選択要素
+    const file = fileInput.files[0];
 
-// exportToExcel関数を呼び出す
-exportToExcel(Data);
+    if (!file) {
+        alert("既存のExcelファイルを選択してください。");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+    try {
+        // 1. 既存のExcelファイルを読み込み
+        const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
+
+        const exportData = [
+            ["項目", "内容"],
+            ["店舗名", data.name],
+            ["作成者", data.manager],
+            ["概要", data.overview],
+            ["生活者特性", data.consumerCharacteristics],
+            ["世帯数", data.household],
+            ["人口", data.population],
+            ["平均人口", data.averagePopulation],
+            ["契約面積", data.contractArea],
+            ["店舗面積", data.shopArea],
+            ["引渡し", data.delivery],
+            ["開店日", data.openSelect],
+            ["閉店日", data.endSelect],
+            ["売上", data.sales],
+            ["利益", data.profit],
+            ["人件費", data.labor],
+            ["販売費", data.selling],
+            ["家賃", data.rent],
+            ["設備費", data.equipment],
+            ["一般費用", data.general],
+            ["販売一般管理費計", data.totalSelling3Value],
+            ["月間店舗利益", data.monthlyStoreProfit],
+            ["日次売上", data.dailySale],
+            ["AI予測売上", data.aiForecastSales],
+            ["物流コスト", data.logisticsCosts],
+            ["最終赤字月", data.judgmentData],
+            ["レイアウトパターン", data.layoutPattern],
+            ["立地パターン", data.locationPattern],
+            ["駐車場選択", data.parkingSpacesSelect],
+            ["駐車場台数", data.numberofParkingSpaces],
+            ["建物費", data.depreciationCost.buildingCost],
+            ["一般建設費", data.depreciationCost.generalConstructionCost],
+            ["冷蔵設備総計", data.depreciationCost.refrigerationEquipmentConstructionTotal],
+            ["建物付帯設備", data.depreciationCost.buildingsEquipment],
+            ["展示備品", data.depreciationCost.displayFixtures],
+            ["看板", data.depreciationCost.signboard],
+            ["その他", data.depreciationCost.other],
+            ["非標準設備", data.depreciationCost.nonstandard],
+            ["減価償却総計", data.depreciationCost.total],
+            ["追加レジ数", data.depreciationCost.addRegisters],
+            ["追加セルフレジ数", data.depreciationCost.addSelfRegisters],
+            ["仲介手数料", data.brokerageFeeValue],
+            ["コンサルティング費用", data.consultingFeesValue],
+            ["礼金", data.keyMoneyValue],
+            ["敷金", data.deposit],
+            ["建設協力金", data.constructionCooperationFunds],
+            ["支払頻度", data.paymentFrequencySelect],
+            ["年次", data.year],
+            ["日次売上1年目", data.dailySales.daily1],
+            ["日次売上2年目", data.dailySales.daily2],
+            ["日次売上3年目", data.dailySales.daily3],
+            ["日次売上4年目", data.dailySales.daily4],
+            ["日次売上5年目", data.dailySales.daily5],
+            ["年間売上1年目", data.yearlySales.year1],
+            ["年間売上2年目", data.yearlySales.year2],
+            ["年間売上3年目", data.yearlySales.year3],
+            ["年間売上4年目", data.yearlySales.year4],
+            ["年間売上5年目", data.yearlySales.year5],
+            ["残月数", data.remainingMonths],
+            ["1年目店舗利益", data.totalStoreProfit.year1],
+            ["2年目店舗利益", data.totalStoreProfit.year2],
+            ["3年目店舗利益", data.totalStoreProfit.year3],
+            ["4年目店舗利益", data.totalStoreProfit.year4],
+            ["5年目店舗利益", data.totalStoreProfit.year5],
+            ["契約期間選択", data.contractPeriodSelect],
+            // 労働コスト関連を追加
+            ["総人件費1", data.laborCosts.totalLaborCosts1],
+            ["平均総人件費", data.laborCosts.averagetotalLabor],
+            
+            ["社員人件費1", data.laborCosts.employeeLaborCosts1],
+            ["平均社員人件費", data.laborCosts.averageEmployeeLabor],
+            
+            ["共同社員人件費1", data.laborCosts.coEmployeeLaborCosts1],
+            ["平均共同社員人件費", data.laborCosts.averageCoEmployeeLabor],
+            
+            ["平均給与1", data.laborCosts.avgSalaryData1],
+            ["平均給与", data.laborCosts.averageAvgSalary],
+            
+            ["日次労働時間1", data.laborCosts.dailyWorkingHours1],
+            ["平均日次労働時間", data.laborCosts.averageDailyWorkingHours],
+          ];
+
+        // 2. 新しいシートを作成
+        const newSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+        // 3. 既存のワークブックにシートを追加
+        XLSX.utils.book_append_sheet(existingWorkbook, newSheet, "ExportedData");
+
+        // 4. 更新されたワークブックをエクスポート
+        const binaryArray = XLSX.write(existingWorkbook, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([binaryArray], { type: "application/octet-stream" });
+
+        // 5. ダウンロード
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "UpdatedWorkbook.xlsx";
+        link.click();
+
+        console.log("CSVエクスポート成功");
+        } catch (error) {
+            console.error("CSVエクスポート中にエラーが発生しました: ", error);
+            alert("CSVエクスポートに失敗しました");
+        }
+    };
+    reader.readAsBinaryString(file);
 });
 </script>
 </body>
