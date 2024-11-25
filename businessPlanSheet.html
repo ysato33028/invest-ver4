@@ -368,7 +368,7 @@
   displayData();
 
 // ボタンのクリックイベントを設定
-document.getElementById("exportButton").addEventListener("click", function() {
+document.getElementById("exportButton").addEventListener("click", async function() {
     const fileInput = document.getElementById("fileInput"); // ファイル選択要素
     const file = fileInput.files[0];
 
@@ -519,7 +519,7 @@ document.getElementById("exportButton").addEventListener("click", function() {
         const newSheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
         // 3. 既存のワークブックにシートを追加
-        XLSX.utils.book_append_sheet(existingWorkbook, newSheet, "ExportedData");
+        XLSX.utils.book_append_sheet(existingWorkbook, newSheet, "Data");
 
         // 4. 更新されたワークブックをエクスポート
         const binaryArray = XLSX.write(existingWorkbook, { bookType: "xlsx", type: "array" });
@@ -528,16 +528,17 @@ document.getElementById("exportButton").addEventListener("click", function() {
         // 5. ダウンロード
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = "UpdatedWorkbook.xlsx";
+        link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
         link.click();
 
         console.log("CSVエクスポート成功");
-        } catch (error) {
-            console.error("CSVエクスポート中にエラーが発生しました: ", error);
-            alert("CSVエクスポートに失敗しました");
-        }
-    };
-    reader.readAsBinaryString(file);
+        };
+        reader.readAsBinaryString(file);
+
+    } catch (error) {
+        console.error("CSVエクスポート中にエラーが発生しました: ", error);
+        alert("CSVエクスポートに失敗しました");
+    }
 });
 </script>
 </body>
