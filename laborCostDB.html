@@ -177,6 +177,10 @@
 
                 for (const row of jsonData) {
                     const storeName = row["店舗名"];
+                        if (!storeName) {
+                        console.warn("店舗名が未定義または空の行をスキップしました: ", row);
+                        continue; // 次の行にスキップ
+                    }
 
                     try {
                         // `店舗名`が一致するドキュメントを検索
@@ -211,21 +215,24 @@
 
         // 店舗名で検索し、該当データを表示する関数
         async function searchLaborCost() {
-            const storeName = document.getElementById("store-name").value;
+            const storeName = document.getElementById("store-name").value.trim(); // 空白を削除
+            if (!storeName) {
+                alert("店舗名を入力してください。");
+                return; // クエリをスキップ
+            }
             const dbRef = collection(db, "laborCostDB");
 
-            const q = query(dbRef, where("店舗名", "==", storeName));
-            const querySnapshot = await getDocs(q);
+            try {
+                const q = query(dbRef, where("店舗名", "==", storeName));
+                const querySnapshot = await getDocs(q);
 
-            console.log("検索条件:", storeName);  // 検索条件の確認
-
-            if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    document.getElementById("avg-salary").textContent = (data["平均時給（円）"] || 0).toFixed(2);
-                    document.getElementById("dispatch-cost").textContent = (data["派遣・請負額（円）"] || 0).toFixed(2);
-                    document.getElementById("dispatch-hours").textContent = (data["月間派遣・請負人時（時間）"] || 0).toFixed(2);
-                });
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        document.getElementById("avg-salary").textContent = (data["平均時給（円）"] || 0).toFixed(2);
+                        document.getElementById("dispatch-cost").textContent = (data["派遣・請負額（円）"] || 0).toFixed(2);
+                        document.getElementById("dispatch-hours").textContent = (data["月間派遣・請負人時（時間）"] || 0).toFixed(2);
+                    });
             } else {
                 alert("該当する店舗が見つかりません。");
             }
