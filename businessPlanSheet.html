@@ -377,9 +377,58 @@ document.getElementById("exportButton").addEventListener("click", function() {
         return;
     }
 
-    const reader = new FileReader();
-    reader.onload = function (event) {
     try {
+        // 必要なデータをFirestoreから取得
+        const docRef = doc(db, "properties", propertyId); // `propertyId` は事前に取得済みの値と仮定
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            alert("指定されたデータが見つかりませんでした。");
+            return;
+        }
+        // Firestoreからデータを取得
+        const data = docSnap.data();
+
+          // 必要なデータをFirestoreから抽出し、表示用に加工
+          const laborCost = data.laborCost || {};
+          const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
+          const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
+          const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
+          const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
+          const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
+          const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
+
+          const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
+          const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
+          const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
+          const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
+          const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
+          const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
+
+          const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
+          const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
+          const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
+          const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
+          const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
+          const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
+
+          const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
+          const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
+          const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
+          const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
+          const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
+          const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
+
+          const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
+          const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
+          const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
+          const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
+          const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
+          const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+
         // 1. 既存のExcelファイルを読み込み
         const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
 
@@ -414,17 +463,17 @@ document.getElementById("exportButton").addEventListener("click", function() {
             ["立地パターン", data.locationPattern],
             ["駐車場選択", data.parkingSpacesSelect],
             ["駐車場台数", data.numberofParkingSpaces],
-            ["建物費", data.depreciationCost.buildingCost],
-            ["一般建設費", data.depreciationCost.generalConstructionCost],
-            ["冷蔵設備総計", data.depreciationCost.refrigerationEquipmentConstructionTotal],
-            ["建物付帯設備", data.depreciationCost.buildingsEquipment],
-            ["展示備品", data.depreciationCost.displayFixtures],
-            ["看板", data.depreciationCost.signboard],
-            ["その他", data.depreciationCost.other],
-            ["非標準設備", data.depreciationCost.nonstandard],
-            ["減価償却総計", data.depreciationCost.total],
-            ["追加レジ数", data.depreciationCost.addRegisters],
-            ["追加セルフレジ数", data.depreciationCost.addSelfRegisters],
+            ["建物費", data.depreciationCost?.buildingCost],
+            ["一般建設費", data.depreciationCost?.generalConstructionCost],
+            ["冷蔵設備総計", data.depreciationCost?.refrigerationEquipmentConstructionTotal],
+            ["建物付帯設備", data.depreciationCost?.buildingsEquipment],
+            ["展示備品", data.depreciationCost?.displayFixtures],
+            ["看板", data.depreciationCost?.signboard],
+            ["その他", data.depreciationCost?.other],
+            ["非標準設備", data.depreciationCost?.nonstandard],
+            ["減価償却総計", data.depreciationCost?.total],
+            ["追加レジ数", data.depreciationCost?.addRegisters],
+            ["追加セルフレジ数", data.depreciationCost?.addSelfRegisters],
             ["仲介手数料", data.brokerageFeeValue],
             ["コンサルティング費用", data.consultingFeesValue],
             ["礼金", data.keyMoneyValue],
@@ -432,38 +481,38 @@ document.getElementById("exportButton").addEventListener("click", function() {
             ["建設協力金", data.constructionCooperationFunds],
             ["支払頻度", data.paymentFrequencySelect],
             ["年次", data.year],
-            ["日次売上1年目", data.dailySales.daily1],
-            ["日次売上2年目", data.dailySales.daily2],
-            ["日次売上3年目", data.dailySales.daily3],
-            ["日次売上4年目", data.dailySales.daily4],
-            ["日次売上5年目", data.dailySales.daily5],
-            ["年間売上1年目", data.yearlySales.year1],
-            ["年間売上2年目", data.yearlySales.year2],
-            ["年間売上3年目", data.yearlySales.year3],
-            ["年間売上4年目", data.yearlySales.year4],
-            ["年間売上5年目", data.yearlySales.year5],
+            ["日次売上1年目", data.dailySales?.daily1],
+            ["日次売上2年目", data.dailySales?.daily2],
+            ["日次売上3年目", data.dailySales?.daily3],
+            ["日次売上4年目", data.dailySales?.daily4],
+            ["日次売上5年目", data.dailySales?.daily5],
+            ["年間売上1年目", data.yearlySales?.year1],
+            ["年間売上2年目", data.yearlySales?.year2],
+            ["年間売上3年目", data.yearlySales?.year3],
+            ["年間売上4年目", data.yearlySales?.year4],
+            ["年間売上5年目", data.yearlySales?.year5],
             ["残月数", data.remainingMonths],
-            ["1年目店舗利益", data.totalStoreProfit.year1],
-            ["2年目店舗利益", data.totalStoreProfit.year2],
-            ["3年目店舗利益", data.totalStoreProfit.year3],
-            ["4年目店舗利益", data.totalStoreProfit.year4],
-            ["5年目店舗利益", data.totalStoreProfit.year5],
+            ["1年目店舗利益", data.totalStoreProfit?.year1],
+            ["2年目店舗利益", data.totalStoreProfit?.year2],
+            ["3年目店舗利益", data.totalStoreProfit?.year3],
+            ["4年目店舗利益", data.totalStoreProfit?.year4],
+            ["5年目店舗利益", data.totalStoreProfit?.year5],
             ["契約期間選択", data.contractPeriodSelect],
             // 労働コスト関連を追加
-            ["総人件費1", data.laborCosts.totalLaborCosts1],
-            ["平均総人件費", data.laborCosts.averagetotalLabor],
+            ["総人件費1", totalLaborCosts1],
+            ["平均総人件費", averagetotalLabor],
             
-            ["社員人件費1", data.laborCosts.employeeLaborCosts1],
-            ["平均社員人件費", data.laborCosts.averageEmployeeLabor],
+            ["社員人件費1", employeeLaborCosts1],
+            ["平均社員人件費", averageEmployeeLabor],
             
-            ["共同社員人件費1", data.laborCosts.coEmployeeLaborCosts1],
-            ["平均共同社員人件費", data.laborCosts.averageCoEmployeeLabor],
+            ["共同社員人件費1", coEmployeeLaborCosts1],
+            ["平均共同社員人件費", averageCoEmployeeLabor],
             
-            ["平均給与1", data.laborCosts.avgSalaryData1],
-            ["平均給与", data.laborCosts.averageAvgSalary],
+            ["平均給与1", avgSalaryData1],
+            ["平均給与", averageAvgSalary],
             
-            ["日次労働時間1", data.laborCosts.dailyWorkingHours1],
-            ["平均日次労働時間", data.laborCosts.averageDailyWorkingHours],
+            ["日次労働時間1", dailyWorkingHours1],
+            ["平均日次労働時間", averageDailyWorkingHours],
           ];
 
         // 2. 新しいシートを作成
