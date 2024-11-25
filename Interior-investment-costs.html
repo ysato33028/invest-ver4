@@ -799,6 +799,7 @@ async function loadFirebaseData() {
                 const propertyData = docSnap.data()
                 document.getElementById("name").textContent = propertyData.name || "";
                 const contractArea = propertyData.contractArea || 0;
+                updateContractAreaValues(contractArea);
 
                 const data = docSnap.data().interiorInvestmentCostsData; // inputDataフィールドのデータを取得
 
@@ -1623,6 +1624,10 @@ function setDefaultValues() {
     document.getElementById("aeonChannels-select").value = "袖看板1か所";
     document.getElementById("graphic-select").value = "ガラス面少ない";
 
+    // デフォルト値の設定
+    const defaultContractArea = 0;
+    updateContractAreaValues(defaultContractArea);
+
     // 各フィールドに対する更新関数の呼び出し
     updateProblemsofUseCost();
     updateSiteStatusCost();
@@ -1687,6 +1692,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setDefaultValues();
 });
+
+function updateContractAreaValues(contractArea) {
+    const contractAreaCost = contractArea * 3.3025;
+    document.getElementById("contractArea").textContent = contractAreaCost.toFixed(2);
+
+    const cost1 = (contractAreaCost <= 165) ? 400 : (contractAreaCost <= 230) ? 500 : 600;
+    const cost2 = (contractAreaCost <= 165) ? 1000 : (contractAreaCost <= 230) ? 1300 : 1500;
+
+    document.getElementById("contractArea-cost1").textContent = cost1;
+    document.getElementById("contractArea-cost2").textContent = cost2;
+}
 
 </script>
 </body>
