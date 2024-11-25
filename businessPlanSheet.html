@@ -516,7 +516,7 @@ document.getElementById("exportButton").addEventListener("click", async function
           ];
 
         // 2. 新しいシートを作成
-        const newSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        const newSheet = XLSX.utils.aoa_to_sheet(exportData);
 
         // 3. 既存のワークブックにシートを追加
         XLSX.utils.book_append_sheet(existingWorkbook, newSheet, "Data");
