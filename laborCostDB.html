@@ -177,9 +177,9 @@
 
                 for (const row of jsonData) {
                     const storeName = row["店舗名"];
-                        if (!storeName) {
-                        console.warn("店舗名が未定義または空の行をスキップしました: ", row);
-                        continue; // 次の行にスキップ
+                    if (!storeName || typeof storeName !== "string" || storeName.trim() === "") {
+                        console.warn("無効な店舗名の行をスキップ:", row);
+                        continue;
                     }
 
                     try {
