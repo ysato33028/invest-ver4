@@ -23,238 +23,226 @@
     </style>
 </head>
 <body>
-    <h1>経営計画書作成 │ <span id="name"></span></h1>
-    <input type="file" id="fileInput" accept=".xlsx" />
+    <h1>経営計画書作成 │ <span id="name"></span></h1>    
 
     <br><br>
-    <button id="exportButton">Excelをダウンロード</button>
+    <button id="exportButton">経営計画書原本をダウンロード</button>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // Firebaseの初期化
-    const firebaseConfig = {
-        apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
-        authDomain: "mybas-61537.firebaseapp.com",
-        projectId: "mybas-61537",
-        storageBucket: "mybas-61537.firebasestorage.app",
-        messagingSenderId: "47149190856",
-        appId: "1:47149190856:web:4d68e5036b6257210bdffd"
-    };
+        // Firebaseの初期化
+        const firebaseConfig = {
+            apiKey: "AIzaSyArjMPnTa1pFYEymr6gD9sxy-nykbJW8uw",
+            authDomain: "mybas-61537.firebaseapp.com",
+            projectId: "mybas-61537",
+            storageBucket: "mybas-61537.firebasestorage.app",
+            messagingSenderId: "47149190856",
+            appId: "1:47149190856:web:4d68e5036b6257210bdffd"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // URLからidパラメータを取得
-    function getQueryParam(name) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name);
-    }
+        // URLからidパラメータを取得
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
 
-    // URLから'id'パラメータを取得
-    const propertyId = getQueryParam('id');
-    const docId = "commonData";
+        // URLから'id'パラメータを取得
+        const propertyId = getQueryParam('id');
+        const docId = "commonData";
 
-    // Firestoreから指定IDのデータを取得して表示
-    async function displayData() {
-      if (!propertyId) {
-          document.getElementById("name").textContent = "IDが指定されていません";
-          return;
-      }
-
-      try {
-          const docRef = doc(db, "properties", propertyId);
-          const docSnap = await getDoc(docRef);
-
-          const dbRef = doc(db, "laborCostRatio", docId);
-          const dbSnap = await getDoc(dbRef);
-
-          if (docSnap.exists() && dbSnap.exists()) {
-              const propertyData = docSnap.data();
-
-              const businessPlanData = propertyData.businessPlanData || {};
-
-              // 必要なデータをFirestoreから抽出し、表示用に加工
-              const laborCost = propertyData.laborCost || {};
-              const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
-              const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
-              const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
-              const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
-              const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
-              const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
-
-              const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
-              const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
-              const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
-              const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
-              const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
-              const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
-
-              const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
-              const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
-              const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
-              const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
-              const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
-              const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
-
-              const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
-              const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
-              const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
-              const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
-              const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
-              const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
-
-              const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
-              const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
-              const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
-              const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
-              const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
-              const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
-
-              // 必要なデータをFirestoreから抽出し、表示用に加工
-              const data = {
-                name: propertyData.name || "",
-                manager: propertyData.manager || "",
-                overview: propertyData.businessPlanData?.overview || "",
-                consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
-                household: businessPlanData.household || "",
-                population: businessPlanData.population || "",
-                averagePopulation: businessPlanData.averagePopulation || "",
-                contractArea: propertyData.contractArea || "",
-                shopArea: propertyData.shopArea || "",
-                delivery: `${propertyData.deliveryDate || ""}年${propertyData.deliveryMonth || ""}月`,
-                openSelect: businessPlanData.openSelect || "",
-                endSelect: businessPlanData.endSelect || "",
-                sales: propertyData.plSalesData?.singleYear3 || 0,
-                profit: propertyData.profitData?.singleYear3 || 0,
-                labor: propertyData.laborData?.singleYear3 || 0,
-                selling: propertyData.sellingData?.singleYear3 || 0,
-                rent: propertyData.rent / 1000 || "",
-                equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
-                general: propertyData.generalData?.singleYear3 || 0,
-                totalSelling3Value: parseFloat((propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
-                monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
-                dailySale: propertyData.salesTable?.daily3Sales || 0,
-                aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
-                logisticsCosts: businessPlanData.logisticsCosts || 0,
-                judgmentData: propertyData.judgmentData?.lastNegativeMonth?.replace("ヶ月", "") || "",
-                layoutPattern: (propertyData.layout || "") + (propertyData.propertyType || ""),
-                locationPattern: propertyData.salesTable?.locationPattern || "",
-                parkingSpacesSelect: businessPlanData.parkingSpacesSelect || "",
-                numberofParkingSpaces: businessPlanData.numberofParkingSpaces || 0,
-                depreciationCost: {
-                  buildingCost: propertyData.depreciationCost?.buildingCost || 0,
-                  generalConstructionCost: propertyData.depreciationCost?.generalConstructionCost || 0,
-                  refrigerationEquipmentConstructionTotal: propertyData.depreciationCost?.refrigerationEquipmentConstructionTotal || 0,
-                  buildingsEquipment: propertyData.depreciationCost?.buildingsEquipment || 0,
-                  displayFixtures: propertyData.depreciationCost?.displayFixtures || 0,
-                  signboard: propertyData.depreciationCost?.signboard || 0,
-                  other: propertyData.depreciationCost?.other || 0,
-                  nonstandard: propertyData.depreciationCost?.nonstandard || 0,
-                  total: propertyData.depreciationCost?.total || 0,
-                  addRegisters: propertyData.depreciationCost?.addRegisters || 0,
-                  addSelfRegisters: propertyData.depreciationCost?.addSelfRegisters || 0,
-                },
-                brokerageFeeValue: parseFloat(propertyData.rent * (propertyData.brokerageFee?.replace("か月", "") || 0)),
-                consultingFeesValue: parseFloat(propertyData.rent * (propertyData.consultingFees?.replace("か月", "") || 0)),
-                keyMoneyValue: parseFloat(propertyData.rent * (propertyData.keyMoney?.replace("か月", "") || 0)),
-                deposit: Number(propertyData.deposit / 1000 || 0),
-                constructionCooperationFunds: propertyData.constructionCooperationFunds || 0,
-                paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
-                year: propertyData.deliveryDate || "",
-                dailySales: {
-                  daily1: propertyData.salesTable?.daily1Sales || 0,
-                  daily2: propertyData.salesTable?.daily2Sales || 0,
-                  daily3: propertyData.salesTable?.daily3Sales || 0,
-                  daily4: propertyData.salesTable?.daily4Sales || 0,
-                  daily5: propertyData.salesTable?.daily5Sales || 0,
-                },
-                yearlySales: {
-                  year1: parseFloat((propertyData.salesTable?.year1Sales || "0").replace(/,/g, "")),
-                  year2: parseFloat((propertyData.salesTable?.year2Sales || "0").replace(/,/g, "")),
-                  year3: parseFloat((propertyData.salesTable?.year3Sales || "0").replace(/,/g, "")),
-                  year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
-                  year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
-                },
-                remainingMonths: propertyData.salesTable?.remainingMonths || 0,
-                totalStoreProfit: {
-                  year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
-                  year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
-                  year3: propertyData.incomeData?.monthlyStoreProfit3 * 12,
-                  year4: propertyData.incomeData?.monthlyStoreProfit4 * 12,
-                  year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
-                },
-                contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
-
-                // 追加した労働コスト関連
-                laborCosts: {
-                  totalLaborCosts1,
-                  totalLaborCosts2,
-                  totalLaborCosts3,
-                  totalLaborCosts4,
-                  totalLaborCosts5,
-                  averagetotalLabor,
-                  employeeLaborCosts1,
-                  employeeLaborCosts2,
-                  employeeLaborCosts3,
-                  employeeLaborCosts4,
-                  employeeLaborCosts5,
-                  averageEmployeeLabor,
-                  coEmployeeLaborCosts1,
-                  coEmployeeLaborCosts2,
-                  coEmployeeLaborCosts3,
-                  coEmployeeLaborCosts4,
-                  coEmployeeLaborCosts5,
-                  averageCoEmployeeLabor,
-                  avgSalaryData1,
-                  avgSalaryData2,
-                  avgSalaryData3,
-                  avgSalaryData4,
-                  avgSalaryData5,
-                  averageAvgSalary,
-                  dailyWorkingHours1,
-                  dailyWorkingHours2,
-                  dailyWorkingHours3,
-                  dailyWorkingHours4,
-                  dailyWorkingHours5,
-                  averageDailyWorkingHours,
-                }
-              };
-
-          // HTMLにデータを表示
-          document.getElementById("name").textContent = data.name;
-
-          // Excelファイルを作成
-          exportToExcel(data);
-          } else {
-              console.error("データが見つかりません");
-          }
-      } catch (error) {
-          console.error("エラーが発生しました:", error);
-      }
-    }
-
-    // Excelにデータを書き込む関数
-    function exportToExcel(data) {
-      try {            　
-          // 1. ユーザーが選択したファイルを取得
-          const fileInput = document.getElementById("fileInput");
-          const file = fileInput.files[0];
-
-          if (!file) {
-            alert("ファイルが選択されていません。");
-            return;
+        // Firestoreから指定IDのデータを取得して表示
+        async function displayData() {
+          if (!propertyId) {
+              document.getElementById("name").textContent = "IDが指定されていません";
+              return;
           }
 
-          // 2. ファイルを読み込む
-          const reader = new FileReader();
-          reader.onload = function(event) {
-            // 3. 読み込んだファイルをXLSXでパース
-            const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
+          try {
+              const docRef = doc(db, "properties", propertyId);
+              const docSnap = await getDoc(docRef);
 
-            // 4. 新しいシートのデータを作成
-            const worksheetData = [
+              const dbRef = doc(db, "laborCostRatio", docId);
+              const dbSnap = await getDoc(dbRef);
+
+              if (docSnap.exists() && dbSnap.exists()) {
+                  const propertyData = docSnap.data();
+
+                  const businessPlanData = propertyData.businessPlanData || {};
+
+                  // 必要なデータをFirestoreから抽出し、表示用に加工
+                  const laborCost = propertyData.laborCost || {};
+                  const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
+                  const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
+                  const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
+                  const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
+                  const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
+                  const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
+
+                  const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
+                  const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
+                  const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
+                  const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
+                  const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
+                  const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
+
+                  const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
+                  const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
+                  const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
+                  const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
+                  const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
+                  const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
+
+                  const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
+                  const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
+                  const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
+                  const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
+                  const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
+                  const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
+
+                  const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
+                  const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
+                  const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
+                  const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
+                  const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
+                  const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
+
+                  // 必要なデータをFirestoreから抽出し、表示用に加工
+                  const data = {
+                    name: propertyData.name || "",
+                    manager: propertyData.manager || "",
+                    overview: propertyData.businessPlanData?.overview || "",
+                    consumerCharacteristics: propertyData.businessPlanData?.consumerCharacteristics || "",
+                    household: businessPlanData.household || "",
+                    population: businessPlanData.population || "",
+                    averagePopulation: businessPlanData.averagePopulation || "",
+                    contractArea: propertyData.contractArea || "",
+                    shopArea: propertyData.shopArea || "",
+                    delivery: `${propertyData.deliveryDate || ""}年${propertyData.deliveryMonth || ""}月`,
+                    openSelect: businessPlanData.openSelect || "",
+                    endSelect: businessPlanData.endSelect || "",
+                    sales: propertyData.plSalesData?.singleYear3 || 0,
+                    profit: propertyData.profitData?.singleYear3 || 0,
+                    labor: propertyData.laborData?.singleYear3 || 0,
+                    selling: propertyData.sellingData?.singleYear3 || 0,
+                    rent: propertyData.rent / 1000 || "",
+                    equipment: parseFloat((propertyData.incomeData?.equipment3 || "").replace(/,/g, "")),
+                    general: propertyData.generalData?.singleYear3 || 0,
+                    totalSelling3Value: parseFloat((propertyData.incomeData?.totalSelling3 || 0).replace(/,/g, "")),
+                    monthlyStoreProfit: propertyData.incomeData?.monthlyStoreProfit3 || 0,
+                    dailySale: propertyData.salesTable?.daily3Sales || 0,
+                    aiForecastSales: propertyData.salesTable?.aiForecastSales || 0,
+                    logisticsCosts: businessPlanData.logisticsCosts || 0,
+                    judgmentData: propertyData.judgmentData?.lastNegativeMonth?.replace("ヶ月", "") || "",
+                    layoutPattern: (propertyData.layout || "") + (propertyData.propertyType || ""),
+                    locationPattern: propertyData.salesTable?.locationPattern || "",
+                    parkingSpacesSelect: businessPlanData.parkingSpacesSelect || "",
+                    numberofParkingSpaces: businessPlanData.numberofParkingSpaces || 0,
+                    depreciationCost: {
+                      buildingCost: propertyData.depreciationCost?.buildingCost || 0,
+                      generalConstructionCost: propertyData.depreciationCost?.generalConstructionCost || 0,
+                      refrigerationEquipmentConstructionTotal: propertyData.depreciationCost?.refrigerationEquipmentConstructionTotal || 0,
+                      buildingsEquipment: propertyData.depreciationCost?.buildingsEquipment || 0,
+                      displayFixtures: propertyData.depreciationCost?.displayFixtures || 0,
+                      signboard: propertyData.depreciationCost?.signboard || 0,
+                      other: propertyData.depreciationCost?.other || 0,
+                      nonstandard: propertyData.depreciationCost?.nonstandard || 0,
+                      total: propertyData.depreciationCost?.total || 0,
+                      addRegisters: propertyData.depreciationCost?.addRegisters || 0,
+                      addSelfRegisters: propertyData.depreciationCost?.addSelfRegisters || 0,
+                    },
+                    brokerageFeeValue: parseFloat(propertyData.rent * (propertyData.brokerageFee?.replace("か月", "") || 0)),
+                    consultingFeesValue: parseFloat(propertyData.rent * (propertyData.consultingFees?.replace("か月", "") || 0)),
+                    keyMoneyValue: parseFloat(propertyData.rent * (propertyData.keyMoney?.replace("か月", "") || 0)),
+                    deposit: Number(propertyData.deposit / 1000 || 0),
+                    constructionCooperationFunds: propertyData.constructionCooperationFunds || 0,
+                    paymentFrequencySelect: businessPlanData.paymentFrequencySelect || 0,
+                    year: propertyData.deliveryDate || "",
+                    dailySales: {
+                      daily1: propertyData.salesTable?.daily1Sales || 0,
+                      daily2: propertyData.salesTable?.daily2Sales || 0,
+                      daily3: propertyData.salesTable?.daily3Sales || 0,
+                      daily4: propertyData.salesTable?.daily4Sales || 0,
+                      daily5: propertyData.salesTable?.daily5Sales || 0,
+                    },
+                    yearlySales: {
+                      year1: parseFloat((propertyData.salesTable?.year1Sales || "0").replace(/,/g, "")),
+                      year2: parseFloat((propertyData.salesTable?.year2Sales || "0").replace(/,/g, "")),
+                      year3: parseFloat((propertyData.salesTable?.year3Sales || "0").replace(/,/g, "")),
+                      year4: parseFloat((propertyData.salesTable?.year4Sales || "0").replace(/,/g, "")),
+                      year5: parseFloat((propertyData.salesTable?.year5Sales || "0").replace(/,/g, "")),
+                    },
+                    remainingMonths: propertyData.salesTable?.remainingMonths || 0,
+                    totalStoreProfit: {
+                      year1: propertyData.incomeData?.monthlyStoreProfit1 * (propertyData.salesTable?.remainingMonths || 0),
+                      year2: propertyData.incomeData?.monthlyStoreProfit2 * 12,
+                      year3: propertyData.incomeData?.monthlyStoreProfit3 * 12,
+                      year4: propertyData.incomeData?.monthlyStoreProfit4 * 12,
+                      year5: propertyData.incomeData?.monthlyStoreProfit5 * 12,
+                    },
+                    contractPeriodSelect: businessPlanData.contractPeriodSelect || 0,
+
+                    // 追加した労働コスト関連
+                    laborCosts: {
+                      totalLaborCosts1,
+                      totalLaborCosts2,
+                      totalLaborCosts3,
+                      totalLaborCosts4,
+                      totalLaborCosts5,
+                      averagetotalLabor,
+                      employeeLaborCosts1,
+                      employeeLaborCosts2,
+                      employeeLaborCosts3,
+                      employeeLaborCosts4,
+                      employeeLaborCosts5,
+                      averageEmployeeLabor,
+                      coEmployeeLaborCosts1,
+                      coEmployeeLaborCosts2,
+                      coEmployeeLaborCosts3,
+                      coEmployeeLaborCosts4,
+                      coEmployeeLaborCosts5,
+                      averageCoEmployeeLabor,
+                      avgSalaryData1,
+                      avgSalaryData2,
+                      avgSalaryData3,
+                      avgSalaryData4,
+                      avgSalaryData5,
+                      averageAvgSalary,
+                      dailyWorkingHours1,
+                      dailyWorkingHours2,
+                      dailyWorkingHours3,
+                      dailyWorkingHours4,
+                      dailyWorkingHours5,
+                      averageDailyWorkingHours,
+                    }
+                  };
+
+              // HTMLにデータを表示
+              document.getElementById("name").textContent = data.name;
+
+              // Excelファイルを作成
+              exportToExcel(data);
+              } else {
+                  console.error("データが見つかりません");
+              }
+          } catch (error) {
+              console.error("エラーが発生しました:", error);
+          }
+        }
+
+        
+
+        // Excelにデータを書き込む関数
+        function exportToExcel(data) {
+          try {
+              // 1. 新しいワークブックの作成
+              const wb = XLSX.utils.book_new();
+
+              const worksheetData = [
                 ["項目", "内容"],
                 ["店舗名", data.name],
                 ["作成者", data.manager],
@@ -337,209 +325,45 @@
                 ["平均日次労働時間", data.laborCosts.averageDailyWorkingHours],
               ];
 
-              // 5. 新しいシートの作成
+
+              // 3. ワークシートの作成
               const ws = XLSX.utils.aoa_to_sheet(worksheetData);
 
-              // 6. 既存のワークブックに新しいシートを追加
-              XLSX.utils.book_append_sheet(existingWorkbook, ws, "data");
+              // 4. ワークブックにワークシートを追加
+              XLSX.utils.book_append_sheet(wb, ws, "経営計画書");
 
-              // 7. ワークブックをバイナリ形式でエクスポート
-              const binaryArray = XLSX.write(existingWorkbook, { bookType: "xlsx", type: "array" });
+              // 4. ワークブックをバイナリ形式でエクスポート
+              const binaryArray = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
-              // 8. バイナリデータからBlobを作成
+              // 5. バイナリデータからBlobを作成
               const blob = new Blob([binaryArray], { type: "application/octet-stream" });
 
-              // 9. Blobをダウンロードリンクとして処理
+              // 6. Blobをダウンロードリンクとして処理
               const link = document.createElement("a");
               link.href = URL.createObjectURL(blob);
               link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
               link.click();
-          };
-
-          // 10. ファイルを読み込む
-          reader.readAsBinaryString(file);
-      } catch (error) {
-          console.error("エクスポートエラー:", error);
-          alert(`エクスポート中にエラーが発生しました: ${error.message}`);
+          } catch (error) {
+              console.error("エクスポートエラー:", error);
+              alert(`エクスポート中にエラーが発生しました: ${error.message}`);
+          }
       }
-  }
 
-  // ページ読み込み時にデータを表示
-  displayData();
+      // ページ読み込み時にデータを表示
+      displayData();
 
-// ボタンのクリックイベントを設定
-document.getElementById("exportButton").addEventListener("click", async function() {
-    const fileInput = document.getElementById("fileInput"); // ファイル選択要素
-    const file = fileInput.files[0];
+    // ダウンロードボタンにイベントリスナーを追加
+    document.getElementById("exportButton").addEventListener("click", () => {
+        // GitHub上のファイルのダウンロードURL
+        const downloadURL = "https://github.com/ysato33028/invest-ver4/raw/main/file/Book1.xlsx"; // ファイルの実際のURL
 
-    if (!file) {
-        alert("既存のExcelファイルを選択してください。");
-        return;
-    }
-
-    try {
-        // 必要なデータをFirestoreから取得
-        const docRef = doc(db, "properties", propertyId); // `propertyId` は事前に取得済みの値と仮定
-        const docSnap = await getDoc(docRef);
-
-        if (!docSnap.exists()) {
-            alert("指定されたデータが見つかりませんでした。");
-            return;
-        }
-        // Firestoreからデータを取得
-        const data = docSnap.data();
-
-          // 必要なデータをFirestoreから抽出し、表示用に加工
-          const laborCost = data.laborCost || {};
-          const totalLaborCosts1 = Number(laborCost.totalLaborCosts1 || 0);
-          const totalLaborCosts2 = Number(laborCost.totalLaborCosts2 || 0);
-          const totalLaborCosts3 = Number(laborCost.totalLaborCosts3 || 0);
-          const totalLaborCosts4 = Number(laborCost.totalLaborCosts4 || 0);
-          const totalLaborCosts5 = Number(laborCost.totalLaborCosts5 || 0);
-          const averagetotalLabor = (totalLaborCosts2 + totalLaborCosts3 + totalLaborCosts4 + totalLaborCosts5 + totalLaborCosts5) / 5;
-
-          const employeeLaborCosts1 = Number(laborCost.employeeLaborCosts1 || 0);
-          const employeeLaborCosts2 = Number(laborCost.employeeLaborCosts2 || 0);
-          const employeeLaborCosts3 = Number(laborCost.employeeLaborCosts3 || 0);
-          const employeeLaborCosts4 = Number(laborCost.employeeLaborCosts4 || 0);
-          const employeeLaborCosts5 = Number(laborCost.employeeLaborCosts5 || 0);
-          const averageEmployeeLabor = (employeeLaborCosts2 + employeeLaborCosts3 + employeeLaborCosts4 + employeeLaborCosts5 + employeeLaborCosts5) / 5;
-
-          const coEmployeeLaborCosts1 = Number(laborCost.coEmployeeLaborCosts1 || 0);
-          const coEmployeeLaborCosts2 = Number(laborCost.coEmployeeLaborCosts2 || 0);
-          const coEmployeeLaborCosts3 = Number(laborCost.coEmployeeLaborCosts3 || 0);
-          const coEmployeeLaborCosts4 = Number(laborCost.coEmployeeLaborCosts4 || 0);
-          const coEmployeeLaborCosts5 = Number(laborCost.coEmployeeLaborCosts5 || 0);
-          const averageCoEmployeeLabor = (coEmployeeLaborCosts2 + coEmployeeLaborCosts3 + coEmployeeLaborCosts4 + coEmployeeLaborCosts5 + coEmployeeLaborCosts5) / 5;
-
-          const avgSalaryData1 = Number(laborCost.avgSalaryData1 || 0);
-          const avgSalaryData2 = Number(laborCost.avgSalaryData2 || 0);
-          const avgSalaryData3 = Number(laborCost.avgSalaryData3 || 0);
-          const avgSalaryData4 = Number(laborCost.avgSalaryData4 || 0);
-          const avgSalaryData5 = Number(laborCost.avgSalaryData5 || 0);
-          const averageAvgSalary = (avgSalaryData2 + avgSalaryData3 + avgSalaryData4 + avgSalaryData5 + avgSalaryData5) / 5;
-
-          const dailyWorkingHours1 = Number(laborCost.dailyWorkingHours1 || 0);
-          const dailyWorkingHours2 = Number(laborCost.dailyWorkingHours2 || 0);
-          const dailyWorkingHours3 = Number(laborCost.dailyWorkingHours3 || 0);
-          const dailyWorkingHours4 = Number(laborCost.dailyWorkingHours4 || 0);
-          const dailyWorkingHours5 = Number(laborCost.dailyWorkingHours5 || 0);
-          const averageDailyWorkingHours = (dailyWorkingHours2 + dailyWorkingHours3 + dailyWorkingHours4 + dailyWorkingHours5 + dailyWorkingHours5) / 5;
-
-        const reader = new FileReader();
-        reader.onload = function (event) {
-
-        // 1. 既存のExcelファイルを読み込み
-        const existingWorkbook = XLSX.read(event.target.result, { type: "binary" });
-
-        const exportData = [
-            ["項目", "内容"],
-            ["店舗名", data.name],
-            ["作成者", data.manager],
-            ["概要", data.overview],
-            ["生活者特性", data.consumerCharacteristics],
-            ["世帯数", data.household],
-            ["人口", data.population],
-            ["平均人口", data.averagePopulation],
-            ["契約面積", data.contractArea],
-            ["店舗面積", data.shopArea],
-            ["引渡し", data.delivery],
-            ["開店日", data.openSelect],
-            ["閉店日", data.endSelect],
-            ["売上", data.sales],
-            ["利益", data.profit],
-            ["人件費", data.labor],
-            ["販売費", data.selling],
-            ["家賃", data.rent],
-            ["設備費", data.equipment],
-            ["一般費用", data.general],
-            ["販売一般管理費計", data.totalSelling3Value],
-            ["月間店舗利益", data.monthlyStoreProfit],
-            ["日次売上", data.dailySale],
-            ["AI予測売上", data.aiForecastSales],
-            ["物流コスト", data.logisticsCosts],
-            ["最終赤字月", data.judgmentData],
-            ["レイアウトパターン", data.layoutPattern],
-            ["立地パターン", data.locationPattern],
-            ["駐車場選択", data.parkingSpacesSelect],
-            ["駐車場台数", data.numberofParkingSpaces],
-            ["建物費", data.depreciationCost?.buildingCost],
-            ["一般建設費", data.depreciationCost?.generalConstructionCost],
-            ["冷蔵設備総計", data.depreciationCost?.refrigerationEquipmentConstructionTotal],
-            ["建物付帯設備", data.depreciationCost?.buildingsEquipment],
-            ["展示備品", data.depreciationCost?.displayFixtures],
-            ["看板", data.depreciationCost?.signboard],
-            ["その他", data.depreciationCost?.other],
-            ["非標準設備", data.depreciationCost?.nonstandard],
-            ["減価償却総計", data.depreciationCost?.total],
-            ["追加レジ数", data.depreciationCost?.addRegisters],
-            ["追加セルフレジ数", data.depreciationCost?.addSelfRegisters],
-            ["仲介手数料", data.brokerageFeeValue],
-            ["コンサルティング費用", data.consultingFeesValue],
-            ["礼金", data.keyMoneyValue],
-            ["敷金", data.deposit],
-            ["建設協力金", data.constructionCooperationFunds],
-            ["支払頻度", data.paymentFrequencySelect],
-            ["年次", data.year],
-            ["日次売上1年目", data.dailySales?.daily1],
-            ["日次売上2年目", data.dailySales?.daily2],
-            ["日次売上3年目", data.dailySales?.daily3],
-            ["日次売上4年目", data.dailySales?.daily4],
-            ["日次売上5年目", data.dailySales?.daily5],
-            ["年間売上1年目", data.yearlySales?.year1],
-            ["年間売上2年目", data.yearlySales?.year2],
-            ["年間売上3年目", data.yearlySales?.year3],
-            ["年間売上4年目", data.yearlySales?.year4],
-            ["年間売上5年目", data.yearlySales?.year5],
-            ["残月数", data.remainingMonths],
-            ["1年目店舗利益", data.totalStoreProfit?.year1],
-            ["2年目店舗利益", data.totalStoreProfit?.year2],
-            ["3年目店舗利益", data.totalStoreProfit?.year3],
-            ["4年目店舗利益", data.totalStoreProfit?.year4],
-            ["5年目店舗利益", data.totalStoreProfit?.year5],
-            ["契約期間選択", data.contractPeriodSelect],
-            // 労働コスト関連を追加
-            ["総人件費1", totalLaborCosts1],
-            ["平均総人件費", averagetotalLabor],
-            
-            ["社員人件費1", employeeLaborCosts1],
-            ["平均社員人件費", averageEmployeeLabor],
-            
-            ["共同社員人件費1", coEmployeeLaborCosts1],
-            ["平均共同社員人件費", averageCoEmployeeLabor],
-            
-            ["平均給与1", avgSalaryData1],
-            ["平均給与", averageAvgSalary],
-            
-            ["日次労働時間1", dailyWorkingHours1],
-            ["平均日次労働時間", averageDailyWorkingHours],
-          ];
-
-        // 2. 新しいシートを作成
-        const newSheet = XLSX.utils.aoa_to_sheet(exportData);
-
-        // 3. 既存のワークブックにシートを追加
-        XLSX.utils.book_append_sheet(existingWorkbook, newSheet, "Data");
-
-        // 4. 更新されたワークブックをエクスポート
-        const binaryArray = XLSX.write(existingWorkbook, { bookType: "xlsx", type: "array" });
-        const blob = new Blob([binaryArray], { type: "application/octet-stream" });
-
-        // 5. ダウンロード
+        // ダウンロードリンクを生成してクリック
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `【${data.name || "店舗名未定"}】経営計画書.xlsx`;
+        link.href = downloadURL;
+        link.target = "_blank";
+        link.download = "Book1.xlsx"; // ダウンロードするファイル名を指定
         link.click();
-
-        console.log("CSVエクスポート成功");
-        };
-        reader.readAsBinaryString(file);
-
-    } catch (error) {
-        console.error("CSVエクスポート中にエラーが発生しました: ", error);
-        alert("CSVエクスポートに失敗しました");
-    }
-});
-</script>
+    });
+    </script>
 </body>
 </html>
