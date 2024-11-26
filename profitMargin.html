@@ -4,22 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>営業総利益率</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .required {
-            background-color: #fdd9b5;
-        }
-    </style>
+    <link rel="stylesheet" href="dbStyles.css">
 </head>
 <body>
     <h2>営業総利益率【経営計画数値】</h2>
@@ -97,8 +82,10 @@
             </tr>
         </tbody>
     </table><br>
+    <div class="button-container">
     <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";

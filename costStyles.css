@@ -1,0 +1,164 @@
+/*検索・店舗一覧タイトル*/
+h2 {
+  position: relative;
+  padding: 1.5rem 1rem;
+}
+
+h2:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  content: '';
+  background-image: -webkit-repeating-linear-gradient(135deg, #000, #000 1px, transparent 2px, transparent 5px);
+  background-image: repeating-linear-gradient(-45deg, #218F66, #218F66 1px, transparent 2px, transparent 5px);
+  background-size: 7px 7px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+}
+.required {
+    background-color: #fdd9b5;
+}
+
+
+/* ボタンコンテナのスタイル */
+.button-container {
+    display: flex;                /* 子要素を横並びに配置 */
+    justify-content: center;      /* ボタン全体を中央揃え */
+    gap: 1em;                     /* ボタン間のスペース */
+    margin: 2em auto;             /* 上下中央揃え */
+    max-width: 80%;               /* レスポンシブ対応で幅を制限 */
+}
+
+#calculateButton {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #F21F12;
+    border-radius: 5px;
+    background-color: #F21F12;
+    color: #fff;
+    font-size: 1em;
+}
+
+#calculateButton:hover {
+    animation: anima-btn-upload 1s;
+    color: #F21F12;
+    background-color: #fff;
+}
+
+#save-button {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #218F66;
+    border-radius: 5px;
+    background-color: #218F66;
+    color: #fff;
+    font-size: 1em;
+}
+
+#save-button:hover {
+    animation: anima-btn-upload 1s;
+    color: #218F66;
+    background-color: #fff;
+}
+
+#closeButton {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #432032;
+    border-radius: 5px;
+    background-color: #432032;
+    color: #fff;
+    font-size: 1em;
+}
+
+#closeButton:hover {
+    animation: anima-btn-upload 1s;
+    color: #432032;
+    background-color: #fff;
+}
+
+
+.selectdiv {
+  position: relative;
+  /*Don't really need this just for demo styling*/
+  
+  float: left;
+  min-width: 200px;
+  margin: 0px 15%;
+}
+
+/* IE11 hide native button (thanks Matt!) */
+select::-ms-expand {
+display: none;
+}
+
+.selectdiv:after {
+  content: '<>';
+  font: 16px "Consolas", monospace;
+  color: #333;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  right: 11px;
+  /*Adjust for position however you want*/
+  
+  top: 8px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #999;
+  /*left line */
+  
+  position: absolute;
+  pointer-events: none;
+}
+
+.selectdiv select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Add some styling */
+  
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: 40px;
+  float: right;
+  padding: 0px 24px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #333;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  -ms-word-break: normal;
+  word-break: normal;
+}

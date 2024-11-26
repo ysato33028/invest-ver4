@@ -1,0 +1,145 @@
+body { 
+    font-family: Arial,sans-serif; 
+    max-width: 800px; 
+    margin: auto; 
+}
+
+/*検索・店舗一覧タイトル*/
+h2 {
+  position: relative;
+  padding: 1.5rem 1rem;
+}
+
+h2:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  content: '';
+  background-image: -webkit-repeating-linear-gradient(135deg, #000, #000 1px, transparent 2px, transparent 5px);
+  background-image: repeating-linear-gradient(-45deg, #218F66, #218F66 1px, transparent 2px, transparent 5px);
+  background-size: 7px 7px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/*画面分割の設定*/
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.column {
+    flex: 2;
+    min-width: 300px;
+    max-width: 50%;
+    margin: 10px;
+}
+
+/*テーブルデザイン*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+}
+.required {
+    background-color: #fdd9b5;
+}
+
+/* ボタンコンテナのスタイル */
+.button-container {
+    display: flex;                /* 子要素を横並びに配置 */
+    justify-content: center;      /* ボタン全体を中央揃え */
+    gap: 1em;                     /* ボタン間のスペース */
+    margin: 2em auto;             /* 上下中央揃え */
+    max-width: 80%;               /* レスポンシブ対応で幅を制限 */
+}
+
+#upload-button {
+    position: relative;
+    width: 30%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #ee7800;
+    border-radius: 5px;
+    background-color: #ee7800;
+    color: #fff;
+    font-size: 1em;
+}
+
+#upload-button:hover {
+    animation: anima-btn-upload 1s;
+    color: #ee7800;
+    background-color: #fff;
+}
+
+#calculate-button {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #F21F12;
+    border-radius: 5px;
+    background-color: #F21F12;
+    color: #fff;
+    font-size: 1em;
+}
+
+#calculate-button:hover {
+    animation: anima-btn-upload 1s;
+    color: #F21F12;
+    background-color: #fff;
+}
+
+#save-button {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #218F66;
+    border-radius: 5px;
+    background-color: #218F66;
+    color: #fff;
+    font-size: 1em;
+}
+
+#save-button:hover {
+    animation: anima-btn-upload 1s;
+    color: #218F66;
+    background-color: #fff;
+}
+
+#closeButton {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 50%;
+    margin:0 auto;
+    padding: .6em 2em;
+    border: 1px solid #432032;
+    border-radius: 5px;
+    background-color: #432032;
+    color: #fff;
+    font-size: 1em;
+}
+
+#closeButton:hover {
+    animation: anima-btn-upload 1s;
+    color: #432032;
+    background-color: #fff;
+}

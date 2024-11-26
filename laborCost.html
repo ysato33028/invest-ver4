@@ -4,181 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>人件費表</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #f5f5f5;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="laborCostStyes.css">
 </head>
 <body>
 
-    <h1>人件費 │ <span id="name"></span></h1>
+    <h2>人件費 │ <span id="name"></span></h2>
 
     <table>
-        <thead>
-            <tr>
-                <th>項目</th>
-                <th id="year-1">1</th>
-                <th id="year-2">2</th>
-                <th id="year-3">3</th>
-                <th id="year-4">4</th>
-                <th id="year-5">5</th>
-                <th id="year-6">6</th>
-            </tr>
-            <tr>
-                <th id="area-name"></th>
-                <th>1年目</th>
-                <th>2年目</th>
-                <th>3年目</th>
-                <th>4年目</th>
-                <th>5年目</th>
-                <th>6年目以降</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>平均日販（千円）</td>        
-                <td id="year1-sales">-</td>
-                <td id="year2-sales">-</td>
-                <td id="year3-sales">-</td>
-                <td id="year4-sales">-</td>
-                <td id="year5-sales">-</td>
-                <td id="year6-sales">-</td>
-              </tr>
-            </tr>
-            <tr>
-                <td>人件費総額(千円）</td>
-                <td id="totalLaborCosts1">-</td>
-                <td id="totalLaborCosts2">-</td>
-                <td id="totalLaborCosts3">-</td>
-                <td id="totalLaborCosts4">-</td>
-                <td id="totalLaborCosts5">-</td>
-                <td id="totalLaborCosts6">-</td>
-            </tr>
-            <tr>
-                <td>社員人件費（千円）</td>
-                <td>
-                　<select id="employeeLaborCosts1" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-                <td>
-                　<select id="employeeLaborCosts2" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-                <td>
-                  <select id="employeeLaborCosts3" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-                <td>
-                  <select id="employeeLaborCosts4" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-                <td>
-                  <select id="employeeLaborCosts5" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-                <td>
-                  <select id="employeeLaborCosts6" required>
-                    <option value="330">330</option>
-                    <option value="165">165</option>
-                    <option value="0">0</option>
-                  </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Co社員人件費（千円）</td>
-                <td id="co-employeeLaborCosts1"></td>
-                <td id="co-employeeLaborCosts2"></td>
-                <td id="co-employeeLaborCosts3"></td>
-                <td id="co-employeeLaborCosts4"></td>
-                <td id="co-employeeLaborCosts5"></td>
-                <td id="co-employeeLaborCosts6"></td>
-            </tr>
-            <tr>
-                <td>Co社員時給（円）</td>
-                <td id="avg-salary1">-</td>
-                <td id="avg-salary2">-</td>
-                <td id="avg-salary3">-</td>
-                <td id="avg-salary4">-</td>
-                <td id="avg-salary5">-</td>
-                <td id="avg-salary6">-</td>
-            </tr>
-            <tr>
-                <td>１日の労働時間（H)<br>(売上日販別）</td>
-                <td id="dailyWorkingHours1">-</td>
-                <td id="dailyWorkingHours2">-</td>
-                <td id="dailyWorkingHours3">-</td>
-                <td id="dailyWorkingHours4">-</td>
-                <td id="dailyWorkingHours5">-</td>
-                <td id="dailyWorkingHours6">-</td>
-            </tr>
-            <tr>
-                <td>派遣・請負人件費<br>※上記人件費総額に含む</td>
-                <td id="dispatchCost1">-</td>
-                <td id="dispatchCost2">-</td>
-                <td id="dispatchCost3">-</td>
-                <td id="dispatchCost4">-</td>
-                <td id="dispatchCost5">-</td>
-                <td id="dispatchCost6">-</td>
-            </tr>
-            <tr>
-                <td>派遣・請負労働時間</td>
-                <td id="dispatchHours1">-</td>
-                <td id="dispatchHours2">-</td>
-                <td id="dispatchHours3">-</td>
-                <td id="dispatchHours4">-</td>
-                <td id="dispatchHours5">-</td>
-                <td id="dispatchHours6">-</td>
-            </tr>
-            <tr>
-                <td>オールセルフレジ調整時間(H)</td>
-                <td colspan="5"></td>
-                <td><input type="number" id="allSelfRegisters" placeholder=""></td>
-            </tr>
-            <tr>
-                <td>営業時間延刻（H）</td>
-                <td colspan="5"></td>
-                <td id="extended-hours">-</td>
-            </tr>
-        </tbody>
+    <tr>
+        <th>項目</th>
+        <th id="year-1">1</th>
+        <th id="year-2">2</th>
+        <th id="year-3">3</th>
+        <th id="year-4">4</th>
+        <th id="year-5">5</th>
+        <th id="year-6">6</th>
+    </tr>
+    <tr>
+        <th id="area-name"></th>
+        <th>1年目</th>
+        <th>2年目</th>
+        <th>3年目</th>
+        <th>4年目</th>
+        <th>5年目</th>
+        <th>6年目以降</th>
+    </tr>
+    <tr>
+        <td>平均日販（千円）</td>        
+        <td id="year1-sales">-</td>
+        <td id="year2-sales">-</td>
+        <td id="year3-sales">-</td>
+        <td id="year4-sales">-</td>
+        <td id="year5-sales">-</td>
+        <td id="year6-sales">-</td>
+      </tr>
+    </tr>
+    <tr>
+        <td>人件費総額(千円）</td>
+        <td id="totalLaborCosts1">-</td>
+        <td id="totalLaborCosts2">-</td>
+        <td id="totalLaborCosts3">-</td>
+        <td id="totalLaborCosts4">-</td>
+        <td id="totalLaborCosts5">-</td>
+        <td id="totalLaborCosts6">-</td>
+    </tr>
+    <tr>
+        <td>社員人件費（千円）</td>
+        <td>
+        　<select id="employeeLaborCosts1" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+        <td>
+        　<select id="employeeLaborCosts2" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+        <td>
+          <select id="employeeLaborCosts3" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+        <td>
+          <select id="employeeLaborCosts4" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+        <td>
+          <select id="employeeLaborCosts5" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+        <td>
+          <select id="employeeLaborCosts6" required>
+            <option value="330">330</option>
+            <option value="165">165</option>
+            <option value="0">0</option>
+          </select>
+        </td>
+    </tr>
+    <tr>
+        <td>Co社員人件費（千円）</td>
+        <td id="co-employeeLaborCosts1"></td>
+        <td id="co-employeeLaborCosts2"></td>
+        <td id="co-employeeLaborCosts3"></td>
+        <td id="co-employeeLaborCosts4"></td>
+        <td id="co-employeeLaborCosts5"></td>
+        <td id="co-employeeLaborCosts6"></td>
+    </tr>
+    <tr>
+        <td>Co社員時給（円）</td>
+        <td id="avg-salary1">-</td>
+        <td id="avg-salary2">-</td>
+        <td id="avg-salary3">-</td>
+        <td id="avg-salary4">-</td>
+        <td id="avg-salary5">-</td>
+        <td id="avg-salary6">-</td>
+    </tr>
+    <tr>
+        <td>１日の労働時間（H)<br>(売上日販別）</td>
+        <td id="dailyWorkingHours1">-</td>
+        <td id="dailyWorkingHours2">-</td>
+        <td id="dailyWorkingHours3">-</td>
+        <td id="dailyWorkingHours4">-</td>
+        <td id="dailyWorkingHours5">-</td>
+        <td id="dailyWorkingHours6">-</td>
+    </tr>
+    <tr>
+        <td>派遣・請負人件費<br>※上記人件費総額に含む</td>
+        <td id="dispatchCost1">-</td>
+        <td id="dispatchCost2">-</td>
+        <td id="dispatchCost3">-</td>
+        <td id="dispatchCost4">-</td>
+        <td id="dispatchCost5">-</td>
+        <td id="dispatchCost6">-</td>
+    </tr>
+    <tr>
+        <td>派遣・請負労働時間</td>
+        <td id="dispatchHours1">-</td>
+        <td id="dispatchHours2">-</td>
+        <td id="dispatchHours3">-</td>
+        <td id="dispatchHours4">-</td>
+        <td id="dispatchHours5">-</td>
+        <td id="dispatchHours6">-</td>
+    </tr>
+    <tr>
+        <td>オールセルフレジ調整時間(H)</td>
+        <td colspan="5"></td>
+        <td><input type="number" id="allSelfRegisters" placeholder=""></td>
+    </tr>
+    <tr>
+        <td>営業時間延刻（H）</td>
+        <td colspan="5"></td>
+        <td id="extended-hours">-</td>
+    </tr>
     </table><br>
+    <div class="button-container">
     <button id="calculateButton">計算する</button>
     <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+</div>
 <script type="module">
   // Firebase App (必須)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";

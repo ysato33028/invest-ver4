@@ -4,26 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>内装投資費用</title>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th, td {
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
-    .input-cell {
-        background-color: #fdd9b5; /* オレンジの入力欄 */
-    }
-    .center {
-        text-align: center;
-    }
-</style>
+<link rel="stylesheet" href="costStyles.css">
 </head>
 <body>
 
@@ -43,7 +24,7 @@
     <tr>
         <td>排水・タイル</td>
         <td>タイプ</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="drainage-select">
                 <option>選択してください</option>
                 <option>新築フリスタ</option>
@@ -64,7 +45,7 @@
     <tr>
         <td>事前解体</td>
         <td>引き渡し状態</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="predismantling-select">
                 <option>選択してください</option>
                 <option>ｽｹﾙﾄﾝ（事前解体無し）</option>
@@ -82,7 +63,7 @@
     <tr>
         <td>外構</td>
         <td>駐車場</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="parking-select">
                 <option >選択してください</option>
                 <option>駐車場なし</option>
@@ -99,7 +80,7 @@
     <tr>
         <td>冷設</td>
         <td>冷凍ﾘｰﾁｲﾝ</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="frozen-select">
                 <option>選択してください</option>
                 <option>ﾘｰﾁｲﾝ 9枚</option>
@@ -117,7 +98,7 @@
     <tr>
         <td>標準外</td>
         <td>先行解体</td>
-        <td class="center input-cell">
+        <td class="required">
             <span id="demolitionCost"></span>
         </td>
         <td></td>
@@ -129,7 +110,7 @@
     <tr>
         <td>標準外</td>
         <td>B工事</td>
-        <td class="center input-cell">
+        <td class="required">
             <input type="text" id="B-Construction-input" placeholder="0" required>
         </td>
         <td></td>
@@ -141,7 +122,7 @@
     <tr>
         <td>標準外</td>
         <td>全館自火報 等</td>
-        <td class="center input-cell">
+        <td class="required">
             <input type="text" id="AutomaticFireAlarm-input" placeholder="0" required>
         </td>
         <td></td>
@@ -153,7 +134,7 @@
     <tr>
         <td>標準外</td>
         <td>会議室・面談室 等</td>
-        <td class="center input-cell">
+        <td class="required">
             <input type="text" id="meetingRoom-input" placeholder="0" required>
         </td>
         <td></td>
@@ -165,7 +146,7 @@
     <tr>
         <td>標準外</td>
         <td>段差解消</td>
-        <td class="center input-cell">
+        <td class="required">
             <input type="text" id="eliminateSteps-input" placeholder="0" required>
         </td>
         <td></td>
@@ -177,7 +158,7 @@
     <tr>
         <td>標準外</td>
         <td>ポール看板</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="poleSign-select">
                 <option>選択してください</option>
                 <option>0</option>
@@ -194,7 +175,7 @@
     <tr>
         <td>仮設</td>
         <td>面積</td>
-        <td class="center input-cell">
+        <td class="required">
             <span id="contractArea"></span>
         </td>
         <td id="contractArea-cost1"></td> <!-- 一式金額 -->
@@ -206,7 +187,7 @@
     <tr>
         <td>標準外</td>
         <td>用途の問題</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="problemsofUse-select">
                 <option>既存物販（問題なし）</option>
                 <option>用途変更必要</option>
@@ -222,7 +203,7 @@
     <tr>
         <td>仮設</td>
         <td>敷地状況</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="siteStatus-select">
                 <option>都心、国道沿い</option>
                 <option>国道沿い・バス通り</option>
@@ -239,7 +220,7 @@
     <tr>
         <td>ｻｯｼ工事</td>
         <td>出入口・ﾌﾛﾝﾄｻｯｼ</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="entrance-select">
                 <option>新築既存利用</option>
                 <option>既存利用</option>
@@ -257,7 +238,7 @@
     <tr>
         <td>解体</td>
         <td>サッシ解体</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="sashDismantling-select">
                 <option>サッシ解体なし</option>
                 <option>サッシ解体有</option>
@@ -273,7 +254,7 @@
     <tr>
         <td>土間工事</td>
         <td>床下がり</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="floorConstruction-select">
                 <option>無し・不明</option>
                 <option>～150</option>
@@ -289,7 +270,7 @@
     <tr>
         <td>防水</td>
         <td>防水</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="waterproof-select">
                 <option>地下有り</option>
                 <option>地下無し</option>
@@ -304,7 +285,7 @@
     <tr>
         <td>内装</td>
         <td>天井</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="ceiling-select">
                 <option>選択してください</option>
                 <option>天井新規・不明</option>
@@ -320,7 +301,7 @@
     <tr>
         <td>解体・左官</td>
         <td>犬走り</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="dogRunning-select">
                 <option>土間補修必要・不明</option>
                 <option>土間補修不要</option>
@@ -335,7 +316,7 @@
     <tr>
         <td>左官・冷設・空調</td>
         <td>室外機置場</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="outdoorUnitStorageArea-select">
                 <option>1階</option>
                 <option>～4階</option>
@@ -351,7 +332,7 @@
     <tr>
         <td>標準外・空調</td>
         <td>休憩室</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="restRoom-select">
                 <option>休憩室無し</option>
                 <option>休憩室あり</option>
@@ -366,7 +347,7 @@
     <tr>
         <td>什器</td>
         <td>ゴンドラ</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="gondola-select">
                 <option>D450</option>
                 <option>D500</option>
@@ -381,7 +362,7 @@
     <tr>
         <td>冷設</td>
         <td>農産</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="vegetables-select">
                 <option>農産　6尺</option>
                 <option>農産　9尺</option>
@@ -396,7 +377,7 @@
     <tr>
         <td>冷設</td>
         <td>畜産</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="meats-select">
                 <option>畜産　6尺</option>
                 <option>畜産　9尺</option>
@@ -412,7 +393,7 @@
     <tr>
         <td>冷設</td>
         <td>デリカ</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="delica-select">
                 <option>ﾃﾞﾘｶ　12尺</option>
                 <option>ﾃﾞﾘｶ　15尺</option>
@@ -428,7 +409,7 @@
     <tr>
         <td>冷設</td>
         <td>ウォークイン</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="walk-in-select">
                 <option>ｳｫｰｸｲﾝ 17尺（3＋4）</option>
                 <option>ｳｫｰｸｲﾝ 20尺（4＋4）</option>
@@ -443,7 +424,7 @@
     <tr>
         <td>冷設</td>
         <td>機械室</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="machineRoom-select">
                 <option>機械室必要</option>
                 <option>機械室不要</option>
@@ -458,7 +439,7 @@
     <tr>
         <td>室外機</td>
         <td>室外機置場</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="outdoorUnit-select">
                 <option>室外機　GL</option>
                 <option>室外機　～4階</option>
@@ -474,7 +455,7 @@
     <tr>
         <td>空調</td>
         <td>空調（正方形）</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="airConditioning-select">
                 <option>区画整形 □</option>
                 <option>区画不整形 凹</option>
@@ -489,7 +470,7 @@
     <tr>
         <td>看板工事</td>
         <td>サイン出入口の数</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="numberofSignEntrances-select">
                 <option>出入口1か所</option>
                 <option>出入口2か所</option>
@@ -504,7 +485,7 @@
     <tr>
         <td>看板工事</td>
         <td>テント</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="tent-select">
                 <option>ﾃﾝﾄ有り</option>
                 <option>ﾃﾝﾄ無し</option>
@@ -519,7 +500,7 @@
     <tr>
         <td>看板工事</td>
         <td>サイン下地</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="signBase-select">
                 <option>外壁取付け</option>
                 <option>ｻｲﾝ門型下地</option>
@@ -534,7 +515,7 @@
     <tr>
         <td>看板工事</td>
         <td>イオンチャンネル</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="aeonChannels-select">
                 <option>袖看板1か所</option>
                 <option>袖看板2か所</option>
@@ -552,7 +533,7 @@
     <tr>
         <td>看板工事</td>
         <td>グラフィック</td>
-        <td class="center input-cell">
+        <td class="required">
             <select id="graphic-select">
                 <option>ガラス面少ない</option>
                 <option>ガラス面多い</option>
@@ -565,8 +546,10 @@
         <td>既定値：ガラス面少ない</td>
     </tr>
 </table><br>
+<div class="button-container">
 <button class="btn-save" type="button" id="save-button">更新</button>
-<button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+<button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+</div>
 
 <script type="module">
 // Firebase App (必須)

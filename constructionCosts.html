@@ -4,25 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>建築設備工事概算費用</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+    <link rel="stylesheet" href="constructionTotalStyles.css">
 </head>
 <body>
 
@@ -45,13 +27,13 @@
         <td>一般工事</td>
         <td id="general-total">0</td>
         <td id="general-totaltax">0</td>
-        <td>建築内装、電気、給排水、空調換気、シャッター<br>間仕切り、諸経費</td>
+        <td>建築内装、電気、給排水、空調換気、シャッター、間仕切り、諸経費</td>
     </tr>
     <tr>
         <td>冷凍冷蔵設備</td>
         <td id="refrigerationFreezingEquipment-total">0</td>
         <td id="refrigerationFreezingEquipment-totaltax">0</td>
-        <td>冷凍冷蔵什器、設備工事<br>※転用無し</td>
+        <td>冷凍冷蔵什器、設備工事 ※転用無し</td>
     </tr>
     <tr>
         <td>建築・備品</td>
@@ -84,18 +66,18 @@
         <td>先行解体工事、B工事、用途変更等</td>
     </tr>
     <tr>
-        <th>合計</th>
+        <td>合計</td>
         <td id="final-total">0</td>
         <td id="final-totaltax">0</td>
         <td></td>
     </tr>
 </table>
-<br>
-    <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
-
-
 <p>※システム費用（レジ、防犯カメラ等）は含みません</p>
+<br>
+<div class="button-container">
+    <button id="save-button">データを保存</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+</div>
 <script type="module">
     // Firebase App (必須)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";

@@ -4,47 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>コスト比率</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .required {
-            background-color: #fdd9b5;
-        }
-    </style>
+    <link rel="stylesheet" href="dbStyles.css">
 </head>
 <body>
-    <h2>販管費比率【経営計画数値】</h2>
-    <div>
+    <div class="container">
+    <div class="column">
+        <h2>販管費比率【経営計画数値】</h2>
         <label for="sellingCostData">本年度販管費：</label>
         <input type="number" id="sellingCostData" value="1.83" step="0.01"> 
-    </div><br>
-    <h2>一般費比率【経営計画数値】</h2>
-    <div>
+    </div>
+    <div class="column">
+        <h2>一般費比率【経営計画数値】</h2>
         <label for="generalExpensesCostData">本年度一般費：</label>
-        <input type="number" id="generalExpensesCostData" value="3.06" step="0.01"> 
-    </div><br>
-    <h2>本社経費比率【経営計画数値】</h2>
-    <div>
+        <input type="number" id="generalExpensesCostData" value="3.06" step="0.01">
+    </div>
+    <div class="column">
+        <h2>本社経費比率【経営計画数値】</h2>
         <label for="mainOfficeCostData">本年度本社経費：</label>
         <input type="number" id="mainOfficeCostData" value="3.06" step="0.01"> 
-    </div><br>
-    <h2>人件費比率【経営計画数値】</h2>
-    <div>
+    </div>
+    <div class="column">
+        <h2>人件費比率【経営計画数値】</h2>
         <label for="laborCostData">本年度人件費：</label>
         <input type="number" id="laborCostData" value="1.07" step="0.01"> 
+    </div>
     </div><br>
 
     <!-- 日販表 -->
+    <h2>人件費（営業時間15H換算）【経営計画数値】</h2>
     <table>
         <thead>
             <tr>
@@ -123,17 +110,19 @@
     </table><br>
 
     <h2>水道光熱費【経営計画数値】</h2>
-    <div>
+    <div class="container">
+    <div class="column">
         <label for="80T-utilityData">80坪：</label>
-        <input type="number" id="80T-utilityData" value="0"> 
-    </div><br>
-    <div>
+        <input type="number" id="80T-utilityData" value="0">
+    </div>
+    <div class="column">
         <label for="basic-utilityData">標準：</label>
         <input type="number" id="basic-utilityData" value="0"> 
-    </div><br>
-    <div>
+    </div>
+    <div class="column">
         <label for="small-utilityData">狭小：</label>
         <input type="number" id="small-utilityData" value="0"> 
+    </div>
     </div><br>
     <table>
         <tr>
@@ -197,9 +186,11 @@
             <td id="small-utility2"></td>
         </tr>
     </table><br>
+    <div class="button-container">
     <button id="calculateButton">計算</button>
     <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    </div>
 
 <script type="module">
 

@@ -4,35 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>人件費DB</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .required {
-            background-color: #fdd9b5;
-        }
-    </style>
+    <link rel="stylesheet" href="dbStoreStyles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> <!-- xlsxライブラリ -->
 </head>
 <body>
     <h2>人件費DB</h2>
-    <input type="file" id="file-upload" accept=".xlsx, .xls">
-    <button onclick="uploadExcel()">アップロード</button>
+    <input type="file" id="file-upload" accept=".xlsx, .xls"><br><br>
+    <button id="upload-button" onclick="uploadExcel()">アップロード</button><br>
     <div id="progress-container" style="display:none; width: 100%; background-color: #f3f3f3; border-radius: 10px; height: 5px; margin-top: 10px;">
         <div id="progress-bar" style="width: 0%; height: 100%; background-color: #00aec9; border-radius: 10px;"></div>
     </div>
     
     <h2>類似店舗の人件費情報を検索</h2>
     <input type="text" id="store-name" placeholder="店舗名を入力">
-    <button onclick="searchLaborCost()">検索</button><br>
+    <button onclick="searchLaborCost()">検索</button>
+    <br>
     <table>
     　<tr>
         <th>項目</th>
@@ -51,9 +37,10 @@
         <td id="dispatch-hours">-</td>
       </tr>
     </table><br>
-
+    <div class="button-container">
     <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";

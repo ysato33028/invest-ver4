@@ -4,30 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>売上予測</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
-    label, select, input { display: block; margin: 8px 0; }
-    #combination { font-weight: bold; color: blue; margin-top: 10px; }
-    #population-ratio-display { font-weight: bold; color: blue; margin-top: 10px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .required {
-            background-color: #fdd9b5;
-        }
-  </style>
+  <link rel="stylesheet" href="salesStyles.css">
 </head>
 <body>
 
-  <h1>売上予測</h1>
+  <h2>売上予測</h2>
   <form id="store-form">
   <table>
     <tr>
@@ -191,9 +172,11 @@
     <td class="required" id="estimated-sales"></td>
   </tr>
   </table><br>
+  <div class="button-container">
     <button id="calculate-button">計算する</button>
     <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button>
+  </div>
     </form>
 
 <script type="module">

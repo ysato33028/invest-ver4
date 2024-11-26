@@ -5,27 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>経営計画書作成</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-    </style>
+    <link rel="stylesheet" href="exportStyles.css">
 </head>
 <body>
-    <h1>経営計画書作成 │ <span id="name"></span></h1>    
-
+    <h2>経営計画書作成 │ <span id="name"></span></h2>
+    <img id="excel-icon" src="icon/excel.png" alt="原本">
     <br><br>
+    <label id="excel" for="excel">xlsx形式で貼り付けデータが自動的にダウンロードされます</label><br>
     <button id="exportButton">経営計画書原本をダウンロード</button>
 
     <script type="module">
@@ -249,53 +235,53 @@
                 ["概要", data.overview],
                 ["生活者特性", data.consumerCharacteristics],
                 ["世帯数", data.household],
-                ["人口", data.population],
+                ["人口総数", data.population],
                 ["平均人口", data.averagePopulation],
-                ["契約面積", data.contractArea],
-                ["店舗面積", data.shopArea],
-                ["引渡し", data.delivery],
-                ["開店日", data.openSelect],
-                ["閉店日", data.endSelect],
-                ["売上", data.sales],
-                ["利益", data.profit],
+                ["賃貸借面積", data.contractArea],
+                ["売場面積", data.shopArea],
+                ["開店予定月", data.delivery],
+                ["開店時刻", data.openSelect],
+                ["閉店時刻", data.endSelect],
+                ["売上高", data.sales],
+                ["営業総利益", data.profit],
                 ["人件費", data.labor],
-                ["販売費", data.selling],
-                ["家賃", data.rent],
+                ["販売管理費計", data.selling],
+                ["月額家賃", data.rent],
                 ["設備費", data.equipment],
-                ["一般費用", data.general],
+                ["一般費", data.general],
                 ["販売一般管理費計", data.totalSelling3Value],
                 ["月間店舗利益", data.monthlyStoreProfit],
-                ["日次売上", data.dailySale],
-                ["AI予測売上", data.aiForecastSales],
-                ["物流コスト", data.logisticsCosts],
-                ["最終赤字月", data.judgmentData],
-                ["レイアウトパターン", data.layoutPattern],
-                ["立地パターン", data.locationPattern],
-                ["駐車場選択", data.parkingSpacesSelect],
-                ["駐車場台数", data.numberofParkingSpaces],
-                ["建物費", data.depreciationCost.buildingCost],
-                ["一般建設費", data.depreciationCost.generalConstructionCost],
-                ["冷蔵設備総計", data.depreciationCost.refrigerationEquipmentConstructionTotal],
-                ["建物付帯設備", data.depreciationCost.buildingsEquipment],
-                ["展示備品", data.depreciationCost.displayFixtures],
-                ["看板", data.depreciationCost.signboard],
-                ["その他", data.depreciationCost.other],
-                ["非標準設備", data.depreciationCost.nonstandard],
-                ["減価償却総計", data.depreciationCost.total],
+                ["新予測計算", data.dailySale],
+                ["AI予測", data.aiForecastSales],
+                ["物流費", data.logisticsCosts],
+                ["投資回収期間", data.judgmentData],
+                ["建築モデル", data.layoutPattern],
+                ["出店立地", data.locationPattern],
+                ["駐車場", data.parkingSpacesSelect],
+                ["駐車台数", data.numberofParkingSpaces],
+                ["建築工事", data.depreciationCost.buildingCost],
+                ["一般工事", data.depreciationCost.generalConstructionCost],
+                ["冷凍冷蔵什器", data.depreciationCost.refrigerationEquipmentConstructionTotal],
+                ["建築備品", data.depreciationCost.buildingsEquipment],
+                ["陳列器具什器", data.depreciationCost.displayFixtures],
+                ["看板工事", data.depreciationCost.signboard],
+                ["その他備品", data.depreciationCost.other],
+                ["標準外工事", data.depreciationCost.nonstandard],
+                ["投資額合計", data.depreciationCost.total],
                 ["追加レジ数", data.depreciationCost.addRegisters],
                 ["追加セルフレジ数", data.depreciationCost.addSelfRegisters],
                 ["仲介手数料", data.brokerageFeeValue],
                 ["コンサルティング費用", data.consultingFeesValue],
                 ["礼金", data.keyMoneyValue],
-                ["敷金", data.deposit],
+                ["保証金", data.deposit],
                 ["建設協力金", data.constructionCooperationFunds],
-                ["支払頻度", data.paymentFrequencySelect],
-                ["年次", data.year],
-                ["日次売上1年目", data.dailySales.daily1],
-                ["日次売上2年目", data.dailySales.daily2],
-                ["日次売上3年目", data.dailySales.daily3],
-                ["日次売上4年目", data.dailySales.daily4],
-                ["日次売上5年目", data.dailySales.daily5],
+                ["支払回数", data.paymentFrequencySelect],
+                ["開店年度", data.year],
+                ["日販売上1年目", data.dailySales.daily1],
+                ["日販売上2年目", data.dailySales.daily2],
+                ["日販売上3年目", data.dailySales.daily3],
+                ["日販売上4年目", data.dailySales.daily4],
+                ["日販売上5年目", data.dailySales.daily5],
                 ["年間売上1年目", data.yearlySales.year1],
                 ["年間売上2年目", data.yearlySales.year2],
                 ["年間売上3年目", data.yearlySales.year3],
@@ -307,22 +293,22 @@
                 ["3年目店舗利益", data.totalStoreProfit.year3],
                 ["4年目店舗利益", data.totalStoreProfit.year4],
                 ["5年目店舗利益", data.totalStoreProfit.year5],
-                ["契約期間選択", data.contractPeriodSelect],
+                ["契約期間", data.contractPeriodSelect],
                 // 労働コスト関連を追加
-                ["総人件費1", data.laborCosts.totalLaborCosts1],
-                ["平均総人件費", data.laborCosts.averagetotalLabor],
+                ["人件費合計1", data.laborCosts.totalLaborCosts1],
+                ["平均人件費合計", data.laborCosts.averagetotalLabor],
                 
                 ["社員人件費1", data.laborCosts.employeeLaborCosts1],
                 ["平均社員人件費", data.laborCosts.averageEmployeeLabor],
                 
-                ["共同社員人件費1", data.laborCosts.coEmployeeLaborCosts1],
-                ["平均共同社員人件費", data.laborCosts.averageCoEmployeeLabor],
+                ["Co社員人件費1", data.laborCosts.coEmployeeLaborCosts1],
+                ["平均Co社員人件費1", data.laborCosts.averageCoEmployeeLabor],
                 
-                ["平均給与1", data.laborCosts.avgSalaryData1],
-                ["平均給与", data.laborCosts.averageAvgSalary],
+                ["Co社員時給1", data.laborCosts.avgSalaryData1],
+                ["平均Co社員時給", data.laborCosts.averageAvgSalary],
                 
-                ["日次労働時間1", data.laborCosts.dailyWorkingHours1],
-                ["平均日次労働時間", data.laborCosts.averageDailyWorkingHours],
+                ["必要人時1", data.laborCosts.dailyWorkingHours1],
+                ["平均必要人時", data.laborCosts.averageDailyWorkingHours],
               ];
 
 

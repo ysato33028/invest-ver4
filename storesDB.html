@@ -4,28 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>既存店DB</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .required {
-            background-color: #fdd9b5;
-        }
-    </style>
+    <link rel="stylesheet" href="dbStoreStyles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> <!-- xlsxライブラリ -->
 </head>
 <body>
     <h2>既存店DB</h2>
-    <input type="file" id="file-upload" accept=".xlsx, .xls">
-    <button onclick="uploadExcel()">アップロード</button><br>
+    <input type="file" id="file-upload" accept=".xlsx, .xls"><br><br>
+    <button id="upload-button" onclick="uploadExcel()">アップロード</button><br>
     <div id="progress-container" style="display:none; width: 100%; background-color: #f3f3f3; border-radius: 10px; height: 5px; margin-top: 10px;">
         <div id="progress-bar" style="width: 0%; height: 100%; background-color: #00aec9; border-radius: 10px;"></div>
     </div>
@@ -37,11 +22,9 @@
     <input type="text" id="store-name-2" placeholder="店舗名2を入力">
     <input type="text" id="store-name-3" placeholder="店舗名3を入力">
     <input type="text" id="store-name-4" placeholder="店舗名4を入力">
-    <button onclick="searchLaborCosts()">検索</button>
-    <br><br>
-    <button id="save-button">データを保存</button>
-    <button class="btn-close" type="button" onclick="window.close()">タブを閉じる</button><br>
+    <button id="search-button2" onclick="searchLaborCosts()">検索</button>
     <br>
+    
     <h2>売上予測用</h2>
     <table>
         <tr>
@@ -196,6 +179,11 @@
             <td id="storeAge4"></td>
         </tr>
     </table>
+    <br><br>
+    <div class="button-container">
+    <button id="save-button">データを保存</button>
+    <button id="closeButton" class="btn-close" type="button" onclick="window.close()">タブを閉じる</button><br>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
